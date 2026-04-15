@@ -4,14 +4,6 @@ Rapid-fire React UI components. Ship faster, build more.
 
 ## Install
 
-Add to your project's `.npmrc`:
-
-```
-@tomny-dev:registry=https://npm.pkg.github.com
-```
-
-Then install:
-
 ```bash
 pnpm add @tomny-dev/uzi
 ```
