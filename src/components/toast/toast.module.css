@@ -1,0 +1,152 @@
+.stack {
+  position: fixed;
+  z-index: 2147483000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.topRight {
+  top: 16px;
+  right: 16px;
+  align-items: flex-end;
+}
+
+.topLeft {
+  top: 16px;
+  left: 16px;
+  align-items: flex-start;
+}
+
+.topCenter {
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+}
+
+.bottomRight {
+  bottom: 16px;
+  right: 16px;
+  align-items: flex-end;
+}
+
+.bottomLeft {
+  bottom: 16px;
+  left: 16px;
+  align-items: flex-start;
+}
+
+.bottomCenter {
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 280px;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--toast-border, #1f2937);
+  background: var(--toast-bg, #111827);
+  color: var(--toast-text, #e2e8f0);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  animation: toastSlideIn 180ms ease-out;
+}
+
+.toast.exit {
+  animation: toastSlideOut 160ms ease-in forwards;
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.message {
+  word-break: break-word;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.actionButton {
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid var(--toast-action-border, rgba(0, 0, 0, 0.2));
+  background: var(--toast-action-bg, rgba(0, 0, 0, 0.1));
+  color: var(--toast-text, #e2e8f0);
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+.actionButton:hover {
+  background: var(--toast-button-bg, rgba(0, 0, 0, 0.15));
+}
+
+.closeButton {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin: -2px -4px -2px 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--toast-text, #e2e8f0);
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity 120ms ease, background 120ms ease;
+}
+
+.closeButton:hover {
+  opacity: 1;
+  background: var(--toast-button-bg, rgba(0, 0, 0, 0.1));
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
