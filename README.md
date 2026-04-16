@@ -35,3 +35,12 @@ pnpm dev    # watch mode
 pnpm build  # production build
 pnpm lint   # type check
 ```
+
+## Claude Code
+
+A `CLAUDE.md` is included with architecture notes, component conventions, and publishing details. If you're using Claude Code in a consumer repo, you can reference it in your own `CLAUDE.md`:
+
+```md
+## UI Components
+See node_modules/@tomny-dev/uzi/CLAUDE.md for component API and usage notes.
+```
