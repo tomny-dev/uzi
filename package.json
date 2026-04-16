@@ -1,6 +1,6 @@
 {
   "name": "@tomny-dev/uzi",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Rapid-fire React UI components. Ship faster, build more.",
   "type": "module",
   "main": "./dist/index.cjs",
