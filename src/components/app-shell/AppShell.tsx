@@ -210,7 +210,7 @@ export function AppShell({
         brand={brand}
         brandHref={brandHref}
         brandingLocation={topBarBrandingLocation}
-        center={topbarStart}
+        start={topbarStart}
         actions={topbarEnd}
         showThemeToggle={showThemeToggle}
         themeToggleProps={themeToggleProps}

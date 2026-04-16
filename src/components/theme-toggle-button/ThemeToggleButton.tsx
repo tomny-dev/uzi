@@ -4,6 +4,7 @@ import type { ButtonHTMLAttributes } from "react";
 import { Button } from "../button/Button";
 import { useTheme } from "../../theme/ThemeProvider";
 import { cx } from "../../utils/cx";
+import styles from "./theme-toggle-button.module.css";
 
 export type ThemeToggleButtonProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -58,7 +59,7 @@ export function ThemeToggleButton({
       type="button"
       variant="ghost"
       size={showLabel ? "sm" : "icon"}
-      className={cx(showLabel && "themeToggleWithLabel", className)}
+      className={cx(showLabel && styles.withLabel, className)}
       aria-label={`Switch to ${nextThemeLabel.toLowerCase()}`}
       title={`Switch to ${nextThemeLabel.toLowerCase()}`}
       onClick={(event) => {

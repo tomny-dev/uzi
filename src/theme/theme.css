@@ -1,6 +1,8 @@
 :root {
   --focus-ring: 2px solid color-mix(in srgb, var(--ring, #94a3b8) 50%, transparent);
   --focus-ring-offset: 2px;
+  --success: hsl(142 71% 45%);
+  --warning: hsl(38 92% 50%);
 }
 
 :root,
@@ -40,7 +42,7 @@
   --secondary-foreground: #e2e8f0;
   --muted: #152036;
   --muted-foreground: #94a3b8;
-  --accent: rgba(34, 211, 238, 0.12);
+  --accent: color-mix(in srgb, var(--primary, #22d3ee) 12%, transparent);
   --accent-foreground: #e2e8f0;
   --destructive: hsl(0 72% 51%);
   --destructive-foreground: hsl(0 0% 98%);
@@ -48,7 +50,7 @@
   --input: #1f2937;
   --panel: #111827;
   --surface-elevated: #0b1224;
-  --surface-topbar: rgba(11, 18, 36, 0.85);
+  --surface-topbar: color-mix(in srgb, var(--background, #0b1224) 85%, transparent);
   --text: #e2e8f0;
 }
 

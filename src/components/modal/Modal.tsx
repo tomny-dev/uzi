@@ -21,9 +21,15 @@ export function ModalOverlay({ open, onClose, className, children }: ModalOverla
 
   useEffect(() => {
     if (!open) return;
-    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        onClose();
+      }
+    };
+    // Capture phase so the innermost modal handles Escape first
+    window.addEventListener("keydown", handleKeyDown, true);
+    return () => window.removeEventListener("keydown", handleKeyDown, true);
   }, [open, onClose]);
 
   if (!open) return null;

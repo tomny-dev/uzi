@@ -13,6 +13,9 @@ export type TopBarProps = HTMLAttributes<HTMLElement> & {
   brand?: ReactNode;
   brandHref?: string;
   brandingLocation?: "left" | "center";
+  /** Content rendered after the brand in the left region (e.g. breadcrumbs, search). */
+  start?: ReactNode;
+  /** Content rendered in the center region. */
   center?: ReactNode;
   actions?: ReactNode;
   showThemeToggle?: boolean;
@@ -27,6 +30,7 @@ export function TopBar({
   brand,
   brandHref,
   brandingLocation = "left",
+  start,
   center,
   actions,
   showThemeToggle = false,
@@ -58,6 +62,7 @@ export function TopBar({
         <div className={styles.topBarStart}>
           {leading}
           {brandingLocation === "left" && brandNode}
+          {start}
         </div>
         {(brandNode && brandingLocation === "center") || center || children ? (
           <div className={styles.topBarCenter}>

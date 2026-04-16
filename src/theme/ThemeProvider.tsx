@@ -69,17 +69,20 @@ export function ThemeProvider({
   accentStorageKey = ACCENT_STORAGE_KEY,
   disableStorage = false,
 }: ThemeProviderProps) {
-  const [internalTheme, setInternalTheme] = useState<UziTheme>(() => {
-    if (disableStorage || typeof window === "undefined") return defaultTheme;
-    const stored = window.localStorage.getItem(storageKey);
-    return isTheme(stored) ? stored : defaultTheme;
-  });
-  const [internalAccent, setInternalAccent] = useState<UziAccent>(() => {
-    if (disableStorage || typeof window === "undefined") return defaultAccent;
-    const stored = window.localStorage.getItem(accentStorageKey);
-    return isAccent(stored) ? stored : defaultAccent;
-  });
-  const [systemTheme, setSystemTheme] = useState<UziResolvedTheme>(getSystemTheme);
+  const [internalTheme, setInternalTheme] = useState<UziTheme>(defaultTheme);
+  const [internalAccent, setInternalAccent] = useState<UziAccent>(defaultAccent);
+  const [systemTheme, setSystemTheme] = useState<UziResolvedTheme>("light");
+
+  useEffect(() => {
+    setSystemTheme(getSystemTheme());
+    if (!disableStorage) {
+      const storedTheme = window.localStorage.getItem(storageKey);
+      if (isTheme(storedTheme)) setInternalTheme(storedTheme);
+      const storedAccent = window.localStorage.getItem(accentStorageKey);
+      if (isAccent(storedAccent)) setInternalAccent(storedAccent);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isThemeControlled = theme !== undefined;
   const isAccentControlled = accent !== undefined;
