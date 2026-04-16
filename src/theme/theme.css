@@ -1,0 +1,97 @@
+:root {
+  --focus-ring: 2px solid color-mix(in srgb, var(--ring, #94a3b8) 50%, transparent);
+  --focus-ring-offset: 2px;
+}
+
+:root,
+:root[data-uzi-theme="light"],
+[data-uzi-theme="light"] {
+  color-scheme: light;
+  --background: hsl(210 20% 98%);
+  --foreground: hsl(222 47% 11%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(222 47% 11%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(222 47% 11%);
+  --secondary: hsl(214 32% 94%);
+  --secondary-foreground: hsl(222 47% 11%);
+  --muted: hsl(214 32% 94%);
+  --muted-foreground: hsl(215 16% 47%);
+  --accent: hsl(214 32% 92%);
+  --accent-foreground: hsl(222 47% 11%);
+  --destructive: hsl(0 84% 60%);
+  --destructive-foreground: hsl(0 0% 98%);
+  --border: hsl(214 32% 88%);
+  --input: hsl(214 32% 88%);
+  --panel: var(--card);
+  --text: var(--foreground);
+}
+
+:root[data-uzi-theme="dark"],
+[data-uzi-theme="dark"] {
+  color-scheme: dark;
+  --background: #0f172a;
+  --foreground: #e2e8f0;
+  --card: #111827;
+  --card-foreground: #e2e8f0;
+  --popover: #111827;
+  --popover-foreground: #e2e8f0;
+  --secondary: #152036;
+  --secondary-foreground: #e2e8f0;
+  --muted: #152036;
+  --muted-foreground: #94a3b8;
+  --accent: rgba(34, 211, 238, 0.12);
+  --accent-foreground: #e2e8f0;
+  --destructive: hsl(0 72% 51%);
+  --destructive-foreground: hsl(0 0% 98%);
+  --border: #1f2937;
+  --input: #1f2937;
+  --panel: #111827;
+  --surface-elevated: #0b1224;
+  --surface-topbar: rgba(11, 18, 36, 0.85);
+  --text: #e2e8f0;
+}
+
+:root,
+:root[data-uzi-accent="blue"],
+[data-uzi-accent="blue"] {
+  --primary: hsl(221 83% 53%);
+  --primary-foreground: hsl(210 40% 98%);
+  --ring: hsl(221 83% 53%);
+}
+
+:root[data-uzi-accent="cyan"],
+[data-uzi-accent="cyan"] {
+  --primary: hsl(188 94% 43%);
+  --primary-foreground: hsl(222 47% 11%);
+  --ring: hsl(188 94% 43%);
+}
+
+:root[data-uzi-accent="violet"],
+[data-uzi-accent="violet"] {
+  --primary: hsl(262 83% 58%);
+  --primary-foreground: hsl(210 40% 98%);
+  --ring: hsl(262 83% 58%);
+}
+
+:root[data-uzi-accent="emerald"],
+[data-uzi-accent="emerald"] {
+  --primary: hsl(160 84% 39%);
+  --primary-foreground: hsl(210 40% 98%);
+  --ring: hsl(160 84% 39%);
+}
+
+:root[data-uzi-accent="amber"],
+[data-uzi-accent="amber"] {
+  --primary: hsl(38 92% 50%);
+  --primary-foreground: hsl(222 47% 11%);
+  --ring: hsl(38 92% 50%);
+}
+
+:root[data-uzi-accent="rose"],
+[data-uzi-accent="rose"] {
+  --primary: hsl(346 77% 49%);
+  --primary-foreground: hsl(210 40% 98%);
+  --ring: hsl(346 77% 49%);
+}
+

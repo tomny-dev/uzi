@@ -43,8 +43,8 @@
 }
 
 .interactive:focus-within {
-  outline: 2px solid var(--ts-card-hover-border, rgba(34, 211, 238, 0.45));
-  outline-offset: 2px;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .padding-none {

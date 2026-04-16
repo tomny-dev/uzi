@@ -25,6 +25,11 @@
   border-color: var(--ts-dropdown-accent, var(--accent, #22d3ee));
 }
 
+.trigger:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
 .trigger-active {
   border-color: var(--ts-dropdown-accent, var(--accent, #22d3ee));
   color: var(--ts-dropdown-accent, var(--accent, #22d3ee));
@@ -83,6 +88,11 @@
 .option:hover {
   background: rgba(255, 255, 255, 0.05);
   color: var(--ts-dropdown-text, var(--text, #e2e8f0));
+}
+
+.option:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .option-selected {

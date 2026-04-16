@@ -33,7 +33,59 @@ For minor/major bumps, edit `package.json` version manually before pushing.
 - **No Tailwind** — uses CSS modules
 - **`cx()` utility** — exported from `src/utils/cx.ts`, use for conditional class names
 - **tsup** bundles to `dist/` in both ESM and CJS with type declarations
-- **`"use client"` banner** — added to the entire bundle via `tsup.config.ts` so Next.js App Router consumers don't need to worry about it
+- **`"use client"` banner** — added to the entire main bundle via `tsup.config.ts`
+- **`src/server.ts`** — separate tsup entry with no `"use client"` banner; safe to import in Next.js server components. Currently exports `getThemeScript`.
+- **`@tomny-dev/uzi/server`** — the `/server` subpath export; consumer tsconfigs need `"moduleResolution": "bundler"` to resolve it
+
+## Design Tokens (CSS custom properties)
+
+Defined in `src/theme/theme.css`. Components use these — never hardcode colors.
+
+| Token | Purpose |
+|---|---|
+| `--background` | Page background |
+| `--foreground` | Primary text |
+| `--card` | Elevated surface (cards, panels) |
+| `--border` | Borders and dividers |
+| `--muted` | Subtle background fills |
+| `--muted-foreground` | Secondary/placeholder text |
+| `--primary` | Brand accent color |
+| `--ring` | Focus ring base color |
+| `--focus-ring` | `2px solid color-mix(in srgb, var(--ring) 50%, transparent)` — use on `:focus-visible` |
+| `--focus-ring-offset` | `2px` — pair with `--focus-ring` |
+| `--surface-topbar` | TopBar background |
+| `--destructive` | Error/danger color |
+
+### Focus rings
+
+All interactive elements must use:
+```css
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+```
+
+Never use `outline: none` without replacing it with `:focus-visible`. Never use `box-shadow` as a focus ring substitute.
+
+### Using alpha variants
+
+Use `color-mix` — never hardcode rgba:
+```css
+background: color-mix(in srgb, var(--primary) 10%, transparent);
+```
+
+## Theming
+
+- Themes are applied via `data-uzi-theme="dark|light"` on `<html>`
+- Accents via `data-uzi-accent="amber|cyan|..."` on `<html>`
+- `ThemeProvider` applies these at runtime; for SSR flash prevention, set attributes directly on `<html>` in the server layout
+- `getThemeScript()` (from `@tomny-dev/uzi/server`) returns a blocking inline script string that reads localStorage and sets theme attributes before first paint — use when theme is user-switchable
+- For fixed themes (e.g. always dark), skip `getThemeScript` and hardcode `className="dark" data-uzi-theme="dark" style={{ colorScheme: "dark" }}` on `<html>`
+
+## AppShell layout contract
+
+`AppShell` renders a full-viewport grid (`min-height: 100dvh`). The `main` area has no default padding — **each page is responsible for its own padding and max-width**. Use `mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8` as the standard page wrapper. Pages that need full-bleed layouts (e.g. split-panel UIs) can skip this wrapper and control their own layout directly.
 
 ## For Consumer Repos
 
@@ -45,28 +97,37 @@ This project uses `@tomny-dev/uzi` for UI primitives.
 - No Tailwind — components use CSS modules internally
 - `"use client"` is handled by the bundle — no need to wrap imports
 - App-specific components (e.g. BrandLogo) should live in the app, not in uzi
+- Server-safe exports (e.g. `getThemeScript`) are at `@tomny-dev/uzi/server`
 
 Available components:
-- `Button` — primary, secondary, outline, ghost variants; supports `as="a"` for anchor rendering
+- `Button` — primary, secondary, outline, ghost variants
 - `Card` — surface container with tone and padding props
 - `Pill` — inline badge/tag
-- `Modal` — accessible overlay dialog with size variants
+- `Alert` — feedback banner; tones: success, error, warning, info
+- `Modal` — accessible overlay dialog with size variants (sm, md, lg, xl)
+- `ModalOverlay` — bare backdrop/escape/click-outside primitive; use when you need a custom modal layout
 - `Dropdown` — select-style dropdown with option list
-- `AppShell` — responsive layout with collapsible sidebar and sticky topbar
+- `AppShell` — responsive layout with collapsible sidebar and sticky topbar; no default padding on main area
 - `SidebarNav` — sidebar navigation list
-- `ToastProvider` / `useToast` — toast notification system; wrap app in `ToastProvider`, call `useToast()` to trigger toasts
+- `ThemeProvider` — applies theme/accent tokens; use `theme` prop for controlled (fixed) themes, `defaultTheme` for user-switchable
+- `ThemeToggleButton` — light/dark toggle button for the topbar
+- `ToastProvider` / `useToast` — toast notification system
 - `cx` — utility for conditional class name merging
 ```
 
 ## Component List
 
-| Component | Hooks used |
-|---|---|
-| `Button` | none |
-| `Card` | none |
-| `Pill` | none |
-| `Modal` | `useRef` |
-| `Dropdown` | `useState`, `useRef`, `useEffect` |
-| `AppShell` | `useState`, `useEffect`, `useRef`, `useId` |
-| `SidebarNav` | none |
-| `ToastProvider` / `useToast` | `createContext`, `useState`, `useEffect`, `useRef` |
+| Component | Hooks used | Notes |
+|---|---|---|
+| `Button` | none | |
+| `Card` | none | |
+| `Pill` | none | |
+| `Alert` | none | role="alert"; tones: success, error, warning, info |
+| `Modal` | `useRef` | Built on `ModalOverlay` |
+| `ModalOverlay` | `useEffect`, `useRef` | Escape key, click-outside, aria-modal |
+| `Dropdown` | `useState`, `useRef`, `useEffect` | |
+| `AppShell` | `useState`, `useEffect`, `useRef`, `useId` | |
+| `SidebarNav` | none | Active item uses `color-mix(primary)` bg |
+| `ThemeProvider` | `useState`, `useEffect` | Lazy initializers read localStorage synchronously |
+| `ThemeToggleButton` | none | |
+| `ToastProvider` / `useToast` | `createContext`, `useState`, `useEffect`, `useRef` | |

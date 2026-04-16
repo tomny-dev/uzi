@@ -10,7 +10,7 @@
 }
 
 .modal {
-  background: #0f172a;
+  background: var(--background, #0f172a);
   border: 1px solid var(--border, #1f2937);
   border-radius: 14px;
   padding: 24px;
@@ -25,6 +25,7 @@
 .size-sm { width: min(380px, 100%); }
 .size-md { width: min(500px, 100%); }
 .size-lg { width: min(640px, 100%); }
+.size-xl { width: min(900px, 100%); }
 
 .header {
   display: flex;
@@ -72,6 +73,11 @@
 .closeButton:hover {
   background: rgba(255, 255, 255, 0.07);
   color: var(--text, #e2e8f0);
+}
+
+.closeButton:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .body {

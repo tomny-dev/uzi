@@ -1,37 +1,35 @@
-.shell {
+.appShell {
   display: grid;
   grid-template-rows: calc(var(--app-shell-topbar-height, 64px) + env(safe-area-inset-top)) 1fr;
   grid-template-columns: var(--app-shell-sidebar-width, 240px) 1fr;
   min-height: 100vh;
   min-height: 100dvh;
+}
+
+.appShellAnimated {
   transition: grid-template-columns 200ms ease;
 }
 
-.shell.sidebarOpen {
+.appShell.appShellOpen {
   grid-template-columns: var(--app-shell-sidebar-width, 240px) 1fr;
 }
 
-.shell.sidebarCollapsed {
+.appShell.appShellCollapsed {
   grid-template-columns: 0 1fr;
 }
 
-.topbar {
+.appShellTopbar {
+  --ts-topbar-bg: var(--surface-topbar, var(--surface-elevated, color-mix(in srgb, var(--background, #fff) 90%, transparent)));
+  --ts-topbar-border: var(--border);
+  --ts-topbar-brand-fg: var(--foreground, var(--text, #0f172a));
   grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: calc(var(--app-shell-topbar-height, 64px) + env(safe-area-inset-top));
-  padding: env(safe-area-inset-top) 16px 0 16px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(17, 24, 39, 0.8);
-  backdrop-filter: blur(8px);
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  gap: 12px;
+  min-height: calc(var(--app-shell-topbar-height, 64px) + env(safe-area-inset-top));
+  padding-left: 0;
+  padding-right: 0;
+  box-shadow: none;
 }
 
-.topbarLeft {
+.appShellTopbarLeft {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -39,14 +37,14 @@
   min-width: 0;
 }
 
-.topbarStart {
+.appShellTopbarStart {
   flex: 1;
   min-width: 0;
   display: flex;
   align-items: center;
 }
 
-.topbarRight {
+.appShellTopbarRight {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -54,11 +52,11 @@
   flex-shrink: 0;
 }
 
-.topbarRight > * {
+.appShellTopbarRight > * {
   min-width: 0;
 }
 
-.brand {
+.appShellBrand {
   font-size: 26px;
   color: var(--text);
   text-decoration: none;
@@ -70,7 +68,7 @@
   white-space: nowrap;
 }
 
-.hamburger {
+.appShellHamburger {
   background: transparent;
   border: none;
   padding: 0;
@@ -85,57 +83,48 @@
   transition: background 120ms ease;
 }
 
-.hamburger:hover {
+.appShellHamburger:hover {
   background: rgba(255, 255, 255, 0.06);
 }
 
-.hamburger:focus,
-.hamburger:focus-visible {
-  outline: none;
-  box-shadow: none;
+.appShellHamburger:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 
-.hamburger svg {
+.appShellHamburger svg {
   width: 28px;
   height: 28px;
 }
 
-.sidebar {
+.appShellSidebar {
   border-right: 1px solid var(--border);
-  background: #152036;
+  background: var(--panel, var(--card, #111827));
   padding: 24px;
+}
+
+.appShellAnimated .appShellSidebar {
   transition: transform 200ms ease, opacity 200ms ease;
 }
 
-.shell.sidebarCollapsed .sidebar {
+.appShell.appShellCollapsed .appShellSidebar {
   transform: translateX(-110%);
   opacity: 0;
   pointer-events: none;
 }
 
-.main {
+.appShellMain {
   overflow-y: auto;
-  padding: 24px;
-  padding-bottom: 96px;
   min-height: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: center;
+  flex: 1 1 0;
 }
 
-.main > * {
-  width: 100%;
-  max-width: 1200px;
-  min-width: 0;
-}
-
-.backdrop {
+.appShellBackdrop {
   display: none;
 }
 
 @media (max-width: 960px) {
-  .backdrop {
+  .appShellBackdrop {
     display: block;
     position: fixed;
     inset: 0;
@@ -144,18 +133,18 @@
     z-index: 14;
   }
 
-  .shell {
+  .appShell {
     --app-shell-topbar-height: 56px;
     grid-template-columns: 1fr;
     grid-template-rows: calc(var(--app-shell-topbar-height, 56px) + env(safe-area-inset-top)) 1fr;
   }
 
-  .shell.sidebarOpen,
-  .shell.sidebarCollapsed {
+  .appShell.appShellOpen,
+  .appShell.appShellCollapsed {
     grid-template-columns: 1fr;
   }
 
-  .sidebar {
+  .appShellSidebar {
     display: block;
     position: fixed;
     top: calc(var(--app-shell-topbar-height, 56px) + env(safe-area-inset-top));
@@ -163,80 +152,71 @@
     bottom: 0;
     width: var(--app-shell-sidebar-width, 240px);
     max-width: 80vw;
-    background: #152036;
+    background: var(--panel, var(--card, #111827));
     padding: 16px 12px;
     transform: translateX(-105%);
     z-index: 15;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
   }
 
-  .sidebar.open {
+  .appShellSidebar.appShellSidebarOpen {
     transform: translateX(0);
   }
 
-  .topbar {
+  .appShellTopbar {
     padding-left: max(12px, env(safe-area-inset-left));
     padding-right: max(12px, env(safe-area-inset-right));
     gap: 10px;
   }
 
-  .topbarLeft {
+  .appShellTopbarLeft {
     gap: 10px;
     flex: 1;
   }
 
-  .topbarStart {
+  .appShellTopbarStart {
     min-width: 0;
   }
 
-  .topbarRight {
+  .appShellTopbarRight {
     gap: 6px;
   }
 
-  .brand {
+  .appShellBrand {
     font-size: 24px;
     max-width: 50vw;
   }
 
-  .hamburger {
+  .appShellHamburger {
     width: 40px;
     height: 40px;
     border-radius: 8px;
   }
 
-  .hamburger svg {
+  .appShellHamburger svg {
     width: 24px;
     height: 24px;
   }
 
-  .main {
-    padding: 16px;
-    padding-bottom: 96px;
-  }
 }
 
 @media (max-width: 640px) {
-  .topbar {
+  .appShellTopbar {
     gap: 8px;
   }
 
-  .brand {
+  .appShellBrand {
     font-size: 22px;
     max-width: 34vw;
   }
 
-  .topbarRight {
+  .appShellTopbarRight {
     max-width: 44vw;
-  }
-
-  .main {
-    padding: 12px 10px;
-    padding-bottom: 88px;
   }
 }
 
 @media (max-width: 480px) {
-  .brand {
+  .appShellBrand {
     font-size: 20px;
     max-width: 30vw;
   }
