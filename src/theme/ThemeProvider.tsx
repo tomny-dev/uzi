@@ -9,10 +9,11 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { UZI_THEMES, UZI_ACCENTS, THEME_STORAGE_KEY as DEFAULT_THEME_KEY, ACCENT_STORAGE_KEY as DEFAULT_ACCENT_KEY } from "./constants";
 
-export type UziTheme = "light" | "dark" | "system";
+export type UziTheme = typeof UZI_THEMES[number];
 export type UziResolvedTheme = "light" | "dark";
-export type UziAccent = "blue" | "cyan" | "violet" | "emerald" | "amber" | "rose";
+export type UziAccent = typeof UZI_ACCENTS[number];
 
 type ThemeContextValue = {
   theme: UziTheme;
@@ -36,26 +37,19 @@ type ThemeProviderProps = {
   disableStorage?: boolean;
 };
 
-const THEME_STORAGE_KEY = "uzi-theme";
-const ACCENT_STORAGE_KEY = "uzi-accent";
+const THEME_STORAGE_KEY = DEFAULT_THEME_KEY;
+const ACCENT_STORAGE_KEY = DEFAULT_ACCENT_KEY;
 const THEME_ATTRIBUTE = "data-uzi-theme";
 const ACCENT_ATTRIBUTE = "data-uzi-accent";
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 function isTheme(value: string | null): value is UziTheme {
-  return value === "light" || value === "dark" || value === "system";
+  return UZI_THEMES.includes(value as UziTheme);
 }
 
 function isAccent(value: string | null): value is UziAccent {
-  return (
-    value === "blue" ||
-    value === "cyan" ||
-    value === "violet" ||
-    value === "emerald" ||
-    value === "amber" ||
-    value === "rose"
-  );
+  return UZI_ACCENTS.includes(value as UziAccent);
 }
 
 function getSystemTheme(): UziResolvedTheme {

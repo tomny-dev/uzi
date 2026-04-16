@@ -237,19 +237,33 @@ toast.success("File uploaded", {
   },
 
   AppShell: {
-    description: "Responsive app layout with collapsible sidebar and sticky topbar.",
+    description: "Responsive app layout with collapsible sidebar and sticky topbar. Main area has no default padding — each page manages its own padding and max-width.",
     props: {
       sidebar: { type: "ReactNode" },
-      topbar: { type: "ReactNode", optional: true },
+      brand: { type: "ReactNode", optional: true, description: "Brand/logo element in the topbar" },
+      brandHref: { type: "string", optional: true },
+      topbarStart: { type: "ReactNode", optional: true, description: "Content after the brand on the left of the topbar" },
+      topbarEnd: { type: "ReactNode", optional: true, description: "Content aligned to the right of the topbar (e.g. user menu, theme toggle)" },
       children: { type: "ReactNode", description: "Main content area" },
+      sidebarWidth: { type: "number | string", optional: true, description: "Sidebar width, e.g. '18rem' or 260" },
+      mainClassName: { type: "string", optional: true },
+      sidebarClassName: { type: "string", optional: true },
+      topbarClassName: { type: "string", optional: true },
       className: { type: "string", optional: true },
+      closeSidebarOnChangeKey: { type: "unknown", optional: true, description: "Close mobile sidebar when this value changes (e.g. pathname)" },
+      onSidebarToggle: { type: "(open: boolean) => void", optional: true },
     },
     examples: [
       `<AppShell
-  sidebar={<SidebarNav items={navItems} />}
-  topbar={<header>My App</header>}
+  brand={<span>My App</span>}
+  topbarEnd={<UserMenu />}
+  sidebar={<SidebarNav items={navItems} currentPath={pathname} />}
+  sidebarWidth="18rem"
+  closeSidebarOnChangeKey={pathname}
 >
-  <main>{children}</main>
+  <div className="mx-auto w-full max-w-7xl px-4 py-6">
+    {children}
+  </div>
 </AppShell>`,
     ],
   },

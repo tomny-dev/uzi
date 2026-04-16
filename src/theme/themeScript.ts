@@ -1,6 +1,8 @@
+import { UZI_THEMES, UZI_ACCENTS } from "./constants";
+
 /**
  * Returns a minified JS string to inline in <head> as a blocking script.
- * It reads localStorage and immediately applies theme/accent/preset attributes
+ * It reads localStorage and immediately applies theme/accent attributes
  * to <html> before any paint, preventing the flash-of-wrong-theme (FOWT).
  *
  * Usage in Next.js root layout:
@@ -17,11 +19,13 @@ export function getThemeScript({
   defaultTheme?: string;
   defaultAccent?: string;
 } = {}): string {
+  const themes = JSON.stringify(UZI_THEMES);
+  const accents = JSON.stringify(UZI_ACCENTS);
   return `(function(){try{
 var t=localStorage.getItem(${JSON.stringify(storageKey)});
 var a=localStorage.getItem(${JSON.stringify(accentStorageKey)});
-var theme=(t==='light'||t==='dark'||t==='system')?t:${JSON.stringify(defaultTheme)};
-var accent=(a==='blue'||a==='cyan'||a==='violet'||a==='emerald'||a==='amber'||a==='rose')?a:${JSON.stringify(defaultAccent)};
+var theme=${themes}.includes(t)?t:${JSON.stringify(defaultTheme)};
+var accent=${accents}.includes(a)?a:${JSON.stringify(defaultAccent)};
 var resolved=theme==='system'?(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):theme;
 var d=document.documentElement;
 d.setAttribute('data-uzi-theme',resolved);
