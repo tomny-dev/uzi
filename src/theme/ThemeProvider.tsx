@@ -81,8 +81,7 @@ export function ThemeProvider({
       const storedAccent = window.localStorage.getItem(accentStorageKey);
       if (isAccent(storedAccent)) setInternalAccent(storedAccent);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [disableStorage, storageKey, accentStorageKey]);
 
   const isThemeControlled = theme !== undefined;
   const isAccentControlled = accent !== undefined;
