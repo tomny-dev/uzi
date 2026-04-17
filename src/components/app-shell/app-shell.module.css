@@ -2,8 +2,8 @@
   display: grid;
   grid-template-rows: calc(var(--app-shell-topbar-height, 64px) + env(safe-area-inset-top)) 1fr;
   grid-template-columns: var(--app-shell-sidebar-width, 240px) 1fr;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
 }
 
 .appShellAnimated {
@@ -101,6 +101,7 @@
   border-right: 1px solid var(--border);
   background: var(--panel, var(--card, #111827));
   padding: 24px;
+  overflow-y: auto;
 }
 
 .appShellAnimated .appShellSidebar {
