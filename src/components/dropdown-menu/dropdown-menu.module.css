@@ -1,0 +1,113 @@
+.content {
+  z-index: 50;
+  min-width: 8rem;
+  max-height: var(--radix-dropdown-menu-content-available-height);
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 1px solid var(--ts-menu-border, var(--border, #1f2937));
+  border-radius: 0.5rem;
+  background: var(--ts-menu-bg, var(--popover, var(--panel, #111827)));
+  color: var(--ts-menu-fg, var(--popover-foreground, var(--text, #e2e8f0)));
+  padding: 0.25rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+  animation: menuFadeIn 140ms ease;
+}
+
+.item {
+  position: relative;
+  display: flex;
+  width: 100%;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.375rem;
+  padding: 0.375rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  outline: none;
+}
+
+.item[data-inset="true"] {
+  padding-left: 2rem;
+}
+
+.item[data-highlighted] {
+  background: var(--ts-menu-hover-bg, var(--accent, rgba(255, 255, 255, 0.06)));
+  color: var(--ts-menu-hover-fg, var(--accent-foreground, var(--foreground, #e2e8f0)));
+}
+
+.item[data-disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.destructive {
+  color: var(--ts-menu-danger, var(--destructive, #f87171));
+}
+
+.destructive[data-highlighted] {
+  background: color-mix(in srgb, var(--destructive, #f87171) 15%, transparent);
+  color: var(--ts-menu-danger-fg, var(--destructive, #f87171));
+}
+
+.insetItem {
+  padding-left: 2rem;
+}
+
+.indicator {
+  position: absolute;
+  left: 0.5rem;
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
+
+.indicatorIcon {
+  display: block;
+}
+
+.radioDot {
+  display: block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.label {
+  padding: 0.375rem 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+}
+
+.label[data-inset="true"] {
+  padding-left: 2rem;
+}
+
+.separator {
+  height: 1px;
+  margin: 0.25rem -0.25rem;
+  background: var(--ts-menu-separator, var(--border, rgba(255, 255, 255, 0.12)));
+}
+
+.chevron {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+@keyframes menuFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

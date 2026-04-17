@@ -1,43 +1,82 @@
-import type { ButtonHTMLAttributes, AnchorHTMLAttributes } from "react";
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
 import { cx } from "../../utils/cx";
 import styles from "./button.module.css";
 
-export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
-export type ButtonSize = "sm" | "md" | "lg";
+export type ButtonVariant =
+  | "default"
+  | "primary"
+  | "secondary"
+  | "outline"
+  | "ghost"
+  | "destructive"
+  | "link";
+export type ButtonSize = "default" | "sm" | "md" | "lg" | "icon";
 
 type BaseProps = {
   variant?: ButtonVariant;
   size?: ButtonSize;
   className?: string;
   children?: React.ReactNode;
+  asChild?: boolean;
 };
 
 type AsButton = BaseProps &
-  ButtonHTMLAttributes<HTMLButtonElement> & { as?: "button" };
+  React.ButtonHTMLAttributes<HTMLButtonElement> & { as?: "button" };
 
 type AsAnchor = BaseProps &
-  AnchorHTMLAttributes<HTMLAnchorElement> & { as: "a" };
+  React.AnchorHTMLAttributes<HTMLAnchorElement> & { as: "a" };
 
 export type ButtonProps = AsButton | AsAnchor;
 
+const variantClass: Record<ButtonVariant, string> = {
+  default: styles["variant-primary"],
+  primary: styles["variant-primary"],
+  secondary: styles["variant-secondary"],
+  outline: styles["variant-outline"],
+  ghost: styles["variant-ghost"],
+  destructive: styles["variant-destructive"],
+  link: styles["variant-link"],
+};
+
+const sizeClass: Record<ButtonSize, string> = {
+  default: styles["size-md"],
+  sm: styles["size-sm"],
+  md: styles["size-md"],
+  lg: styles["size-lg"],
+  icon: styles["size-icon"],
+};
+
 export function Button({
   as,
-  variant = "primary",
-  size = "md",
+  variant = "default",
+  size = "default",
   className,
   children,
+  asChild = false,
   ...rest
 }: ButtonProps) {
   const classes = cx(
     styles.button,
-    styles[`variant-${variant}`],
-    styles[`size-${size}`],
+    variantClass[variant],
+    sizeClass[size],
     className,
   );
 
+  if (asChild) {
+    return (
+      <Slot className={classes} {...rest}>
+        {children}
+      </Slot>
+    );
+  }
+
   if (as === "a") {
     return (
-      <a className={classes} {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}>
+      <a
+        className={classes}
+        {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+      >
         {children}
       </a>
     );
@@ -47,7 +86,7 @@ export function Button({
     <button
       type="button"
       className={classes}
-      {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}
+      {...(rest as React.ButtonHTMLAttributes<HTMLButtonElement>)}
     >
       {children}
     </button>

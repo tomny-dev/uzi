@@ -1,75 +1,200 @@
 "use client";
 
-import { type AnchorHTMLAttributes, type ReactNode } from "react";
+import { type AnchorHTMLAttributes, type CSSProperties, type ReactNode } from "react";
 import { cx } from "../../utils/cx";
 import styles from "./sidebar-nav.module.css";
 
 export type SidebarNavItem = {
   label: string;
-  href: string;
+  href?: string;
   icon?: ReactNode;
+  description?: ReactNode;
   badge?: ReactNode;
   active?: boolean;
+  disabled?: boolean;
+  title?: string;
   target?: AnchorHTMLAttributes<HTMLAnchorElement>["target"];
   rel?: AnchorHTMLAttributes<HTMLAnchorElement>["rel"];
   onClick?: () => void;
 };
 
-export type SidebarNavProps = {
+export type SidebarNavSection = {
+  id?: string;
+  label?: ReactNode;
   items: SidebarNavItem[];
-  /** Optional path-like value used for default active matching. */
+};
+
+export type SidebarNavProps = {
+  items?: SidebarNavItem[];
+  sections?: SidebarNavSection[];
   currentPath?: string;
-  /**
-   * Custom active matcher. Defaults to prefix matching (with a special case for `/`).
-   * If `item.active` is provided, it wins over this function.
-   */
   getIsActive?: (item: SidebarNavItem, currentPath?: string) => boolean;
-  /** Called after the item click handler (if provided). */
   onItemClick?: (item: SidebarNavItem) => void;
+  header?: ReactNode;
+  footer?: ReactNode;
+  ariaLabel?: string;
+  collapsed?: boolean;
+  iconSize?: number | string;
   className?: string;
   itemClassName?: string;
+  sectionClassName?: string;
 };
 
 const defaultIsActive = (item: SidebarNavItem, path?: string) => {
   if (item.active !== undefined) return item.active;
+  if (!item.href) return false;
   if (!path) return false;
   if (item.href === "/") return path === "/";
   return path.startsWith(item.href);
 };
 
 export function SidebarNav({
-  items,
+  items = [],
+  sections,
   currentPath,
   getIsActive = defaultIsActive,
   onItemClick,
+  header,
+  footer,
+  ariaLabel = "Sidebar navigation",
+  collapsed = false,
+  iconSize,
   className,
   itemClassName,
+  sectionClassName,
 }: SidebarNavProps) {
-  return (
-    <nav className={cx(styles.nav, className)} aria-label="Sidebar navigation">
-      {items.map((item) => {
-        const active = getIsActive(item, currentPath);
-        const rel = item.rel ?? (item.target === "_blank" ? "noreferrer" : undefined);
+  const resolvedSections = sections?.length
+    ? sections
+    : [{ id: "default", items }];
+  const style =
+    iconSize !== undefined
+      ? ({
+          ["--sidebar-nav-icon-size" as string]:
+            typeof iconSize === "number" ? `${iconSize}px` : iconSize,
+        } satisfies CSSProperties)
+      : undefined;
 
-        return (
-          <a
-            key={item.href}
-            className={cx(styles.item, active && styles.active, itemClassName)}
-            href={item.href}
-            target={item.target}
-            rel={rel}
-            aria-current={active ? "page" : undefined}
-            onClick={() => {
-              item.onClick?.();
-              onItemClick?.(item);
-            }}
+  return (
+    <nav
+      className={cx(styles.uziSidebarNav, collapsed && styles.uziSidebarNavCollapsed, className)}
+      aria-label={ariaLabel}
+      style={style}
+    >
+      {header ? <div className={styles.uziSidebarNavHeader}>{header}</div> : null}
+      <div className={styles.uziSidebarNavSections}>
+        {resolvedSections.map((section, sectionIndex) => (
+          <div
+            key={section.id ?? `section-${sectionIndex}`}
+            className={cx(styles.uziSidebarNavSection, sectionClassName)}
           >
-            {item.icon && <span className={styles.icon}>{item.icon}</span>}
-            <span className={styles.label}>{item.label}</span>
-            {item.badge && <span className={styles.badge}>{item.badge}</span>}
-          </a>
-        );
-      })}
+            {section.label && !collapsed ? (
+              <div className={styles.uziSidebarNavSectionLabel}>{section.label}</div>
+            ) : null}
+            <div className={styles.uziSidebarNavSectionItems}>
+              {section.items.map((item, itemIndex) => (
+                <SidebarNavEntry
+                  key={`${section.id ?? sectionIndex}-${item.href ?? item.title ?? itemIndex}`}
+                  item={item}
+                  active={getIsActive(item, currentPath)}
+                  collapsed={collapsed}
+                  itemClassName={itemClassName}
+                  onItemClick={onItemClick}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      {footer ? <div className={styles.uziSidebarNavFooter}>{footer}</div> : null}
     </nav>
+  );
+}
+
+type SidebarNavEntryProps = {
+  item: SidebarNavItem;
+  active: boolean;
+  collapsed: boolean;
+  itemClassName?: string;
+  onItemClick?: (item: SidebarNavItem) => void;
+};
+
+function SidebarNavEntry({
+  item,
+  active,
+  collapsed,
+  itemClassName,
+  onItemClick,
+}: SidebarNavEntryProps) {
+  const rel = item.rel ?? (item.target === "_blank" ? "noreferrer" : undefined);
+  const title = item.title ?? (typeof item.label === "string" ? item.label : undefined);
+  const classes = cx(
+    styles.uziSidebarNavItem,
+    active && styles.uziSidebarNavItemActive,
+    collapsed && styles.uziSidebarNavItemCollapsed,
+    item.disabled && styles.uziSidebarNavItemDisabled,
+    itemClassName,
+  );
+  const content = (
+    <>
+      {item.icon && <span className={styles.uziSidebarNavIcon}>{item.icon}</span>}
+      {!collapsed ? (
+        <span className={styles.uziSidebarNavItemBody}>
+          <span className={styles.uziSidebarNavLabelRow}>
+            <span className={styles.uziSidebarNavLabel}>{item.label}</span>
+            {item.badge && <span className={styles.uziSidebarNavBadge}>{item.badge}</span>}
+          </span>
+          {item.description ? <span className={styles.uziSidebarNavDescription}>{item.description}</span> : null}
+        </span>
+      ) : null}
+    </>
+  );
+
+  const handleClick = () => {
+    if (item.disabled) return;
+    item.onClick?.();
+    onItemClick?.(item);
+  };
+
+  if (!item.href) {
+    return (
+      <button
+        type="button"
+        className={classes}
+        aria-current={active ? "page" : undefined}
+        aria-disabled={item.disabled ? "true" : undefined}
+        disabled={item.disabled}
+        title={collapsed ? title : undefined}
+        onClick={handleClick}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  if (item.disabled) {
+    return (
+      <div
+        className={classes}
+        aria-current={active ? "page" : undefined}
+        aria-disabled="true"
+        title={collapsed ? title : undefined}
+      >
+        {content}
+      </div>
+    );
+  }
+
+  return (
+    <a
+      className={classes}
+      href={item.href}
+      target={item.target}
+      rel={rel}
+      aria-current={active ? "page" : undefined}
+      title={collapsed ? title : undefined}
+      onClick={handleClick}
+    >
+      {content}
+    </a>
   );
 }

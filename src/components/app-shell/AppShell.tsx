@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { cx } from "../../utils/cx";
+import { TopBar, type TopBarProps } from "../top-bar/TopBar";
 import styles from "./app-shell.module.css";
 
 const DESKTOP_BREAKPOINT = 960;
@@ -31,6 +32,10 @@ export type AppShellProps = {
   topbarStart?: ReactNode;
   /** Optional content aligned to the right side of the top bar. */
   topbarEnd?: ReactNode;
+  /** Optional built-in theme toggle for the top bar. */
+  showThemeToggle?: boolean;
+  themeToggleProps?: TopBarProps["themeToggleProps"];
+  topBarBrandingLocation?: TopBarProps["brandingLocation"];
   /** Custom class names for styling overrides. */
   className?: string;
   sidebarClassName?: string;
@@ -64,6 +69,9 @@ export function AppShell({
   brandHref,
   topbarStart,
   topbarEnd,
+  showThemeToggle = false,
+  themeToggleProps,
+  topBarBrandingLocation = "left",
   className,
   sidebarClassName,
   topbarClassName,
@@ -75,6 +83,7 @@ export function AppShell({
 }: AppShellProps) {
   const [isDesktop, setIsDesktop] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [transitionsReady, setTransitionsReady] = useState(false);
   const prevIsDesktopRef = useRef(false);
   const closeKeyRef = useRef(closeSidebarOnChangeKey);
 
@@ -88,6 +97,9 @@ export function AppShell({
     setIsDesktop(desktop);
     setSidebarOpen(desktop);
     prevIsDesktopRef.current = desktop;
+    const transitionFrame = window.requestAnimationFrame(() => {
+      setTransitionsReady(true);
+    });
 
     const handleResize = () => {
       const nowDesktop = getIsDesktop();
@@ -99,7 +111,10 @@ export function AppShell({
     };
 
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.cancelAnimationFrame(transitionFrame);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   // Close the sidebar when clicking outside or scrolling on mobile.
@@ -159,12 +174,13 @@ export function AppShell({
     : undefined;
 
   const shellClasses = cx(
-    styles.shell,
-    sidebarOpen ? styles.sidebarOpen : styles.sidebarCollapsed,
+    styles.appShell,
+    transitionsReady && styles.appShellAnimated,
+    sidebarOpen ? styles.appShellOpen : styles.appShellCollapsed,
     className,
   );
 
-  const sidebarClasses = cx(styles.sidebar, sidebarOpen && styles.open, sidebarClassName);
+  const sidebarClasses = cx(styles.appShellSidebar, sidebarOpen && styles.appShellSidebarOpen, sidebarClassName);
 
   return (
     <div
@@ -174,12 +190,13 @@ export function AppShell({
       data-desktop={isDesktop ? "true" : "false"}
       data-sidebar-open={sidebarOpen ? "true" : "false"}
     >
-      <header className={cx(styles.topbar, topbarClassName)}>
-        <div className={styles.topbarLeft}>
+      <TopBar
+        className={cx(styles.appShellTopbar, topbarClassName)}
+        leading={
           <button
             ref={hamburgerRef}
             type="button"
-            className={styles.hamburger}
+            className={styles.appShellHamburger}
             onClick={toggleSidebar}
             aria-label={hamburgerLabel}
             aria-expanded={sidebarOpen}
@@ -189,25 +206,22 @@ export function AppShell({
               <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
             </svg>
           </button>
-          {brand &&
-            (brandHref ? (
-              <a className={styles.brand} href={brandHref}>
-                {brand}
-              </a>
-            ) : (
-              <div className={styles.brand}>{brand}</div>
-            ))}
-          {topbarStart && <div className={styles.topbarStart}>{topbarStart}</div>}
-        </div>
-        <div className={styles.topbarRight}>{topbarEnd}</div>
-      </header>
+        }
+        brand={brand}
+        brandHref={brandHref}
+        brandingLocation={topBarBrandingLocation}
+        start={topbarStart}
+        actions={topbarEnd}
+        showThemeToggle={showThemeToggle}
+        themeToggleProps={themeToggleProps}
+      />
       {!isDesktop && sidebarOpen && (
-        <div className={styles.backdrop} onClick={() => setSidebarOpen(false)} onTouchStart={() => setSidebarOpen(false)} aria-hidden="true" />
+        <div className={styles.appShellBackdrop} onClick={() => setSidebarOpen(false)} onTouchStart={() => setSidebarOpen(false)} aria-hidden="true" />
       )}
       <aside ref={sidebarRef} id={sidebarId} className={sidebarClasses} aria-label="Sidebar navigation">
         {sidebar}
       </aside>
-      <main ref={mainRef} className={cx(styles.main, mainClassName)}>
+      <main ref={mainRef} className={cx(styles.appShellMain, mainClassName)}>
         {children}
       </main>
     </div>

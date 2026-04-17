@@ -1,10 +1,59 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import { useRef, useEffect, type ReactNode } from "react";
 import { cx } from "../../utils/cx";
 import styles from "./modal.module.css";
 
-export type ModalSize = "sm" | "md" | "lg";
+// ── ModalOverlay ─────────────────────────────────────────────────────────────
+// Bare backdrop + container. No opinions on layout inside.
+// Use this when you need a full-custom layout (e.g. wide media modals).
+
+export type ModalOverlayProps = {
+  open: boolean;
+  onClose: () => void;
+  /** Extra class applied to the backdrop */
+  className?: string;
+  children: ReactNode;
+};
+
+export function ModalOverlay({ open, onClose, className, children }: ModalOverlayProps) {
+  const mouseDownOnBackdrop = useRef(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        onClose();
+      }
+    };
+    // Capture phase so the innermost modal handles Escape first
+    window.addEventListener("keydown", handleKeyDown, true);
+    return () => window.removeEventListener("keydown", handleKeyDown, true);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      className={cx(styles.backdrop, className)}
+      role="dialog"
+      aria-modal="true"
+      onMouseDown={(e) => { mouseDownOnBackdrop.current = e.target === e.currentTarget; }}
+      onMouseUp={(e) => {
+        if (mouseDownOnBackdrop.current && e.target === e.currentTarget) onClose();
+        mouseDownOnBackdrop.current = false;
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────────
+// Opinionated dialog: header (title + close button), scrollable body, footer.
+
+export type ModalSize = "sm" | "md" | "lg" | "xl";
 
 export type ModalProps = {
   open: boolean;
@@ -12,26 +61,13 @@ export type ModalProps = {
   title: string;
   subtitle?: string;
   size?: ModalSize;
-  /** Content between the header and footer */
   children: ReactNode;
-  /** Rendered inside the footer row — typically action buttons */
   footer?: ReactNode;
 };
 
 export function Modal({ open, onClose, title, subtitle, size = "md", children, footer }: ModalProps) {
-  const mouseDownOnBackdrop = useRef(false);
-
-  if (!open) return null;
-
   return (
-    <div
-      className={styles.backdrop}
-      onMouseDown={(e) => { mouseDownOnBackdrop.current = e.target === e.currentTarget; }}
-      onMouseUp={(e) => {
-        if (mouseDownOnBackdrop.current && e.target === e.currentTarget) onClose();
-        mouseDownOnBackdrop.current = false;
-      }}
-    >
+    <ModalOverlay open={open} onClose={onClose}>
       <div className={cx(styles.modal, styles[`size-${size}`])}>
         <div className={styles.header}>
           <div className={styles.titles}>
@@ -50,6 +86,6 @@ export function Modal({ open, onClose, title, subtitle, size = "md", children, f
 
         {footer && <div className={styles.footer}>{footer}</div>}
       </div>
-    </div>
+    </ModalOverlay>
   );
 }

@@ -1,0 +1,87 @@
+.topBar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid var(--ts-topbar-border, var(--border, rgba(15, 23, 42, 0.1)));
+  background: var(--ts-topbar-bg, color-mix(in srgb, var(--background, #fff) 92%, transparent));
+  box-shadow: var(--ts-topbar-shadow, 0 1px 2px rgba(15, 23, 42, 0.06));
+  backdrop-filter: blur(12px);
+}
+
+.topBarStatic {
+  position: relative;
+}
+
+.topBarInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 4.25rem;
+  padding: env(safe-area-inset-top) 1rem 0 1rem;
+}
+
+.topBarStart {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.topBarBrand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-width: 0;
+  color: var(--ts-topbar-brand-fg, var(--foreground, var(--text, #0f172a)));
+  text-decoration: none;
+}
+
+.topBarBrandContent {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topBarCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.topBarCenterGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.topBarActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+@media (max-width: 768px) {
+  .topBarInner {
+    min-height: 4rem;
+    gap: 0.75rem;
+    padding-left: max(0.75rem, env(safe-area-inset-left));
+    padding-right: max(0.75rem, env(safe-area-inset-right));
+  }
+
+  .topBarStart {
+    gap: 0.75rem;
+  }
+
+  .topBarActions {
+    gap: 0.5rem;
+  }
+}
