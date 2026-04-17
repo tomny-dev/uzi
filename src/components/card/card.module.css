@@ -39,7 +39,7 @@
 .interactive:hover {
   transform: translateY(-1px);
   box-shadow: 0 22px 60px rgba(0, 0, 0, 0.32);
-  border-color: var(--ts-card-hover-border, rgba(34, 211, 238, 0.4));
+  border-color: var(--ts-card-hover-border, color-mix(in srgb, var(--primary, #22d3ee) 40%, transparent));
 }
 
 .interactive:focus-within {

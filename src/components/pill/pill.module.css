@@ -31,27 +31,27 @@
 }
 
 .tone-success {
-  color: #22c55e;
-  border-color: rgba(34, 197, 94, 0.45);
-  background: rgba(34, 197, 94, 0.12);
+  color: var(--success, hsl(142 71% 45%));
+  border-color: color-mix(in srgb, var(--success, hsl(142 71% 45%)) 45%, transparent);
+  background: color-mix(in srgb, var(--success, hsl(142 71% 45%)) 12%, transparent);
 }
 
 .tone-warning {
-  color: #f59e0b;
-  border-color: rgba(245, 158, 11, 0.45);
-  background: rgba(245, 158, 11, 0.12);
+  color: var(--warning, hsl(38 92% 50%));
+  border-color: color-mix(in srgb, var(--warning, hsl(38 92% 50%)) 45%, transparent);
+  background: color-mix(in srgb, var(--warning, hsl(38 92% 50%)) 12%, transparent);
 }
 
 .tone-info {
-  color: #22d3ee;
-  border-color: rgba(34, 211, 238, 0.5);
-  background: rgba(34, 211, 238, 0.12);
+  color: var(--primary, #22d3ee);
+  border-color: color-mix(in srgb, var(--primary, #22d3ee) 50%, transparent);
+  background: color-mix(in srgb, var(--primary, #22d3ee) 12%, transparent);
 }
 
 .tone-danger {
-  color: #f87171;
-  border-color: rgba(248, 113, 113, 0.45);
-  background: rgba(248, 113, 113, 0.12);
+  color: var(--destructive, #f87171);
+  border-color: color-mix(in srgb, var(--destructive, #f87171) 45%, transparent);
+  background: color-mix(in srgb, var(--destructive, #f87171) 12%, transparent);
 }
 
 .icon {

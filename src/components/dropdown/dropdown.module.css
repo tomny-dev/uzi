@@ -86,7 +86,7 @@
 }
 
 .option:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--accent, color-mix(in srgb, var(--primary, #22d3ee) 8%, transparent));
   color: var(--ts-dropdown-text, var(--text, #e2e8f0));
 }
 
@@ -96,6 +96,6 @@
 }
 
 .option-selected {
-  color: var(--ts-dropdown-accent, var(--accent, #22d3ee));
-  background: rgba(34, 211, 238, 0.08);
+  color: var(--primary, #22d3ee);
+  background: color-mix(in srgb, var(--primary, #22d3ee) 8%, transparent);
 }
