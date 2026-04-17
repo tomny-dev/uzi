@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { cx } from "../../utils/cx";
-import styles from "./alert.module.css";
+import "./alert.module.css";
 
 export type AlertTone = "success" | "error" | "warning" | "info";
 
@@ -12,9 +12,16 @@ export type AlertProps = {
   className?: string;
 };
 
+const TONE_CLASS: Record<AlertTone, string> = {
+  success: "success",
+  error: "error",
+  warning: "warning",
+  info: "info",
+};
+
 export function Alert({ tone, children, className }: AlertProps) {
   return (
-    <div className={cx(styles.alert, styles[tone], className)} role="alert">
+    <div className={cx("alert", TONE_CLASS[tone], className)} role="alert">
       {children}
     </div>
   );

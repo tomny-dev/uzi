@@ -3,7 +3,7 @@
 import * as React from "react";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { cx } from "../../utils/cx";
-import styles from "./dropdown-menu.module.css";
+import "./dropdown-menu.module.css";
 
 export function DropdownMenu(
   props: React.ComponentProps<typeof DropdownMenuPrimitive.Root>,
@@ -50,7 +50,7 @@ export function DropdownMenuContent({
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuPrimitive.Content
         sideOffset={sideOffset}
-        className={cx(styles.content, className)}
+        className={cx("content", className)}
         {...props}
       />
     </DropdownMenuPrimitive.Portal>
@@ -70,8 +70,8 @@ export function DropdownMenuItem({
     <DropdownMenuPrimitive.Item
       data-inset={inset ? "true" : undefined}
       className={cx(
-        styles.item,
-        variant === "destructive" && styles.destructive,
+        "item",
+        variant === "destructive" && "destructive",
         className,
       )}
       {...props}
@@ -86,17 +86,17 @@ export function DropdownMenuCheckboxItem({
 }: React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem>) {
   return (
     <DropdownMenuPrimitive.CheckboxItem
-      className={cx(styles.item, styles.insetItem, className)}
+      className={cx("item", "insetItem", className)}
       {...props}
     >
-      <span className={styles.indicator}>
+      <span className={"indicator"}>
         <DropdownMenuPrimitive.ItemIndicator>
           <svg
             viewBox="0 0 16 16"
             width="16"
             height="16"
             aria-hidden="true"
-            className={styles.indicatorIcon}
+            className={"indicatorIcon"}
           >
             <path
               d="M3.5 8.5 6.5 11.5 12.5 4.5"
@@ -121,12 +121,12 @@ export function DropdownMenuRadioItem({
 }: React.ComponentProps<typeof DropdownMenuPrimitive.RadioItem>) {
   return (
     <DropdownMenuPrimitive.RadioItem
-      className={cx(styles.item, styles.insetItem, className)}
+      className={cx("item", "insetItem", className)}
       {...props}
     >
-      <span className={styles.indicator}>
+      <span className={"indicator"}>
         <DropdownMenuPrimitive.ItemIndicator>
-          <span className={styles.radioDot} />
+          <span className={"radioDot"} />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -144,7 +144,7 @@ export function DropdownMenuLabel({
   return (
     <DropdownMenuPrimitive.Label
       data-inset={inset ? "true" : undefined}
-      className={cx(styles.label, className)}
+      className={cx("label", className)}
       {...props}
     />
   );
@@ -156,7 +156,7 @@ export function DropdownMenuSeparator({
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Separator>) {
   return (
     <DropdownMenuPrimitive.Separator
-      className={cx(styles.separator, className)}
+      className={cx("separator", className)}
       {...props}
     />
   );
@@ -173,7 +173,7 @@ export function DropdownMenuSubTrigger({
   return (
     <DropdownMenuPrimitive.SubTrigger
       data-inset={inset ? "true" : undefined}
-      className={cx(styles.item, className)}
+      className={cx("item", className)}
       {...props}
     >
       {children}
@@ -182,7 +182,7 @@ export function DropdownMenuSubTrigger({
         width="16"
         height="16"
         aria-hidden="true"
-        className={styles.chevron}
+        className={"chevron"}
       >
         <path
           d="M6 3.5 10.5 8 6 12.5"
@@ -203,7 +203,7 @@ export function DropdownMenuSubContent({
 }: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>) {
   return (
     <DropdownMenuPrimitive.SubContent
-      className={cx(styles.content, className)}
+      className={cx("content", className)}
       {...props}
     />
   );

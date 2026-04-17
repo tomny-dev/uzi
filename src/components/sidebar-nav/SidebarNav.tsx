@@ -2,7 +2,7 @@
 
 import { type AnchorHTMLAttributes, type CSSProperties, type ReactNode } from "react";
 import { cx } from "../../utils/cx";
-import styles from "./sidebar-nav.module.css";
+import "./sidebar-nav.module.css";
 
 export type SidebarNavItem = {
   label: string;
@@ -76,21 +76,21 @@ export function SidebarNav({
 
   return (
     <nav
-      className={cx(styles.uziSidebarNav, collapsed && styles.uziSidebarNavCollapsed, className)}
+      className={cx("uziSidebarNav", collapsed && "uziSidebarNavCollapsed", className)}
       aria-label={ariaLabel}
       style={style}
     >
-      {header ? <div className={styles.uziSidebarNavHeader}>{header}</div> : null}
-      <div className={styles.uziSidebarNavSections}>
+      {header ? <div className={"uziSidebarNavHeader"}>{header}</div> : null}
+      <div className={"uziSidebarNavSections"}>
         {resolvedSections.map((section, sectionIndex) => (
           <div
             key={section.id ?? `section-${sectionIndex}`}
-            className={cx(styles.uziSidebarNavSection, sectionClassName)}
+            className={cx("uziSidebarNavSection", sectionClassName)}
           >
             {section.label && !collapsed ? (
-              <div className={styles.uziSidebarNavSectionLabel}>{section.label}</div>
+              <div className={"uziSidebarNavSectionLabel"}>{section.label}</div>
             ) : null}
-            <div className={styles.uziSidebarNavSectionItems}>
+            <div className={"uziSidebarNavSectionItems"}>
               {section.items.map((item, itemIndex) => (
                 <SidebarNavEntry
                   key={`${section.id ?? sectionIndex}-${item.href ?? item.title ?? itemIndex}`}
@@ -105,7 +105,7 @@ export function SidebarNav({
           </div>
         ))}
       </div>
-      {footer ? <div className={styles.uziSidebarNavFooter}>{footer}</div> : null}
+      {footer ? <div className={"uziSidebarNavFooter"}>{footer}</div> : null}
     </nav>
   );
 }
@@ -128,22 +128,22 @@ function SidebarNavEntry({
   const rel = item.rel ?? (item.target === "_blank" ? "noreferrer" : undefined);
   const title = item.title ?? (typeof item.label === "string" ? item.label : undefined);
   const classes = cx(
-    styles.uziSidebarNavItem,
-    active && styles.uziSidebarNavItemActive,
-    collapsed && styles.uziSidebarNavItemCollapsed,
-    item.disabled && styles.uziSidebarNavItemDisabled,
+    "uziSidebarNavItem",
+    active && "uziSidebarNavItemActive",
+    collapsed && "uziSidebarNavItemCollapsed",
+    item.disabled && "uziSidebarNavItemDisabled",
     itemClassName,
   );
   const content = (
     <>
-      {item.icon && <span className={styles.uziSidebarNavIcon}>{item.icon}</span>}
+      {item.icon && <span className={"uziSidebarNavIcon"}>{item.icon}</span>}
       {!collapsed ? (
-        <span className={styles.uziSidebarNavItemBody}>
-          <span className={styles.uziSidebarNavLabelRow}>
-            <span className={styles.uziSidebarNavLabel}>{item.label}</span>
-            {item.badge && <span className={styles.uziSidebarNavBadge}>{item.badge}</span>}
+        <span className={"uziSidebarNavItemBody"}>
+          <span className={"uziSidebarNavLabelRow"}>
+            <span className={"uziSidebarNavLabel"}>{item.label}</span>
+            {item.badge && <span className={"uziSidebarNavBadge"}>{item.badge}</span>}
           </span>
-          {item.description ? <span className={styles.uziSidebarNavDescription}>{item.description}</span> : null}
+          {item.description ? <span className={"uziSidebarNavDescription"}>{item.description}</span> : null}
         </span>
       ) : null}
     </>

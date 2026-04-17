@@ -20,7 +20,7 @@ import type {
   ToastPosition,
   ToastType,
 } from "./types";
-import styles from "./toast.module.css";
+import "./toast.module.css";
 
 /** Default provider configuration. */
 const DEFAULT_CONFIG: Required<ToastConfig> = {
@@ -165,24 +165,24 @@ function ToastContainer({
   const posClass = (() => {
     switch (position) {
       case "top-left":
-        return styles.topLeft;
+        return "topLeft";
       case "top-center":
-        return styles.topCenter;
+        return "topCenter";
       case "bottom-right":
-        return styles.bottomRight;
+        return "bottomRight";
       case "bottom-left":
-        return styles.bottomLeft;
+        return "bottomLeft";
       case "bottom-center":
-        return styles.bottomCenter;
+        return "bottomCenter";
       case "top-right":
       default:
-        return styles.topRight;
+        return "topRight";
     }
   })();
 
   return (
     <div
-      className={cx(styles.stack, posClass)}
+      className={cx("stack", posClass)}
       role="presentation"
       onMouseEnter={() => pauseOnHover && onPauseChange(true)}
       onMouseLeave={() => pauseOnHover && onPauseChange(false)}
@@ -266,17 +266,17 @@ function ToastItem({
   const icon = getIcon(toast.type);
 
   return (
-    <div className={cx(styles.toast, exiting && styles.exit)} style={styleVars} role="status" aria-live="polite">
-      <span className={styles.icon} aria-hidden>
+    <div className={cx("toast", exiting && "exit")} style={styleVars} role="status" aria-live="polite">
+      <span className={"icon"} aria-hidden>
         {icon}
       </span>
-      <div className={styles.body}>
-        <div className={styles.message}>{toast.message}</div>
+      <div className={"body"}>
+        <div className={"message"}>{toast.message}</div>
         {toast.action && (
-          <div className={styles.actions}>
+          <div className={"actions"}>
             <button
               type="button"
-              className={styles.actionButton}
+              className={"actionButton"}
               onClick={() => {
                 toast.action?.onClick();
                 triggerDismiss();
@@ -290,7 +290,7 @@ function ToastItem({
       {toast.dismissible !== false && (
         <button
           type="button"
-          className={styles.closeButton}
+          className={"closeButton"}
           onClick={triggerDismiss}
           aria-label="Dismiss notification"
         >

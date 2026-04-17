@@ -11,7 +11,6 @@ export default defineConfig([
     esbuildOptions(options) {
       options.loader = {
         ...options.loader,
-        ".module.css": "local-css",
         ".css": "css",
       };
     },

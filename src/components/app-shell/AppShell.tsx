@@ -10,7 +10,7 @@ import {
 } from "react";
 import { cx } from "../../utils/cx";
 import { TopBar, type TopBarProps } from "../top-bar/TopBar";
-import styles from "./app-shell.module.css";
+import "./app-shell.module.css";
 
 const DESKTOP_BREAKPOINT = 960;
 
@@ -174,13 +174,13 @@ export function AppShell({
     : undefined;
 
   const shellClasses = cx(
-    styles.appShell,
-    transitionsReady && styles.appShellAnimated,
-    sidebarOpen ? styles.appShellOpen : styles.appShellCollapsed,
+    "appShell",
+    transitionsReady && "appShellAnimated",
+    sidebarOpen ? "appShellOpen" : "appShellCollapsed",
     className,
   );
 
-  const sidebarClasses = cx(styles.appShellSidebar, sidebarOpen && styles.appShellSidebarOpen, sidebarClassName);
+  const sidebarClasses = cx("appShellSidebar", sidebarOpen && "appShellSidebarOpen", sidebarClassName);
 
   return (
     <div
@@ -191,12 +191,12 @@ export function AppShell({
       data-sidebar-open={sidebarOpen ? "true" : "false"}
     >
       <TopBar
-        className={cx(styles.appShellTopbar, topbarClassName)}
+        className={cx("appShellTopbar", topbarClassName)}
         leading={
           <button
             ref={hamburgerRef}
             type="button"
-            className={styles.appShellHamburger}
+            className={"appShellHamburger"}
             onClick={toggleSidebar}
             aria-label={hamburgerLabel}
             aria-expanded={sidebarOpen}
@@ -216,12 +216,12 @@ export function AppShell({
         themeToggleProps={themeToggleProps}
       />
       {!isDesktop && sidebarOpen && (
-        <div className={styles.appShellBackdrop} onClick={() => setSidebarOpen(false)} onTouchStart={() => setSidebarOpen(false)} aria-hidden="true" />
+        <div className={"appShellBackdrop"} onClick={() => setSidebarOpen(false)} onTouchStart={() => setSidebarOpen(false)} aria-hidden="true" />
       )}
       <aside ref={sidebarRef} id={sidebarId} className={sidebarClasses} aria-label="Sidebar navigation">
         {sidebar}
       </aside>
-      <main ref={mainRef} className={cx(styles.appShellMain, mainClassName)}>
+      <main ref={mainRef} className={cx("appShellMain", mainClassName)}>
         {children}
       </main>
     </div>

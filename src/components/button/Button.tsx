@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cx } from "../../utils/cx";
-import styles from "./button.module.css";
+import "./button.module.css";
 
 export type ButtonVariant =
   | "default"
@@ -30,21 +30,21 @@ type AsAnchor = BaseProps &
 export type ButtonProps = AsButton | AsAnchor;
 
 const variantClass: Record<ButtonVariant, string> = {
-  default: styles["variant-primary"],
-  primary: styles["variant-primary"],
-  secondary: styles["variant-secondary"],
-  outline: styles["variant-outline"],
-  ghost: styles["variant-ghost"],
-  destructive: styles["variant-destructive"],
-  link: styles["variant-link"],
+  default: "variant-primary",
+  primary: "variant-primary",
+  secondary: "variant-secondary",
+  outline: "variant-outline",
+  ghost: "variant-ghost",
+  destructive: "variant-destructive",
+  link: "variant-link",
 };
 
 const sizeClass: Record<ButtonSize, string> = {
-  default: styles["size-md"],
-  sm: styles["size-sm"],
-  md: styles["size-md"],
-  lg: styles["size-lg"],
-  icon: styles["size-icon"],
+  default: "size-md",
+  sm: "size-sm",
+  md: "size-md",
+  lg: "size-lg",
+  icon: "size-icon",
 };
 
 export function Button({
@@ -57,7 +57,7 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const classes = cx(
-    styles.button,
+    "button",
     variantClass[variant],
     sizeClass[size],
     className,

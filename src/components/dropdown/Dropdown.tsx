@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { cx } from "../../utils/cx";
-import styles from "./dropdown.module.css";
+import "./dropdown.module.css";
 
 export interface DropdownOption {
   label: string;
@@ -55,16 +55,16 @@ export function Dropdown({
   }, []);
 
   return (
-    <div className={cx(styles.wrapper, className)} ref={ref}>
+    <div className={cx("wrapper", className)} ref={ref}>
       <button
         type="button"
-        className={cx(styles.trigger, isActive && styles["trigger-active"])}
+        className={cx("trigger", isActive && "trigger-active")}
         onClick={() => setOpen((o) => !o)}
         aria-labelledby={ariaLabelledBy}
         aria-label={ariaLabel}
       >
         {selected ? selected.label : placeholder}
-        <span className={cx(styles.chevron, open && styles["chevron-open"])}>
+        <span className={cx("chevron", open && "chevron-open")}>
           <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" width="10" height="10">
             <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
@@ -72,11 +72,11 @@ export function Dropdown({
       </button>
 
       {open && (
-        <div className={styles.menu}>
+        <div className={"menu"}>
           {allowClear && (
             <button
               type="button"
-              className={cx(styles.option, value === "" && styles["option-selected"])}
+              className={cx("option", value === "" && "option-selected")}
               onClick={() => { onChange(""); setOpen(false); }}
             >
               {placeholder}
@@ -86,7 +86,7 @@ export function Dropdown({
             <button
               key={opt.value}
               type="button"
-              className={cx(styles.option, value === opt.value && styles["option-selected"])}
+              className={cx("option", value === opt.value && "option-selected")}
               onClick={() => { onChange(opt.value); setOpen(false); }}
             >
               {opt.label}

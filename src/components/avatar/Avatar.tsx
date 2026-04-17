@@ -3,7 +3,7 @@
 import * as React from "react";
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import { cx } from "../../utils/cx";
-import styles from "./avatar.module.css";
+import "./avatar.module.css";
 
 export type AvatarSize = "sm" | "md" | "lg";
 
@@ -18,7 +18,7 @@ export function Avatar({
 }: AvatarProps) {
   return (
     <AvatarPrimitive.Root
-      className={cx(styles.avatar, styles[`size-${size}`], className)}
+      className={cx("avatar", size === "sm" ? "size-sm" : size === "lg" ? "size-lg" : "size-md", className)}
       {...props}
     />
   );
@@ -30,7 +30,7 @@ export function AvatarImage({
 }: React.ComponentProps<typeof AvatarPrimitive.Image>) {
   return (
     <AvatarPrimitive.Image
-      className={cx(styles.image, className)}
+      className={cx("image", className)}
       {...props}
     />
   );
@@ -42,7 +42,7 @@ export function AvatarFallback({
 }: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
   return (
     <AvatarPrimitive.Fallback
-      className={cx(styles.fallback, className)}
+      className={cx("fallback", className)}
       {...props}
     />
   );
