@@ -1,3 +1,5 @@
+"use client";
+
 import type { HTMLAttributes } from "react";
 import { cx } from "../../utils/cx";
 import "./skeleton.module.css";

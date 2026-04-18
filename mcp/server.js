@@ -182,14 +182,43 @@ toast.success("File uploaded", {
     ],
   },
 
+  Select: {
+    description: "Styled native select field for choosing one option. Use for forms and filters when you want native keyboard, accessibility, and mobile picker behavior.",
+    props: {
+      options: { type: "SelectOption[]", description: "Array of { label: string; value: string }" },
+      value: { type: "string" },
+      onChange: { type: "(value: string) => void" },
+      placeholder: { type: "string", optional: true, description: "Placeholder label shown for the empty option" },
+      allowEmptyOption: { type: "boolean", default: false, description: "When true, the placeholder remains selectable as the empty option" },
+      fullWidth: { type: "boolean", default: true, description: "Stretch to fill the container. Set false for compact inline controls." },
+      className: { type: "string", optional: true },
+      "...rest": { type: "React.SelectHTMLAttributes<HTMLSelectElement>" },
+    },
+    examples: [
+      `<Select
+  options={[{ label: "Queued", value: "queued" }, { label: "Running", value: "running" }]}
+  value={status}
+  onChange={setStatus}
+/>`,
+      `<Select
+  options={[{ label: "React", value: "react" }, { label: "Vue", value: "vue" }]}
+  value={framework}
+  onChange={setFramework}
+  placeholder="All frameworks"
+  allowEmptyOption
+/>`,
+    ],
+    notes: "Prefer Select over Dropdown for value selection. Use DropdownMenu for action menus.",
+  },
+
   Dropdown: {
-    description: "Custom select-style dropdown. Not based on Radix — uses a controlled option list with click-outside detection.",
+    description: "Deprecated compatibility alias for Select. Use Select for value selection and DropdownMenu for action menus.",
     props: {
       options: { type: "DropdownOption[]", description: "Array of { label: string; value: string }" },
-      value: { type: "string | null" },
-      onChange: { type: "(value: string | null) => void" },
+      value: { type: "string" },
+      onChange: { type: "(value: string) => void" },
       placeholder: { type: "string", optional: true },
-      allowClear: { type: "boolean", default: false },
+      allowClear: { type: "boolean", default: true },
       className: { type: "string", optional: true },
     },
     examples: [
@@ -201,7 +230,7 @@ toast.success("File uploaded", {
   allowClear
 />`,
     ],
-    notes: "For richer menu interactions (checkboxes, submenus, icons), use DropdownMenu instead.",
+    notes: "Deprecated during migration. Prefer Select for new code. For richer menu interactions (checkboxes, submenus, icons), use DropdownMenu instead.",
   },
 
   DropdownMenu: {
@@ -417,7 +446,8 @@ server.tool(
       Input: ["input", "text field", "form", "text"],
       Label: ["label", "form label"],
       Checkbox: ["checkbox", "check", "toggle", "boolean"],
-      Dropdown: ["dropdown", "select", "picker", "option"],
+      Select: ["select", "picker", "option", "form select", "native select"],
+      Dropdown: ["dropdown", "deprecated select", "legacy picker"],
       DropdownMenu: ["menu", "context menu", "action menu", "radix dropdown", "submenu"],
       AppShell: ["layout", "shell", "app layout", "sidebar layout"],
       SidebarNav: ["sidebar", "navigation", "nav", "side menu"],

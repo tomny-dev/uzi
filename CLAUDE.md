@@ -106,7 +106,8 @@ Available components:
 - `Alert` — feedback banner; tones: success, error, warning, info
 - `Modal` — accessible overlay dialog with size variants (sm, md, lg, xl)
 - `ModalOverlay` — bare backdrop/escape/click-outside primitive; use when you need a custom modal layout
-- `Dropdown` — select-style dropdown with option list
+- `Select` — native select field for choosing one option
+- `Dropdown` — deprecated compatibility alias for Select
 - `AppShell` — responsive layout with collapsible sidebar and sticky topbar; no default padding on main area
 - `SidebarNav` — sidebar navigation list
 - `ThemeProvider` — applies theme/accent tokens; use `theme` prop for controlled (fixed) themes, `defaultTheme` for user-switchable
@@ -125,7 +126,8 @@ Available components:
 | `Alert` | none | role="alert"; tones: success, error, warning, info |
 | `Modal` | `useRef` | Built on `ModalOverlay` |
 | `ModalOverlay` | `useEffect`, `useRef` | Escape key, click-outside, aria-modal |
-| `Dropdown` | `useState`, `useRef`, `useEffect` | |
+| `Select` | `forwardRef` | Native select behavior with styled wrapper and chevron |
+| `Dropdown` | `forwardRef` | Deprecated Select compatibility alias |
 | `AppShell` | `useState`, `useEffect`, `useRef`, `useId` | |
 | `SidebarNav` | none | Active item uses `color-mix(primary)` bg |
 | `ThemeProvider` | `useState`, `useEffect` | Lazy initializers read localStorage synchronously |

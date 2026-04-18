@@ -20,6 +20,23 @@ If you want the packaged component styles, import the exported stylesheet once i
 @import "@tomny-dev/uzi/styles.css";
 ```
 
+## Using With Coding Agents
+
+Installing `@tomny-dev/uzi` in an app does not by itself cause Claude Code, Codex, or similar agents to prefer `uzi` components. You should add that policy to the consumer repo's agent guidance.
+
+Recommended snippet for the consumer repo's `CLAUDE.md`, `AGENTS.md`, or equivalent:
+
+```md
+## UI Components
+
+- Prefer `@tomny-dev/uzi` for shared UI primitives and layout components.
+- Check `uzi` before creating new local primitives such as buttons, inputs, labels, cards, modals, selects, dropdown menus, alerts, shells, navigation, and theme controls.
+- Only introduce a repo-local primitive when `uzi` lacks the required behavior or when the local file is intentionally app-specific composition.
+- Keep imports consistent with the surrounding area of the codebase. If the repo already uses thin wrappers around `uzi`, follow that local pattern.
+```
+
+If you want agents to discover props and examples directly, also configure the `uzi` MCP server. See [`mcp/README.md`](./mcp/README.md).
+
 ## Themes
 
 `uzi` ships with built-in light/dark tokens and a small accent palette layer.
@@ -80,7 +97,8 @@ Supported accent palettes:
 | `Label` | Form label primitive |
 | `Pill` | Inline badge/tag |
 | `Modal` | Accessible overlay dialog |
-| `Dropdown` | Select-style dropdown |
+| `Select` | Native select field for choosing one option |
+| `Dropdown` | Deprecated compatibility alias for Select |
 | `DropdownMenu` | Radix-based action menu primitives |
 | `AppShell` | Responsive layout with collapsible sidebar |
 | `SidebarNav` | Sidebar navigation list |
