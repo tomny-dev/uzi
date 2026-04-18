@@ -64,6 +64,18 @@ pnpm pack
 
 Install the generated tarball in a consumer app to verify exports, CSS, and packaging before publishing.
 
+## Preview builds for pull requests
+
+Pull requests publish preview builds to npm under a PR-specific dist-tag without touching `latest`.
+
+Example install command for PR `123`:
+
+```bash
+pnpm add @tomny-dev/uzi@pr-123
+```
+
+The workflow also posts the exact install command back onto the PR after publishing.
+
 ## Publishing
 
 Every push to `main` automatically bumps the patch version and publishes to npm as `@tomny-dev/uzi`.

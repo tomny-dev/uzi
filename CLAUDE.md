@@ -20,6 +20,8 @@ Every push to `main` automatically:
 2. Commits the version bump with `[skip ci]`
 3. Publishes to npm as `@tomny-dev/uzi`
 
+Pull requests also publish preview builds to npm under a PR-specific dist-tag (for example `pr-123`) without updating `latest`. Use these to test consumer apps before merge.
+
 For minor/major bumps, edit `package.json` version manually before pushing.
 
 ## Adding Components
@@ -106,6 +108,7 @@ Available components:
 - `Alert` — feedback banner; tones: success, error, warning, info
 - `Modal` — accessible overlay dialog with size variants (sm, md, lg, xl)
 - `ModalOverlay` — bare backdrop/escape/click-outside primitive; use when you need a custom modal layout
+- `MultiSelect` — custom multi-option picker with checkbox-style menu
 - `Select` — native select field for choosing one option
 - `Dropdown` — deprecated compatibility alias for Select
 - `AppShell` — responsive layout with collapsible sidebar and sticky topbar; no default padding on main area
@@ -126,6 +129,7 @@ Available components:
 | `Alert` | none | role="alert"; tones: success, error, warning, info |
 | `Modal` | `useRef` | Built on `ModalOverlay` |
 | `ModalOverlay` | `useEffect`, `useRef` | Escape key, click-outside, aria-modal |
+| `MultiSelect` | `useState`, `useEffect`, `useRef`, `useId` | Custom multi-select with hidden input support |
 | `Select` | `forwardRef` | Native select behavior with styled wrapper and chevron |
 | `Dropdown` | `forwardRef` | Deprecated Select compatibility alias |
 | `AppShell` | `useState`, `useEffect`, `useRef`, `useId` | |

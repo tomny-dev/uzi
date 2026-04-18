@@ -182,10 +182,38 @@ toast.success("File uploaded", {
     ],
   },
 
+  MultiSelect: {
+    description: "Custom multi-option picker with a checkbox-style popup menu. Use when users need to select zero or more values from a list.",
+    props: {
+      options: { type: "MultiSelectOption[]", description: "Array of { label: string; value: string; disabled?: boolean }" },
+      value: { type: "string[]" },
+      onChange: { type: "(value: string[]) => void" },
+      placeholder: { type: "string", optional: true },
+      fullWidth: { type: "boolean", default: true, description: "Stretch to fill the container. Set false for compact inline controls." },
+      maxVisibleValues: { type: "number", default: 2, description: "How many selected labels to show before collapsing into a +N summary chip." },
+      name: { type: "string", optional: true, description: "When provided, renders hidden inputs so selected values submit with a form." },
+      disabled: { type: "boolean", default: false },
+      className: { type: "string", optional: true },
+    },
+    examples: [
+      `<MultiSelect
+  options={[
+    { label: "React", value: "react" },
+    { label: "Vue", value: "vue" },
+    { label: "Svelte", value: "svelte", disabled: true },
+  ]}
+  value={frameworks}
+  onChange={setFrameworks}
+  placeholder="Frameworks"
+/>`,
+    ],
+    notes: "Keep Select for single-choice inputs. Use MultiSelect when the value is a string array.",
+  },
+
   Select: {
     description: "Styled native select field for choosing one option. Use for forms and filters when you want native keyboard, accessibility, and mobile picker behavior.",
     props: {
-      options: { type: "SelectOption[]", description: "Array of { label: string; value: string }" },
+      options: { type: "SelectOption[]", description: "Array of { label: string; value: string; disabled?: boolean }" },
       value: { type: "string" },
       onChange: { type: "(value: string) => void" },
       placeholder: { type: "string", optional: true, description: "Placeholder label shown for the empty option" },
@@ -446,6 +474,7 @@ server.tool(
       Input: ["input", "text field", "form", "text"],
       Label: ["label", "form label"],
       Checkbox: ["checkbox", "check", "toggle", "boolean"],
+      MultiSelect: ["multi select", "multiselect", "multiple select", "tags picker", "checkbox list", "many options"],
       Select: ["select", "picker", "option", "form select", "native select"],
       Dropdown: ["dropdown", "deprecated select", "legacy picker"],
       DropdownMenu: ["menu", "context menu", "action menu", "radix dropdown", "submenu"],

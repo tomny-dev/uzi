@@ -7,9 +7,10 @@ import "./select.module.css";
 export type SelectOption = {
   label: string;
   value: string;
+  disabled?: boolean;
 };
 
-export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "onChange"> & {
+export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "onChange" | "multiple"> & {
   options: SelectOption[];
   value: string;
   onChange: (value: string) => void;
@@ -50,7 +51,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
             </option>
           ) : null}
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
+            <option key={opt.value} value={opt.value} disabled={opt.disabled}>
               {opt.label}
             </option>
           ))}

@@ -41,6 +41,9 @@ export { Label } from "./components/label/Label";
 export type { CheckboxProps } from "./components/checkbox/Checkbox";
 export { Checkbox } from "./components/checkbox/Checkbox";
 
+export type { MultiSelectProps, MultiSelectOption } from "./components/multi-select/MultiSelect";
+export { MultiSelect } from "./components/multi-select/MultiSelect";
+
 export type { DropdownProps, DropdownOption } from "./components/dropdown/Dropdown";
 export { Dropdown } from "./components/dropdown/Dropdown";
 

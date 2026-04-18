@@ -95,6 +95,7 @@ Supported accent palettes:
 | `Checkbox` | Checkbox form primitive |
 | `Input` | Text input primitive |
 | `Label` | Form label primitive |
+| `MultiSelect` | Custom multi-option picker with checkbox-style menu |
 | `Pill` | Inline badge/tag |
 | `Modal` | Accessible overlay dialog |
 | `Select` | Native select field for choosing one option |
