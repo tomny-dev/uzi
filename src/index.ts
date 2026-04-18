@@ -80,3 +80,14 @@ export { ThemeProvider, useTheme } from "./theme/ThemeProvider";
 
 // Utils
 export { cx } from "./utils/cx";
+
+// Feedback / display
+export type { SkeletonProps } from "./components/skeleton/Skeleton";
+export { Skeleton } from "./components/skeleton/Skeleton";
+
+export type { ProgressProps, ProgressTone } from "./components/progress/Progress";
+export { Progress } from "./components/progress/Progress";
+
+// Inputs
+export type { SelectProps, SelectOption } from "./components/select/Select";
+export { Select } from "./components/select/Select";
