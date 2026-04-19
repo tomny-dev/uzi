@@ -84,7 +84,10 @@ Example install command for PR `123`:
 pnpm add @tomny-dev/uzi@pr-123
 ```
 
-The workflow also posts the exact install command back onto the PR after publishing.
+Each workflow run also publishes a new exact prerelease version for that PR and posts both install commands back onto the PR:
+
+- `@pr-123` tracks the latest preview build for PR 123
+- `@0.x.y-pr.123.<run>.<attempt>.<sha>` pins one exact build
 
 ## Publishing
 

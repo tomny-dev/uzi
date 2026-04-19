@@ -39,7 +39,8 @@ jobs:
         shell: bash
         run: |
           BASE_VERSION=$(node -p "require('./package.json').version")
-          PREVIEW_VERSION="${BASE_VERSION}-pr.${{ github.event.pull_request.number }}.${{ github.run_number }}.${{ github.run_attempt }}"
+          SHORT_SHA="${GITHUB_SHA::7}"
+          PREVIEW_VERSION="${BASE_VERSION}-pr.${{ github.event.pull_request.number }}.${{ github.run_number }}.${{ github.run_attempt }}.${SHORT_SHA}"
           npm version "$PREVIEW_VERSION" --no-git-tag-version
           echo "PREVIEW_VERSION=$PREVIEW_VERSION" >> "$GITHUB_ENV"
           echo "PREVIEW_TAG=pr-${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
@@ -57,13 +58,21 @@ jobs:
             const body = `${marker}
             Preview package published.
 
-            Install in a consumer app with:
+            Floating PR tag:
 
             \`\`\`bash
             pnpm add @tomny-dev/uzi@${process.env.PREVIEW_TAG}
             \`\`\`
 
-            Published version: \`${process.env.PREVIEW_VERSION}\``;
+            Exact published version:
+
+            \`\`\`bash
+            pnpm add @tomny-dev/uzi@${process.env.PREVIEW_VERSION}
+            \`\`\`
+
+            Published version: \`${process.env.PREVIEW_VERSION}\`
+
+            Use the PR tag to track the latest preview build for this PR. Use the exact version to pin a specific build.`;
 
             const { owner, repo } = context.repo;
             const issue_number = context.issue.number;
