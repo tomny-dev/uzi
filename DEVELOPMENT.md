@@ -55,6 +55,16 @@ module.exports = {
 2. Add `"use client";` at the top of any component that uses React hooks
 3. Export from `src/index.ts`
 
+### Choose the right base
+
+Before building a new component, decide whether it should be native HTML, Radix-backed, or a higher-level `uzi` composition.
+
+- Use native HTML for simple controls like text inputs and labels.
+- Use Radix for interaction-heavy primitives such as dialogs, menus, popovers, toasts, and custom selects.
+- Use `uzi` itself for styling, tokens, and app templates like shells, nav, and headers.
+
+Avoid introducing new bespoke low-level widgets unless native HTML and Radix both clearly fail the use case.
+
 ## Pre-publish verification
 
 ```bash

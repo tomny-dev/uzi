@@ -22,7 +22,7 @@ export interface DropdownProps
  * @deprecated Use Select for value selection and DropdownMenu for action menus.
  * Dropdown remains as a compatibility alias during migration.
  */
-export const Dropdown = React.forwardRef<HTMLSelectElement, DropdownProps>(
+export const Dropdown = React.forwardRef<HTMLButtonElement, DropdownProps>(
   (
     {
       options,

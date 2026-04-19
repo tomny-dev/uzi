@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useEffect, type ReactNode } from "react";
+import type { ReactNode } from "react";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { cx } from "../../utils/cx";
 import "./modal.module.css";
 
@@ -17,36 +18,22 @@ export type ModalOverlayProps = {
 };
 
 export function ModalOverlay({ open, onClose, className, children }: ModalOverlayProps) {
-  const mouseDownOnBackdrop = useRef(false);
-
-  useEffect(() => {
-    if (!open) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.stopPropagation();
-        onClose();
-      }
-    };
-    // Capture phase so the innermost modal handles Escape first
-    window.addEventListener("keydown", handleKeyDown, true);
-    return () => window.removeEventListener("keydown", handleKeyDown, true);
-  }, [open, onClose]);
-
-  if (!open) return null;
-
   return (
-    <div
-      className={cx("backdrop", className)}
-      role="dialog"
-      aria-modal="true"
-      onMouseDown={(e) => { mouseDownOnBackdrop.current = e.target === e.currentTarget; }}
-      onMouseUp={(e) => {
-        if (mouseDownOnBackdrop.current && e.target === e.currentTarget) onClose();
-        mouseDownOnBackdrop.current = false;
+    <DialogPrimitive.Root
+      open={open}
+      onOpenChange={(nextOpen: boolean) => {
+        if (!nextOpen) onClose();
       }}
     >
-      {children}
-    </div>
+      <DialogPrimitive.Portal>
+        <div className={"portalLayer"}>
+          <DialogPrimitive.Overlay className={cx("backdrop", className)} />
+          <DialogPrimitive.Content className={"overlayContent"}>
+            {children}
+          </DialogPrimitive.Content>
+        </div>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
   );
 }
 
@@ -71,15 +58,21 @@ export function Modal({ open, onClose, title, subtitle, size = "md", children, f
       <div className={cx("modal", `size-${size}`)}>
         <div className={"header"}>
           <div className={"titles"}>
-            <div className={"title"}>{title}</div>
-            {subtitle && <div className={"subtitle"}>{subtitle}</div>}
+            <DialogPrimitive.Title className={"title"}>{title}</DialogPrimitive.Title>
+            {subtitle ? (
+              <DialogPrimitive.Description className={"subtitle"}>
+                {subtitle}
+              </DialogPrimitive.Description>
+            ) : null}
           </div>
-          <button className={"closeButton"} onClick={onClose} aria-label="Close">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
+          <DialogPrimitive.Close asChild>
+            <button className={"closeButton"} aria-label="Close">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </DialogPrimitive.Close>
         </div>
 
         <div className={"body"}>{children}</div>

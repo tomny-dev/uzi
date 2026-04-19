@@ -29,6 +29,10 @@ For minor/major bumps, edit `package.json` version manually before pushing.
 1. Create `src/components/<name>/<Name>.tsx` and `<name>.module.css`
 2. Add `"use client";` at the top of any component that uses React hooks
 3. Export from `src/index.ts`
+4. Choose the right base before implementing:
+   - native HTML for simple controls
+   - Radix for accessibility-heavy interactive primitives
+   - `uzi` composition for layout shells and opinionated templates
 
 ## Architecture
 
@@ -38,6 +42,16 @@ For minor/major bumps, edit `package.json` version manually before pushing.
 - **`"use client"` banner** — added to the entire main bundle via `tsup.config.ts`
 - **`src/server.ts`** — separate tsup entry with no `"use client"` banner; safe to import in Next.js server components. Currently exports `getThemeScript`.
 - **`@tomny-dev/uzi/server`** — the `/server` subpath export; consumer tsconfigs need `"moduleResolution": "bundler"` to resolve it
+
+### Component philosophy
+
+- **Native first for simple controls** — prefer plain HTML inputs when the browser behavior is already correct and styling requirements are modest.
+- **Radix for hard primitives** — use Radix for components with non-trivial keyboard interaction, focus management, portals, overlays, or selection state machines.
+- **`uzi` for the design system layer** — `uzi` should provide the styled API, tokens, and app-level templates rather than reinventing primitive behavior from scratch.
+
+Good `uzi` targets: `TopBar`, `SidebarNav`, `AppShell`, themed wrappers, and opinionated composites.
+
+Good Radix-backed targets: `Select`, `DropdownMenu`, `Modal`, `Toast`, and future `Popover`, `Tooltip`, `Tabs`, and similar interaction-heavy components.
 
 ## Design Tokens (CSS custom properties)
 
@@ -106,16 +120,16 @@ Available components:
 - `Card` — surface container with tone and padding props
 - `Pill` — inline badge/tag
 - `Alert` — feedback banner; tones: success, error, warning, info
-- `Modal` — accessible overlay dialog with size variants (sm, md, lg, xl)
-- `ModalOverlay` — bare backdrop/escape/click-outside primitive; use when you need a custom modal layout
+- `Modal` — Radix-backed overlay dialog with size variants (sm, md, lg, xl)
+- `ModalOverlay` — Radix-backed bare dialog layer; use when you need a custom modal layout
 - `MultiSelect` — custom multi-option picker with checkbox-style menu
-- `Select` — native select field for choosing one option
+- `Select` — styled Radix-based single-select field
 - `Dropdown` — deprecated compatibility alias for Select
 - `AppShell` — responsive layout with collapsible sidebar and sticky topbar; no default padding on main area
 - `SidebarNav` — sidebar navigation list
 - `ThemeProvider` — applies theme/accent tokens; use `theme` prop for controlled (fixed) themes, `defaultTheme` for user-switchable
 - `ThemeToggleButton` — light/dark toggle button for the topbar
-- `ToastProvider` / `useToast` — toast notification system
+- `ToastProvider` / `useToast` — Radix-backed toast notification system
 - `cx` — utility for conditional class name merging
 ```
 
@@ -127,13 +141,13 @@ Available components:
 | `Card` | none | |
 | `Pill` | none | |
 | `Alert` | none | role="alert"; tones: success, error, warning, info |
-| `Modal` | `useRef` | Built on `ModalOverlay` |
-| `ModalOverlay` | `useEffect`, `useRef` | Escape key, click-outside, aria-modal |
+| `Modal` | none | Built on `ModalOverlay` and Radix Dialog |
+| `ModalOverlay` | none | Radix Dialog wrapper for custom modal layouts |
 | `MultiSelect` | `useState`, `useEffect`, `useRef`, `useId` | Custom multi-select with hidden input support |
-| `Select` | `forwardRef` | Native select behavior with styled wrapper and chevron |
+| `Select` | `forwardRef` | Radix-backed single-select with styled popup content |
 | `Dropdown` | `forwardRef` | Deprecated Select compatibility alias |
 | `AppShell` | `useState`, `useEffect`, `useRef`, `useId` | |
 | `SidebarNav` | none | Active item uses `color-mix(primary)` bg |
 | `ThemeProvider` | `useState`, `useEffect` | Lazy initializers read localStorage synchronously |
 | `ThemeToggleButton` | none | |
-| `ToastProvider` / `useToast` | `createContext`, `useState`, `useEffect`, `useRef` | |
+| `ToastProvider` / `useToast` | `createContext`, `useState`, `useEffect`, `useRef`, `useMemo`, `useCallback` | Radix Toast viewport and root primitives |

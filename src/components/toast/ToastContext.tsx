@@ -11,6 +11,7 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
+import * as ToastPrimitive from "@radix-ui/react-toast";
 import { cx } from "../../utils/cx";
 import type {
   Toast,
@@ -118,15 +119,17 @@ export function ToastProvider({
 
   return (
     <ToastContext.Provider value={value}>
-      {children}
-      <ToastContainer
-        toasts={toasts}
-        position={merged.position}
-        pauseOnHover={merged.pauseOnHover}
-        isPaused={isPaused}
-        onDismiss={dismiss}
-        onPauseChange={setIsPaused}
-      />
+      <ToastPrimitive.Provider swipeDirection="right">
+        {children}
+        <ToastContainer
+          toasts={toasts}
+          position={merged.position}
+          pauseOnHover={merged.pauseOnHover}
+          isPaused={isPaused}
+          onDismiss={dismiss}
+          onPauseChange={setIsPaused}
+        />
+      </ToastPrimitive.Provider>
     </ToastContext.Provider>
   );
 }
@@ -181,16 +184,17 @@ function ToastContainer({
   })();
 
   return (
-    <div
-      className={cx("stack", posClass)}
-      role="presentation"
-      onMouseEnter={() => pauseOnHover && onPauseChange(true)}
-      onMouseLeave={() => pauseOnHover && onPauseChange(false)}
-    >
+    <>
       {toasts.map((toast) => (
         <ToastItem key={toast.id} toast={toast} isPaused={isPaused} onDismiss={onDismiss} />
       ))}
-    </div>
+      <ToastPrimitive.Viewport
+        className={cx("stack", posClass)}
+        label="Notifications"
+      onMouseEnter={() => pauseOnHover && onPauseChange(true)}
+      onMouseLeave={() => pauseOnHover && onPauseChange(false)}
+      />
+    </>
   );
 }
 
@@ -204,10 +208,11 @@ function ToastItem({
   isPaused: boolean;
   onDismiss: (id: string) => void;
 }) {
-  const [exiting, setExiting] = useState(false);
+  const [open, setOpen] = useState(true);
   const timerRef = useRef<number | null>(null);
   const startRef = useRef<number>(0);
   const remainingRef = useRef<number>(toast.duration ?? 0);
+  const closingRef = useRef(false);
 
   const palette = getPalette(toast.type);
   const styleVars: CSSProperties = {
@@ -228,7 +233,9 @@ function ToastItem({
   };
 
   const triggerDismiss = useCallback(() => {
-    setExiting(true);
+    if (closingRef.current) return;
+    closingRef.current = true;
+    setOpen(false);
     stopTimer();
     window.setTimeout(() => onDismiss(toast.id), 160);
   }, [onDismiss, toast.id]);
@@ -266,45 +273,61 @@ function ToastItem({
   const icon = getIcon(toast.type);
 
   return (
-    <div className={cx("toast", exiting && "exit")} style={styleVars} role="status" aria-live="polite">
+    <ToastPrimitive.Root
+      open={open}
+      onOpenChange={(nextOpen: boolean) => {
+        if (!nextOpen) triggerDismiss();
+      }}
+      duration={2147483647}
+      className={"toast"}
+      style={styleVars}
+    >
       <span className={"icon"} aria-hidden>
         {icon}
       </span>
       <div className={"body"}>
-        <div className={"message"}>{toast.message}</div>
+        <ToastPrimitive.Description className={"message"}>
+          {toast.message}
+        </ToastPrimitive.Description>
         {toast.action && (
           <div className={"actions"}>
-            <button
-              type="button"
-              className={"actionButton"}
-              onClick={() => {
-                toast.action?.onClick();
-                triggerDismiss();
-              }}
+            <ToastPrimitive.Action
+              asChild
+              altText={toast.action.label}
             >
-              {toast.action.label}
-            </button>
+              <button
+                type="button"
+                className={"actionButton"}
+                onClick={() => {
+                  toast.action?.onClick();
+                  triggerDismiss();
+                }}
+              >
+                {toast.action.label}
+              </button>
+            </ToastPrimitive.Action>
           </div>
         )}
       </div>
       {toast.dismissible !== false && (
-        <button
-          type="button"
-          className={"closeButton"}
-          onClick={triggerDismiss}
-          aria-label="Dismiss notification"
-        >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-            <path
-              d="M11 3L3 11M3 3l8 8"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
+        <ToastPrimitive.Close asChild>
+          <button
+            type="button"
+            className={"closeButton"}
+            aria-label="Dismiss notification"
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+              <path
+                d="M11 3L3 11M3 3l8 8"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
+        </ToastPrimitive.Close>
       )}
-    </div>
+    </ToastPrimitive.Root>
   );
 }
 

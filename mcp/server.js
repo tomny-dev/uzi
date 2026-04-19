@@ -71,13 +71,13 @@ const COMPONENTS = {
   },
 
   Modal: {
-    description: "Accessible overlay dialog with backdrop, header, body, and optional footer.",
+    description: "Radix-backed overlay dialog with backdrop, header, body, and optional footer.",
     props: {
       open: { type: "boolean" },
       onClose: { type: "() => void" },
       title: { type: "string" },
       subtitle: { type: "string", optional: true },
-      size: { type: "ModalSize", default: "md", options: ["sm", "md", "lg"] },
+      size: { type: "ModalSize", default: "md", options: ["sm", "md", "lg", "xl"] },
       children: { type: "ReactNode", description: "Body content between header and footer" },
       footer: { type: "ReactNode", optional: true, description: "Action buttons rendered in the footer row" },
     },
@@ -91,11 +91,11 @@ const COMPONENTS = {
   <p>This action cannot be undone.</p>
 </Modal>`,
     ],
-    notes: "Backdrop click closes the modal. Close button is always shown in the header.",
+    notes: "Built on Radix Dialog. Backdrop click and Escape close the modal. Close button is always shown in the header.",
   },
 
   ToastProvider: {
-    description: "Context provider that enables useToast() throughout the subtree.",
+    description: "Context provider that enables useToast() throughout the subtree. Uses Radix Toast under the hood for the viewport and dismiss interactions.",
     props: {
       children: { type: "ReactNode" },
       config: {
@@ -142,7 +142,7 @@ toast.success("File uploaded", {
   action: { label: "View", onClick: () => navigate("/files") },
 });`,
     ],
-    notes: "ToastOptions: { type, duration, dismissible, action: { label, onClick } }",
+    notes: "ToastOptions: { type, duration, dismissible, action: { label, onClick } }. Rendering is backed by Radix Toast.",
   },
 
   Input: {
@@ -211,7 +211,7 @@ toast.success("File uploaded", {
   },
 
   Select: {
-    description: "Styled native select field for choosing one option. Use for forms and filters when you want native keyboard, accessibility, and mobile picker behavior.",
+    description: "Styled Radix-based single-select field for choosing one option. Use for forms and filters when you want a fully styleable popup menu and accessible keyboard behavior.",
     props: {
       options: { type: "SelectOption[]", description: "Array of { label: string; value: string; disabled?: boolean }" },
       value: { type: "string" },
@@ -220,7 +220,15 @@ toast.success("File uploaded", {
       allowEmptyOption: { type: "boolean", default: false, description: "When true, the placeholder remains selectable as the empty option" },
       fullWidth: { type: "boolean", default: true, description: "Stretch to fill the container. Set false for compact inline controls." },
       className: { type: "string", optional: true },
-      "...rest": { type: "React.SelectHTMLAttributes<HTMLSelectElement>" },
+      name: { type: "string", optional: true },
+      id: { type: "string", optional: true },
+      disabled: { type: "boolean", optional: true },
+      required: { type: "boolean", optional: true },
+      autoComplete: { type: "string", optional: true },
+      form: { type: "string", optional: true },
+      title: { type: "string", optional: true },
+      "aria-label": { type: "string", optional: true },
+      "aria-labelledby": { type: "string", optional: true },
     },
     examples: [
       `<Select

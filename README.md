@@ -85,6 +85,16 @@ Supported accent palettes:
 - `amber`
 - `rose`
 
+## Component Philosophy
+
+`uzi` is not meant to be a from-scratch accessibility framework.
+
+- Use native HTML for simple form controls when the platform already gives the right behavior.
+- Use Radix for interaction-heavy primitives such as menus, dialogs, popovers, toasts, and custom selects.
+- Use `uzi` for the public component API, styling, tokens, and higher-level templates like `TopBar`, `SidebarNav`, and `AppShell`.
+
+In practice, `uzi` should spend its complexity budget on reusable app scaffolding and cohesive design, not on rebuilding low-level widget behavior that Radix or the browser already solves.
+
 ## Components
 
 | Component | Description |
@@ -97,8 +107,8 @@ Supported accent palettes:
 | `Label` | Form label primitive |
 | `MultiSelect` | Custom multi-option picker with checkbox-style menu |
 | `Pill` | Inline badge/tag |
-| `Modal` | Accessible overlay dialog |
-| `Select` | Native select field for choosing one option |
+| `Modal` | Radix-backed overlay dialog |
+| `Select` | Styled Radix-based single-select field |
 | `Dropdown` | Deprecated compatibility alias for Select |
 | `DropdownMenu` | Radix-based action menu primitives |
 | `AppShell` | Responsive layout with collapsible sidebar |
@@ -106,7 +116,7 @@ Supported accent palettes:
 | `TopBar` | Composable header shell for brand, nav triggers, and actions |
 | `ThemeToggleButton` | Reusable light/dark toggle wired to `ThemeProvider` |
 | `ThemeProvider` / `useTheme` | Light/dark + accent palette theming |
-| `ToastProvider` / `useToast` | Toast notification system |
+| `ToastProvider` / `useToast` | Radix-backed toast notification system |
 
 `TopBar` supports:
 

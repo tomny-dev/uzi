@@ -34,9 +34,9 @@
     background 0.15s ease,
     color 0.15s ease,
     box-shadow 0.15s ease;
-  appearance: none;
   cursor: pointer;
-  text-overflow: ellipsis;
+  text-align: left;
+  white-space: nowrap;
 }
 
 .select:hover:not(:disabled) {
@@ -55,7 +55,7 @@
     0 0 0 1px color-mix(in srgb, var(--primary, #22d3ee) 30%, transparent);
 }
 
-.select-placeholder {
+.select[data-placeholder] {
   color: var(--muted-foreground, #94a3b8);
 }
 
@@ -65,17 +65,7 @@
   box-shadow: none;
 }
 
-.select option {
-  background: var(--background, #0f172a);
-  color: var(--foreground, #e2e8f0);
-}
-
 .chevron {
-  pointer-events: none;
-  position: absolute;
-  right: 0.625rem;
-  top: 50%;
-  transform: translateY(-50%);
   width: 10px;
   height: 10px;
   display: flex;
@@ -83,18 +73,90 @@
   justify-content: center;
   color: var(--muted, #94a3b8);
   flex-shrink: 0;
-  transition: color 0.15s ease;
+  margin-left: auto;
+  transition: transform 0.15s ease, color 0.15s ease;
 }
 
-.wrapper:hover .chevron {
+.select:hover:not(:disabled) .chevron,
+.select[data-state="open"] .chevron {
   color: var(--ts-dropdown-text, var(--text, #e2e8f0));
 }
 
-.wrapper:focus-within .chevron {
-  color: var(--ts-dropdown-accent, var(--primary, #22d3ee));
+.select[data-state="open"] .chevron {
+  transform: rotate(180deg);
 }
 
-.select:disabled + .chevron {
-  color: var(--muted-foreground, #94a3b8);
-  opacity: 0.6;
+.content {
+  z-index: 50;
+  min-width: var(--radix-select-trigger-width);
+  max-height: min(18rem, var(--radix-select-content-available-height));
+  overflow: hidden;
+  border: 1px solid var(--ts-menu-border, var(--border, #1f2937));
+  border-radius: 0.625rem;
+  background: var(--ts-menu-bg, var(--popover, var(--panel, #111827)));
+  color: var(--ts-menu-fg, var(--popover-foreground, var(--text, #e2e8f0)));
+  padding: 0.25rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  animation: selectFadeIn 140ms ease;
+}
+
+.viewport {
+  max-height: inherit;
+  overflow-y: auto;
+}
+
+.item {
+  position: relative;
+  display: flex;
+  width: 100%;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.625rem 0.5rem 2rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  outline: none;
+}
+
+.item[data-highlighted] {
+  background: var(--ts-menu-hover-bg, var(--accent, rgba(255, 255, 255, 0.06)));
+  color: var(--ts-menu-hover-fg, var(--accent-foreground, var(--foreground, #e2e8f0)));
+}
+
+.item[data-disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.item[data-state="checked"] {
+  color: var(--primary, #22d3ee);
+}
+
+.indicator {
+  position: absolute;
+  left: 0.625rem;
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
+
+.indicatorIcon {
+  display: block;
+}
+
+@keyframes selectFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
