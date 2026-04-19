@@ -84,7 +84,7 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             onBlur={onBlur}
             onFocus={onFocus}
           >
-            <SelectPrimitive.Value placeholder={placeholder} />
+            <SelectPrimitive.Value className="value" placeholder={placeholder} />
             <SelectPrimitive.Icon className="chevron" aria-hidden="true">
               <svg
                 viewBox="0 0 10 10"
