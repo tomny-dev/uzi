@@ -84,7 +84,13 @@
   justify-content: center;
   color: var(--muted, #94a3b8);
   flex-shrink: 0;
+  position: relative;
+  top: -1px;
   transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.chevron svg {
+  display: block;
 }
 
 .select:hover:not(:disabled) .chevron,
