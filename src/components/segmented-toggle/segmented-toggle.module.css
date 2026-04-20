@@ -33,11 +33,11 @@
   justify-content: center;
 }
 
-.option:hover:not([data-state="checked"]):not(:disabled) {
+.option:hover:not([aria-checked="true"]):not(:disabled) {
   color: var(--foreground);
 }
 
-.option[data-state="checked"] {
+.option[aria-checked="true"] {
   background: var(--foreground);
   color: var(--background);
 }
