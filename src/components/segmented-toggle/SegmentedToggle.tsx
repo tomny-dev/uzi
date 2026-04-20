@@ -138,7 +138,7 @@ export function SegmentedToggle<T extends string = string>({
             }
           }}
           onKeyDown={(event) =>
-            handleKeyDown(event, opt.index)
+            handleKeyDown(event, index)
           }
           className={cx(styles.option)}
         >
