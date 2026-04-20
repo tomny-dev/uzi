@@ -108,15 +108,15 @@
   font-size: 12px;
   font-weight: 600;
   border-radius: 6px;
-  border: 1px solid var(--border);
-  background: color-mix(in srgb, var(--foreground) 8%, transparent);
-  color: var(--popover-foreground);
+  border: 1px solid var(--toast-action-border, var(--border));
+  background: var(--toast-action-bg, color-mix(in srgb, var(--foreground) 8%, transparent));
+  color: var(--toast-text, var(--popover-foreground));
   cursor: pointer;
   transition: background 120ms ease;
 }
 
 .actionButton:hover {
-  background: color-mix(in srgb, var(--foreground) 12%, transparent);
+  background: var(--toast-action-bg, color-mix(in srgb, var(--foreground) 12%, transparent));
 }
 
 .closeButton {
