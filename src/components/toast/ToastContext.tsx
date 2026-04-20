@@ -88,7 +88,7 @@ export function ToastProvider({
   );
   const error = useCallback(
     (message: string, options?: Omit<ToastOptions, "type">) =>
-      push(message, { ...options, type: "error", duration: options?.duration ?? 6000 }),
+      push(message, { copyable: true, ...options, type: "error", duration: options?.duration ?? 6000 }),
     [push],
   );
   const warning = useCallback(
