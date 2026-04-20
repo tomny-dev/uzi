@@ -31,7 +31,13 @@ export function SegmentedToggle<T extends string = string>({
   const itemRefs = React.useRef<Array<HTMLButtonElement | null>>([]);
   const selectedIndex = options.findIndex((opt) => opt.value === value);
   const fallbackIndex = options.findIndex((opt) => !opt.disabled);
-  const lastEnabledIndex = options.findLastIndex((opt) => !opt.disabled);
+  let lastEnabledIndex = -1;
+  for (let index = options.length - 1; index >= 0; index -= 1) {
+    if (!options[index]?.disabled) {
+      lastEnabledIndex = index;
+      break;
+    }
+  }
   const tabbableIndex =
     selectedIndex >= 0 && !options[selectedIndex]?.disabled
       ? selectedIndex
@@ -128,7 +134,7 @@ export function SegmentedToggle<T extends string = string>({
           tabIndex={
             opt.disabled
               ? -1
-              : opt.index === tabbableIndex
+              : index === tabbableIndex
                 ? 0
                 : -1
           }
@@ -137,9 +143,7 @@ export function SegmentedToggle<T extends string = string>({
               onChange(opt.value);
             }
           }}
-          onKeyDown={(event) =>
-            handleKeyDown(event, index)
-          }
+          onKeyDown={(event) => handleKeyDown(event, index)}
           className={cx(styles.option)}
         >
           <span className={styles.label}>{opt.label}</span>
