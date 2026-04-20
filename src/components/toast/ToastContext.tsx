@@ -212,6 +212,7 @@ function ToastItem({
   const [open, setOpen] = useState(true);
   const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
   const timerRef = useRef<number | null>(null);
+  const copyTimerRef = useRef<number | null>(null);
   const startRef = useRef<number>(0);
   const remainingRef = useRef<number>(toast.duration ?? 0);
   const closingRef = useRef(false);
@@ -271,14 +272,21 @@ function ToastItem({
     }
   }, [isPaused, schedule, toast.duration]);
 
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current);
+    };
+  }, []);
+
   const handleCopy = useCallback(async () => {
+    if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current);
     try {
       await navigator.clipboard.writeText(toast.message);
       setCopyState("copied");
     } catch {
       setCopyState("failed");
     }
-    window.setTimeout(() => setCopyState("idle"), 1800);
+    copyTimerRef.current = window.setTimeout(() => setCopyState("idle"), 1800);
   }, [toast.message]);
 
   const icon = getIcon(toast.type);
@@ -321,13 +329,17 @@ function ToastItem({
         {toast.copyable && (
           <button
             type="button"
-            className={styles.iconButton}
+            className={cx(styles.iconButton, copyState === "failed" && styles.iconButtonError)}
             aria-label="Copy message"
             onClick={handleCopy}
           >
             {copyState === "copied" ? (
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden>
                 <path d="M2 6.5l3 3 6-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            ) : copyState === "failed" ? (
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden>
+                <path d="M10 3L3 10M3 3l7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
             ) : (
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden>

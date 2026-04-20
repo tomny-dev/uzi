@@ -167,6 +167,11 @@
   background: color-mix(in srgb, var(--foreground) 8%, transparent);
 }
 
+.iconButtonError {
+  opacity: 1;
+  color: var(--destructive);
+}
+
 .iconButton:focus-visible,
 .actionButton:focus-visible {
   outline: var(--focus-ring);
