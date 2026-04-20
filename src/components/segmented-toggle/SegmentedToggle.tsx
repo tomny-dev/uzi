@@ -97,7 +97,7 @@ export function SegmentedToggle<T extends string = string>({
       }
       case "End": {
         event.preventDefault();
-        if (lastEnabledIndex !== undefined) {
+        if (lastEnabledIndex >= 0) {
           focusItem(lastEnabledIndex);
           selectIndex(lastEnabledIndex);
         }
