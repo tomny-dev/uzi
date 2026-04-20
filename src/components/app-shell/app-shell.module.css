@@ -19,7 +19,7 @@
 }
 
 .appShellTopbar {
-  --ts-topbar-bg: var(--surface-topbar, color-mix(in srgb, var(--background) 90%, transparent));
+  --ts-topbar-bg: var(--surface-topbar, color-mix(in srgb, var(--background) 92%, transparent));
   --ts-topbar-border: var(--border);
   --ts-topbar-brand-fg: var(--foreground);
   grid-column: 1 / -1;
