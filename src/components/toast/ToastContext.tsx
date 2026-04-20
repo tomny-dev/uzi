@@ -213,7 +213,6 @@ function ToastItem({
   const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
   const copyTimerRef = useRef<number | null>(null);
   const timerRef = useRef<number | null>(null);
-  const copyTimerRef = useRef<number | null>(null);
   const startRef = useRef<number>(0);
   const remainingRef = useRef<number>(toast.duration ?? 0);
   const closingRef = useRef(false);
