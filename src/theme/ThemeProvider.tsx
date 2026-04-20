@@ -10,6 +10,8 @@ import {
   type ReactNode,
 } from "react";
 import { UZI_THEMES, UZI_ACCENTS, THEME_STORAGE_KEY as DEFAULT_THEME_KEY, ACCENT_STORAGE_KEY as DEFAULT_ACCENT_KEY } from "./constants";
+import { ToastProvider } from "../components/toast/ToastContext";
+import type { ToastConfig } from "../components/toast/types";
 
 export type UziTheme = typeof UZI_THEMES[number];
 export type UziResolvedTheme = "light" | "dark";
@@ -35,6 +37,7 @@ type ThemeProviderProps = {
   storageKey?: string;
   accentStorageKey?: string;
   disableStorage?: boolean;
+  toastConfig?: ToastConfig;
 };
 
 const THEME_STORAGE_KEY = DEFAULT_THEME_KEY;
@@ -68,6 +71,7 @@ export function ThemeProvider({
   storageKey = THEME_STORAGE_KEY,
   accentStorageKey = ACCENT_STORAGE_KEY,
   disableStorage = false,
+  toastConfig,
 }: ThemeProviderProps) {
   const [internalTheme, setInternalTheme] = useState<UziTheme>(defaultTheme);
   const [internalAccent, setInternalAccent] = useState<UziAccent>(defaultAccent);
@@ -148,7 +152,11 @@ export function ThemeProvider({
     [currentAccent, currentTheme, resolvedTheme, setAccent, setTheme, toggleTheme],
   );
 
-  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+  return (
+    <ThemeContext.Provider value={value}>
+      <ToastProvider config={toastConfig}>{children}</ToastProvider>
+    </ThemeContext.Provider>
+  );
 }
 
 export function useTheme() {
