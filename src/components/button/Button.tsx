@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cx } from "../../utils/cx";
-import "./button.module.css";
+import styles from "./button.module.css";
 
 export type ButtonVariant =
   | "default"
@@ -30,21 +30,21 @@ type AsAnchor = BaseProps &
 export type ButtonProps = AsButton | AsAnchor;
 
 const variantClass: Record<ButtonVariant, string> = {
-  default: "uziButtonVariantPrimary",
-  primary: "uziButtonVariantPrimary",
-  secondary: "uziButtonVariantSecondary",
-  outline: "uziButtonVariantOutline",
-  ghost: "uziButtonVariantGhost",
-  destructive: "uziButtonVariantDestructive",
-  link: "uziButtonVariantLink",
+  default: "variantPrimary",
+  primary: "variantPrimary",
+  secondary: "variantSecondary",
+  outline: "variantOutline",
+  ghost: "variantGhost",
+  destructive: "variantDestructive",
+  link: "variantLink",
 };
 
 const sizeClass: Record<ButtonSize, string> = {
-  default: "uziButtonSizeMd",
-  sm: "uziButtonSizeSm",
-  md: "uziButtonSizeMd",
-  lg: "uziButtonSizeLg",
-  icon: "uziButtonSizeIcon",
+  default: "sizeMd",
+  sm: "sizeSm",
+  md: "sizeMd",
+  lg: "sizeLg",
+  icon: "sizeIcon",
 };
 
 export function Button({
@@ -57,9 +57,9 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const classes = cx(
-    "uziButton",
-    variantClass[variant],
-    sizeClass[size],
+    styles.button,
+    styles[variantClass[variant]],
+    styles[sizeClass[size]],
     className,
   );
 

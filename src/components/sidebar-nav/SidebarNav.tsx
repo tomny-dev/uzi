@@ -2,7 +2,7 @@
 
 import { type AnchorHTMLAttributes, type CSSProperties, type ReactNode } from "react";
 import { cx } from "../../utils/cx";
-import "./sidebar-nav.module.css";
+import styles from "./sidebar-nav.module.css";
 
 export type SidebarNavItem = {
   label: string;
@@ -77,24 +77,24 @@ export function SidebarNav({
   return (
     <nav
       className={cx(
-        "sidebarNav",
-        collapsed && "sidebarNavCollapsed",
+        styles.sidebarNav,
+        collapsed && styles.sidebarNavCollapsed,
         className,
       )}
       aria-label={ariaLabel}
       style={style}
     >
-      {header ? <div className="header">{header}</div> : null}
-      <div className="sections">
+      {header ? <div className={styles.header}>{header}</div> : null}
+      <div className={styles.sections}>
         {resolvedSections.map((section, sectionIndex) => (
           <div
             key={section.id ?? `section-${sectionIndex}`}
-            className={cx("section", sectionClassName)}
+            className={cx(styles.section, sectionClassName)}
           >
             {section.label && !collapsed ? (
-              <div className="sectionLabel">{section.label}</div>
+              <div className={styles.sectionLabel}>{section.label}</div>
             ) : null}
-            <div className="sectionItems">
+            <div className={styles.sectionItems}>
               {section.items.map((item, itemIndex) => (
                 <SidebarNavEntry
                   key={`${section.id ?? sectionIndex}-${item.href ?? item.title ?? itemIndex}`}
@@ -109,7 +109,7 @@ export function SidebarNav({
           </div>
         ))}
       </div>
-      {footer ? <div className="footer">{footer}</div> : null}
+      {footer ? <div className={styles.footer}>{footer}</div> : null}
     </nav>
   );
 }
@@ -132,22 +132,22 @@ function SidebarNavEntry({
   const rel = item.rel ?? (item.target === "_blank" ? "noreferrer" : undefined);
   const title = item.title ?? (typeof item.label === "string" ? item.label : undefined);
   const classes = cx(
-    "item",
-    active && "itemActive",
-    collapsed && "itemCollapsed",
-    item.disabled && "itemDisabled",
+    styles.item,
+    active && styles.itemActive,
+    collapsed && styles.itemCollapsed,
+    item.disabled && styles.itemDisabled,
     itemClassName,
   );
   const content = (
     <>
-      {item.icon && <span className="icon">{item.icon}</span>}
+      {item.icon && <span className={styles.icon}>{item.icon}</span>}
       {!collapsed ? (
-        <span className="itemBody">
-          <span className="labelRow">
-            <span className="label">{item.label}</span>
-            {item.badge && <span className="badge">{item.badge}</span>}
+        <span className={styles.itemBody}>
+          <span className={styles.labelRow}>
+            <span className={styles.label}>{item.label}</span>
+            {item.badge && <span className={styles.badge}>{item.badge}</span>}
           </span>
-          {item.description ? <span className="description">{item.description}</span> : null}
+          {item.description ? <span className={styles.description}>{item.description}</span> : null}
         </span>
       ) : null}
     </>

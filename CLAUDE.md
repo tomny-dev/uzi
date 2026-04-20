@@ -9,7 +9,7 @@
 ```bash
 pnpm install       # install deps
 pnpm dev           # watch mode
-pnpm build         # production build (tsup → dist/)
+pnpm build         # production build (Vite + tsc -> dist/)
 pnpm lint          # type check only
 ```
 
@@ -36,18 +36,18 @@ For minor/major bumps, edit `package.json` version manually before pushing.
 
 ## Architecture
 
-- **No Tailwind** — uses CSS modules
-- **`cx()` utility** — exported from `src/utils/cx.ts`, use for conditional class names
-- **tsup** bundles to `dist/` in both ESM and CJS with type declarations
-- **`"use client"` banner** — added to the entire main bundle via `tsup.config.ts`
-- **`src/server.ts`** — separate tsup entry with no `"use client"` banner; safe to import in Next.js server components. Currently exports `getThemeScript`.
-- **`@tomny-dev/uzi/server`** — the `/server` subpath export; consumer tsconfigs need `"moduleResolution": "bundler"` to resolve it
+- **No Tailwind** - uses CSS modules
+- **`cx()` utility** - exported from `src/utils/cx.ts`, use for conditional class names
+- **Vite + TypeScript** - Vite builds the ESM/CJS bundles and CSS, while `tsc` emits type declarations to `dist/`
+- **`"use client"` boundary** - client entry points declare `"use client"` in source; the server entry remains server-safe
+- **`src/server.ts`** - separate Vite library entry with no `"use client"` boundary; safe to import in Next.js server components. Currently exports `getThemeScript`.
+- **`@tomny-dev/uzi/server`** - the `/server` subpath export; consumer tsconfigs need `"moduleResolution": "bundler"` to resolve it
 
 ### Component philosophy
 
-- **Native first for simple controls** — prefer plain HTML inputs when the browser behavior is already correct and styling requirements are modest.
-- **Radix for hard primitives** — use Radix for components with non-trivial keyboard interaction, focus management, portals, overlays, or selection state machines.
-- **`uzi` for the design system layer** — `uzi` should provide the styled API, tokens, and app-level templates rather than reinventing primitive behavior from scratch.
+- **Native first for simple controls** - prefer plain HTML inputs when the browser behavior is already correct and styling requirements are modest.
+- **Radix for hard primitives** - use Radix for components with non-trivial keyboard interaction, focus management, portals, overlays, or selection state machines.
+- **`uzi` for the design system layer** - `uzi` should provide the styled API, tokens, and app-level templates rather than reinventing primitive behavior from scratch.
 
 Good `uzi` targets: `TopBar`, `SidebarNav`, `AppShell`, themed wrappers, and opinionated composites.
 
@@ -55,7 +55,7 @@ Good Radix-backed targets: `Select`, `DropdownMenu`, `Modal`, `Toast`, and futur
 
 ## Design Tokens (CSS custom properties)
 
-Defined in `src/theme/theme.css`. Components use these — never hardcode colors.
+Defined in `src/theme/theme.css`. Components use these - never hardcode colors.
 
 | Token | Purpose |
 |---|---|
@@ -67,8 +67,8 @@ Defined in `src/theme/theme.css`. Components use these — never hardcode colors
 | `--muted-foreground` | Secondary/placeholder text |
 | `--primary` | Brand accent color |
 | `--ring` | Focus ring base color |
-| `--focus-ring` | `2px solid color-mix(in srgb, var(--ring) 50%, transparent)` — use on `:focus-visible` |
-| `--focus-ring-offset` | `2px` — pair with `--focus-ring` |
+| `--focus-ring` | `2px solid color-mix(in srgb, var(--ring) 50%, transparent)` - use on `:focus-visible` |
+| `--focus-ring-offset` | `2px` - pair with `--focus-ring` |
 | `--surface-topbar` | TopBar background |
 | `--destructive` | Error/danger color |
 
@@ -86,7 +86,7 @@ Never use `outline: none` without replacing it with `:focus-visible`. Never use 
 
 ### Using alpha variants
 
-Use `color-mix` — never hardcode rgba:
+Use `color-mix` - never hardcode rgba:
 ```css
 background: color-mix(in srgb, var(--primary) 10%, transparent);
 ```
@@ -96,12 +96,12 @@ background: color-mix(in srgb, var(--primary) 10%, transparent);
 - Themes are applied via `data-uzi-theme="dark|light"` on `<html>`
 - Accents via `data-uzi-accent="amber|cyan|..."` on `<html>`
 - `ThemeProvider` applies these at runtime; for SSR flash prevention, set attributes directly on `<html>` in the server layout
-- `getThemeScript()` (from `@tomny-dev/uzi/server`) returns a blocking inline script string that reads localStorage and sets theme attributes before first paint — use when theme is user-switchable
+- `getThemeScript()` (from `@tomny-dev/uzi/server`) returns a blocking inline script string that reads localStorage and sets theme attributes before first paint - use when theme is user-switchable
 - For fixed themes (e.g. always dark), skip `getThemeScript` and hardcode `className="dark" data-uzi-theme="dark" style={{ colorScheme: "dark" }}` on `<html>`
 
 ## AppShell layout contract
 
-`AppShell` renders a full-viewport grid (`min-height: 100dvh`). The `main` area has no default padding — **each page is responsible for its own padding and max-width**. Use `mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8` as the standard page wrapper. Pages that need full-bleed layouts (e.g. split-panel UIs) can skip this wrapper and control their own layout directly.
+`AppShell` renders a full-viewport grid (`min-height: 100dvh`). The `main` area has no default padding - **each page is responsible for its own padding and max-width**. Use `mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8` as the standard page wrapper. Pages that need full-bleed layouts (e.g. split-panel UIs) can skip this wrapper and control their own layout directly.
 
 ## For Consumer Repos
 
@@ -110,27 +110,27 @@ When using `@tomny-dev/uzi` in a project, add this to the consumer's `CLAUDE.md`
 ```md
 ## UI Components
 This project uses `@tomny-dev/uzi` for UI primitives.
-- No Tailwind — components use CSS modules internally
-- `"use client"` is handled by the bundle — no need to wrap imports
+- No Tailwind - components use CSS modules internally
+- `"use client"` is handled by the bundle - no need to wrap imports
 - App-specific components (e.g. BrandLogo) should live in the app, not in uzi
 - Server-safe exports (e.g. `getThemeScript`) are at `@tomny-dev/uzi/server`
 
 Available components:
-- `Button` — primary, secondary, outline, ghost variants
-- `Card` — surface container with tone and padding props
-- `Pill` — inline badge/tag
-- `Alert` — feedback banner; tones: success, error, warning, info
-- `Modal` — Radix-backed overlay dialog with size variants (sm, md, lg, xl)
-- `ModalOverlay` — Radix-backed bare dialog layer; use when you need a custom modal layout
-- `MultiSelect` — custom multi-option picker with checkbox-style menu
-- `Select` — styled Radix-based single-select field
-- `Dropdown` — deprecated compatibility alias for Select
-- `AppShell` — responsive layout with collapsible sidebar and sticky topbar; no default padding on main area
-- `SidebarNav` — sidebar navigation list
-- `ThemeProvider` — applies theme/accent tokens; use `theme` prop for controlled (fixed) themes, `defaultTheme` for user-switchable
-- `ThemeToggleButton` — light/dark toggle button for the topbar
-- `ToastProvider` / `useToast` — Radix-backed toast notification system
-- `cx` — utility for conditional class name merging
+- `Button` - primary, secondary, outline, ghost variants
+- `Card` - surface container with tone and padding props
+- `Pill` - inline badge/tag
+- `Alert` - feedback banner; tones: success, error, warning, info
+- `Modal` - Radix-backed overlay dialog with size variants (sm, md, lg, xl)
+- `ModalOverlay` - Radix-backed bare dialog layer; use when you need a custom modal layout
+- `MultiSelect` - custom multi-option picker with checkbox-style menu
+- `Select` - styled Radix-based single-select field
+- `Dropdown` - deprecated compatibility alias for Select
+- `AppShell` - responsive layout with collapsible sidebar and sticky topbar; no default padding on main area
+- `SidebarNav` - sidebar navigation list
+- `ThemeProvider` - applies theme/accent tokens; use `theme` prop for controlled (fixed) themes, `defaultTheme` for user-switchable
+- `ThemeToggleButton` - light/dark toggle button for the topbar
+- `ToastProvider` / `useToast` - Radix-backed toast notification system
+- `cx` - utility for conditional class name merging
 ```
 
 ## Component List
@@ -143,7 +143,7 @@ Available components:
 | `Alert` | none | role="alert"; tones: success, error, warning, info |
 | `Modal` | none | Built on `ModalOverlay` and Radix Dialog |
 | `ModalOverlay` | none | Radix Dialog wrapper for custom modal layouts |
-| `MultiSelect` | `useState`, `useEffect`, `useRef`, `useId` | Custom multi-select with hidden input support |
+| `MultiSelect` | `useMemo`, `useCallback`, `forwardRef` | Custom multi-select with hidden input support |
 | `Select` | `forwardRef` | Radix-backed single-select with styled popup content |
 | `Dropdown` | `forwardRef` | Deprecated Select compatibility alias |
 | `AppShell` | `useState`, `useEffect`, `useRef`, `useId` | |

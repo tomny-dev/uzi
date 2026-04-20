@@ -1,15 +1,15 @@
-.uziMultiSelectWrapper {
+.wrapper {
   position: relative;
   display: inline-flex;
   min-width: 0;
   max-width: 100%;
 }
 
-.uziMultiSelectWrapperFullWidth {
+.wrapperFullWidth {
   width: 100%;
 }
 
-.uziMultiSelectTrigger {
+.trigger {
   width: 100%;
   min-width: 0;
   min-height: var(--uzi-control-min-height);
@@ -39,13 +39,13 @@
   text-align: left;
 }
 
-.uziMultiSelectTrigger:hover:not(:disabled) {
+.trigger:hover:not(:disabled) {
   border-color: var(--ts-dropdown-accent, var(--accent, #22d3ee));
   box-shadow: var(--uzi-control-shadow-hover);
 }
 
-.uziMultiSelectTrigger:focus-visible,
-.uziMultiSelectTrigger[data-state="open"] {
+.trigger:focus-visible,
+.trigger[data-state="open"] {
   border-color: var(--ts-dropdown-accent, var(--primary, #22d3ee));
   outline: var(--focus-ring);
   outline-offset: var(--focus-ring-offset);
@@ -54,13 +54,13 @@
     0 0 0 1px color-mix(in srgb, var(--primary, #22d3ee) 30%, transparent);
 }
 
-.uziMultiSelectTrigger:disabled {
+.trigger:disabled {
   cursor: not-allowed;
   opacity: 0.6;
   box-shadow: none;
 }
 
-.uziMultiSelectValue {
+.value {
   min-width: 0;
   display: flex;
   flex: 1;
@@ -69,11 +69,11 @@
   align-items: center;
 }
 
-.uziMultiSelectPlaceholder {
+.placeholder {
   color: var(--muted-foreground, #94a3b8);
 }
 
-.uziMultiSelectChip {
+.chip {
   display: inline-flex;
   align-items: center;
   max-width: 100%;
@@ -88,11 +88,11 @@
   white-space: nowrap;
 }
 
-.uziMultiSelectChipSummary {
+.chipSummary {
   color: var(--primary, #22d3ee);
 }
 
-.uziMultiSelectChevron {
+.chevron {
   width: 10px;
   height: 10px;
   display: flex;
@@ -103,16 +103,16 @@
   transition: transform 0.15s ease, color 0.15s ease;
 }
 
-.uziMultiSelectTrigger:hover:not(:disabled) .uziMultiSelectChevron,
-.uziMultiSelectTrigger[data-state="open"] .uziMultiSelectChevron {
+.trigger:hover:not(:disabled) .chevron,
+.trigger[data-state="open"] .chevron {
   color: var(--ts-dropdown-text, var(--text, #e2e8f0));
 }
 
-.uziMultiSelectTrigger[data-state="open"] .uziMultiSelectChevron {
+.trigger[data-state="open"] .chevron {
   transform: rotate(180deg);
 }
 
-.uziMultiSelectMenu {
+.menu {
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
@@ -129,7 +129,7 @@
   animation: menuFadeIn 140ms ease;
 }
 
-.uziMultiSelectOption {
+.option {
   width: 100%;
   display: flex;
   align-items: center;
@@ -145,25 +145,25 @@
   transition: background 0.12s ease, color 0.12s ease;
 }
 
-.uziMultiSelectOption:hover:not(:disabled),
-.uziMultiSelectOption:focus-visible,
-.uziMultiSelectOption[data-highlighted] {
+.option:hover:not(:disabled),
+.option:focus-visible,
+.option[data-highlighted] {
   background: var(--ts-menu-hover-bg, var(--accent, rgba(255, 255, 255, 0.06)));
   color: var(--ts-menu-hover-fg, var(--accent-foreground, var(--foreground, #e2e8f0)));
   outline: none;
 }
 
-.uziMultiSelectOptionDisabled,
-.uziMultiSelectOption[data-disabled] {
+.optionDisabled,
+.option[data-disabled] {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.uziMultiSelectOptionSelected .uziMultiSelectOptionLabel {
+.optionSelected .optionLabel {
   color: var(--primary, #22d3ee);
 }
 
-.uziMultiSelectIndicator {
+.indicator {
   width: 1rem;
   height: 1rem;
   display: inline-flex;
@@ -177,17 +177,17 @@
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease;
 }
 
-.uziMultiSelectIndicatorSelected {
+.indicatorSelected {
   border-color: color-mix(in srgb, var(--primary, #22d3ee) 55%, transparent);
   background: color-mix(in srgb, var(--primary, #22d3ee) 12%, transparent);
   color: var(--primary, #22d3ee);
 }
 
-.uziMultiSelectIndicatorDisabled {
+.indicatorDisabled {
   opacity: 0.65;
 }
 
-.uziMultiSelectOptionLabel {
+.optionLabel {
   min-width: 0;
   flex: 1;
 }

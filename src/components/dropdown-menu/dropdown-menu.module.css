@@ -1,4 +1,4 @@
-.uziDropdownMenuContent {
+.content {
   z-index: 50;
   min-width: 8rem;
   max-height: var(--radix-dropdown-menu-content-available-height);
@@ -14,7 +14,7 @@
   animation: menuFadeIn 140ms ease;
 }
 
-.uziDropdownMenuItem {
+.item {
   position: relative;
   display: flex;
   width: 100%;
@@ -29,34 +29,34 @@
   outline: none;
 }
 
-.uziDropdownMenuItem[data-inset="true"] {
+.item[data-inset="true"] {
   padding-left: 2rem;
 }
 
-.uziDropdownMenuItem[data-highlighted] {
+.item[data-highlighted] {
   background: var(--ts-menu-hover-bg, var(--accent, rgba(255, 255, 255, 0.06)));
   color: var(--ts-menu-hover-fg, var(--accent-foreground, var(--foreground, #e2e8f0)));
 }
 
-.uziDropdownMenuItem[data-disabled] {
+.item[data-disabled] {
   pointer-events: none;
   opacity: 0.5;
 }
 
-.uziDropdownMenuItemDestructive {
+.itemDestructive {
   color: var(--ts-menu-danger, var(--destructive, #f87171));
 }
 
-.uziDropdownMenuItemDestructive[data-highlighted] {
+.itemDestructive[data-highlighted] {
   background: color-mix(in srgb, var(--destructive, #f87171) 15%, transparent);
   color: var(--ts-menu-danger-fg, var(--destructive, #f87171));
 }
 
-.uziDropdownMenuInsetItem {
+.insetItem {
   padding-left: 2rem;
 }
 
-.uziDropdownMenuIndicator {
+.indicator {
   position: absolute;
   left: 0.5rem;
   display: inline-flex;
@@ -67,11 +67,11 @@
   color: currentColor;
 }
 
-.uziDropdownMenuIndicatorIcon {
+.indicatorIcon {
   display: block;
 }
 
-.uziDropdownMenuRadioDot {
+.radioDot {
   display: block;
   width: 0.5rem;
   height: 0.5rem;
@@ -79,24 +79,24 @@
   background: currentColor;
 }
 
-.uziDropdownMenuLabel {
+.label {
   padding: var(--uzi-menu-item-padding-y) var(--uzi-menu-item-padding-x);
   font-size: 0.875rem;
   font-weight: 600;
   line-height: 1.25rem;
 }
 
-.uziDropdownMenuLabel[data-inset="true"] {
+.label[data-inset="true"] {
   padding-left: 2rem;
 }
 
-.uziDropdownMenuSeparator {
+.separator {
   height: 1px;
   margin: 0.25rem -0.25rem;
   background: var(--ts-menu-separator, var(--border, rgba(255, 255, 255, 0.12)));
 }
 
-.uziDropdownMenuChevron {
+.chevron {
   margin-left: auto;
   flex-shrink: 0;
 }

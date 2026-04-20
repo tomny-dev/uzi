@@ -3,7 +3,7 @@
 import * as React from "react";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { cx } from "../../utils/cx";
-import "./multi-select.module.css";
+import styles from "./multi-select.module.css";
 
 export type MultiSelectOption = {
   label: string;
@@ -71,8 +71,8 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
       <DropdownMenuPrimitive.Root modal={false}>
         <div
           className={cx(
-            "uziMultiSelectWrapper",
-            fullWidth && "uziMultiSelectWrapperFullWidth",
+            styles.wrapper,
+            fullWidth && styles.wrapperFullWidth,
             className,
           )}
         >
@@ -80,26 +80,26 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
             <button
               ref={ref}
               type="button"
-              className="uziMultiSelectTrigger"
+              className={styles.trigger}
               aria-label={ariaLabel}
               aria-labelledby={ariaLabelledBy}
               disabled={disabled}
             >
-              <span className="uziMultiSelectValue">
+              <span className={styles.value}>
                 {selectedOptions.length === 0 ? (
-                  <span className="uziMultiSelectPlaceholder">{placeholder}</span>
+                  <span className={styles.placeholder}>{placeholder}</span>
                 ) : (
                   <>
                     {visibleOptions.map((option) => (
-                      <span key={option.value} className="uziMultiSelectChip">
+                      <span key={option.value} className={styles.chip}>
                         {option.label}
                       </span>
                     ))}
                     {overflowCount > 0 ? (
                       <span
                         className={cx(
-                          "uziMultiSelectChip",
-                          "uziMultiSelectChipSummary",
+                          styles.chip,
+                          styles.chipSummary,
                         )}
                       >
                         +{overflowCount}
@@ -108,7 +108,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                   </>
                 )}
               </span>
-              <span className="uziMultiSelectChevron" aria-hidden="true">
+              <span className={styles.chevron} aria-hidden="true">
                 <svg
                   viewBox="0 0 10 10"
                   fill="none"
@@ -136,7 +136,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
 
           <DropdownMenuPrimitive.Portal>
             <DropdownMenuPrimitive.Content
-              className="uziMultiSelectMenu"
+              className={styles.menu}
               sideOffset={4}
               align="start"
             >
@@ -147,9 +147,9 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                   <DropdownMenuPrimitive.CheckboxItem
                     key={option.value}
                     className={cx(
-                      "uziMultiSelectOption",
-                      selected && "uziMultiSelectOptionSelected",
-                      option.disabled && "uziMultiSelectOptionDisabled",
+                      styles.option,
+                      selected && styles.optionSelected,
+                      option.disabled && styles.optionDisabled,
                     )}
                     checked={selected}
                     disabled={option.disabled}
@@ -158,9 +158,9 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                   >
                     <span
                       className={cx(
-                        "uziMultiSelectIndicator",
-                        selected && "uziMultiSelectIndicatorSelected",
-                        option.disabled && "uziMultiSelectIndicatorDisabled",
+                        styles.indicator,
+                        selected && styles.indicatorSelected,
+                        option.disabled && styles.indicatorDisabled,
                       )}
                       aria-hidden="true"
                     >
@@ -182,7 +182,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                         </svg>
                       </DropdownMenuPrimitive.ItemIndicator>
                     </span>
-                    <span className="uziMultiSelectOptionLabel">{option.label}</span>
+                    <span className={styles.optionLabel}>{option.label}</span>
                   </DropdownMenuPrimitive.CheckboxItem>
                 );
               })}
