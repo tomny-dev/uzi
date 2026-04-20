@@ -20,6 +20,23 @@ If you want the packaged component styles, import the exported stylesheet once i
 @import "@tomny-dev/uzi/styles.css";
 ```
 
+## Using With Coding Agents
+
+Installing `@tomny-dev/uzi` in an app does not by itself cause Claude Code, Codex, or similar agents to prefer `uzi` components. You should add that policy to the consumer repo's agent guidance.
+
+Recommended snippet for the consumer repo's `CLAUDE.md`, `AGENTS.md`, or equivalent:
+
+```md
+## UI Components
+
+- Prefer `@tomny-dev/uzi` for shared UI primitives and layout components.
+- Check `uzi` before creating new local primitives such as buttons, inputs, labels, cards, modals, selects, dropdown menus, alerts, shells, navigation, and theme controls.
+- Only introduce a repo-local primitive when `uzi` lacks the required behavior or when the local file is intentionally app-specific composition.
+- Keep imports consistent with the surrounding area of the codebase. If the repo already uses thin wrappers around `uzi`, follow that local pattern.
+```
+
+If you want agents to discover props and examples directly, also configure the `uzi` MCP server. See [`mcp/README.md`](./mcp/README.md).
+
 ## Themes
 
 `uzi` ships with built-in light/dark tokens and a small accent palette layer.
@@ -68,6 +85,16 @@ Supported accent palettes:
 - `amber`
 - `rose`
 
+## Component Philosophy
+
+`uzi` is not meant to be a from-scratch accessibility framework.
+
+- Use native HTML for simple form controls when the platform already gives the right behavior.
+- Use Radix for interaction-heavy primitives such as menus, dialogs, popovers, toasts, and custom selects.
+- Use `uzi` for the public component API, styling, tokens, and higher-level templates like `TopBar`, `SidebarNav`, and `AppShell`.
+
+In practice, `uzi` should spend its complexity budget on reusable app scaffolding and cohesive design, not on rebuilding low-level widget behavior that Radix or the browser already solves.
+
 ## Components
 
 | Component | Description |
@@ -78,16 +105,18 @@ Supported accent palettes:
 | `Checkbox` | Checkbox form primitive |
 | `Input` | Text input primitive |
 | `Label` | Form label primitive |
+| `MultiSelect` | Custom multi-option picker with checkbox-style menu |
 | `Pill` | Inline badge/tag |
-| `Modal` | Accessible overlay dialog |
-| `Dropdown` | Select-style dropdown |
+| `Modal` | Radix-backed overlay dialog |
+| `Select` | Styled Radix-based single-select field |
+| `Dropdown` | Deprecated compatibility alias for Select |
 | `DropdownMenu` | Radix-based action menu primitives |
 | `AppShell` | Responsive layout with collapsible sidebar |
 | `SidebarNav` | Sidebar navigation list |
 | `TopBar` | Composable header shell for brand, nav triggers, and actions |
 | `ThemeToggleButton` | Reusable light/dark toggle wired to `ThemeProvider` |
 | `ThemeProvider` / `useTheme` | Light/dark + accent palette theming |
-| `ToastProvider` / `useToast` | Toast notification system |
+| `ToastProvider` / `useToast` | Radix-backed toast notification system |
 
 `TopBar` supports:
 

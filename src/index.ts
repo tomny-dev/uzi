@@ -41,6 +41,9 @@ export { Label } from "./components/label/Label";
 export type { CheckboxProps } from "./components/checkbox/Checkbox";
 export { Checkbox } from "./components/checkbox/Checkbox";
 
+export type { MultiSelectProps, MultiSelectOption } from "./components/multi-select/MultiSelect";
+export { MultiSelect } from "./components/multi-select/MultiSelect";
+
 export type { DropdownProps, DropdownOption } from "./components/dropdown/Dropdown";
 export { Dropdown } from "./components/dropdown/Dropdown";
 
@@ -80,3 +83,14 @@ export { ThemeProvider, useTheme } from "./theme/ThemeProvider";
 
 // Utils
 export { cx } from "./utils/cx";
+
+// Feedback / display
+export type { SkeletonProps } from "./components/skeleton/Skeleton";
+export { Skeleton } from "./components/skeleton/Skeleton";
+
+export type { ProgressProps, ProgressTone } from "./components/progress/Progress";
+export { Progress } from "./components/progress/Progress";
+
+// Inputs
+export type { SelectProps, SelectOption } from "./components/select/Select";
+export { Select } from "./components/select/Select";

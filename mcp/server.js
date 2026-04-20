@@ -71,13 +71,13 @@ const COMPONENTS = {
   },
 
   Modal: {
-    description: "Accessible overlay dialog with backdrop, header, body, and optional footer.",
+    description: "Radix-backed overlay dialog with backdrop, header, body, and optional footer.",
     props: {
       open: { type: "boolean" },
       onClose: { type: "() => void" },
       title: { type: "string" },
       subtitle: { type: "string", optional: true },
-      size: { type: "ModalSize", default: "md", options: ["sm", "md", "lg"] },
+      size: { type: "ModalSize", default: "md", options: ["sm", "md", "lg", "xl"] },
       children: { type: "ReactNode", description: "Body content between header and footer" },
       footer: { type: "ReactNode", optional: true, description: "Action buttons rendered in the footer row" },
     },
@@ -91,11 +91,11 @@ const COMPONENTS = {
   <p>This action cannot be undone.</p>
 </Modal>`,
     ],
-    notes: "Backdrop click closes the modal. Close button is always shown in the header.",
+    notes: "Built on Radix Dialog. Backdrop click and Escape close the modal. Close button is always shown in the header.",
   },
 
   ToastProvider: {
-    description: "Context provider that enables useToast() throughout the subtree.",
+    description: "Context provider that enables useToast() throughout the subtree. Uses Radix Toast under the hood for the viewport and dismiss interactions.",
     props: {
       children: { type: "ReactNode" },
       config: {
@@ -142,7 +142,7 @@ toast.success("File uploaded", {
   action: { label: "View", onClick: () => navigate("/files") },
 });`,
     ],
-    notes: "ToastOptions: { type, duration, dismissible, action: { label, onClick } }",
+    notes: "ToastOptions: { type, duration, dismissible, action: { label, onClick } }. Rendering is backed by Radix Toast.",
   },
 
   Input: {
@@ -182,14 +182,79 @@ toast.success("File uploaded", {
     ],
   },
 
+  MultiSelect: {
+    description: "Custom multi-option picker with a checkbox-style popup menu. Use when users need to select zero or more values from a list.",
+    props: {
+      options: { type: "MultiSelectOption[]", description: "Array of { label: string; value: string; disabled?: boolean }" },
+      value: { type: "string[]" },
+      onChange: { type: "(value: string[]) => void" },
+      placeholder: { type: "string", optional: true },
+      fullWidth: { type: "boolean", default: true, description: "Stretch to fill the container. Set false for compact inline controls." },
+      maxVisibleValues: { type: "number", default: 2, description: "How many selected labels to show before collapsing into a +N summary chip." },
+      name: { type: "string", optional: true, description: "When provided, renders hidden inputs so selected values submit with a form." },
+      disabled: { type: "boolean", default: false },
+      className: { type: "string", optional: true },
+    },
+    examples: [
+      `<MultiSelect
+  options={[
+    { label: "React", value: "react" },
+    { label: "Vue", value: "vue" },
+    { label: "Svelte", value: "svelte", disabled: true },
+  ]}
+  value={frameworks}
+  onChange={setFrameworks}
+  placeholder="Frameworks"
+/>`,
+    ],
+    notes: "Keep Select for single-choice inputs. Use MultiSelect when the value is a string array.",
+  },
+
+  Select: {
+    description: "Styled Radix-based single-select field for choosing one option. Use for forms and filters when you want a fully styleable popup menu and accessible keyboard behavior.",
+    props: {
+      options: { type: "SelectOption[]", description: "Array of { label: string; value: string; disabled?: boolean }" },
+      value: { type: "string" },
+      onChange: { type: "(value: string) => void" },
+      placeholder: { type: "string", optional: true, description: "Placeholder label shown for the empty option" },
+      allowEmptyOption: { type: "boolean", default: false, description: "When true, the placeholder remains selectable as the empty option" },
+      fullWidth: { type: "boolean", default: true, description: "Stretch to fill the container. Set false for compact inline controls." },
+      className: { type: "string", optional: true },
+      name: { type: "string", optional: true },
+      id: { type: "string", optional: true },
+      disabled: { type: "boolean", optional: true },
+      required: { type: "boolean", optional: true },
+      autoComplete: { type: "string", optional: true },
+      form: { type: "string", optional: true },
+      title: { type: "string", optional: true },
+      "aria-label": { type: "string", optional: true },
+      "aria-labelledby": { type: "string", optional: true },
+    },
+    examples: [
+      `<Select
+  options={[{ label: "Queued", value: "queued" }, { label: "Running", value: "running" }]}
+  value={status}
+  onChange={setStatus}
+/>`,
+      `<Select
+  options={[{ label: "React", value: "react" }, { label: "Vue", value: "vue" }]}
+  value={framework}
+  onChange={setFramework}
+  placeholder="All frameworks"
+  allowEmptyOption
+/>`,
+    ],
+    notes: "Prefer Select over Dropdown for value selection. Use DropdownMenu for action menus.",
+  },
+
   Dropdown: {
-    description: "Custom select-style dropdown. Not based on Radix — uses a controlled option list with click-outside detection.",
+    description: "Deprecated compatibility alias for Select. Use Select for value selection and DropdownMenu for action menus.",
     props: {
       options: { type: "DropdownOption[]", description: "Array of { label: string; value: string }" },
-      value: { type: "string | null" },
-      onChange: { type: "(value: string | null) => void" },
+      value: { type: "string" },
+      onChange: { type: "(value: string) => void" },
       placeholder: { type: "string", optional: true },
-      allowClear: { type: "boolean", default: false },
+      allowClear: { type: "boolean", default: true },
       className: { type: "string", optional: true },
     },
     examples: [
@@ -201,7 +266,7 @@ toast.success("File uploaded", {
   allowClear
 />`,
     ],
-    notes: "For richer menu interactions (checkboxes, submenus, icons), use DropdownMenu instead.",
+    notes: "Deprecated during migration. Prefer Select for new code. For richer menu interactions (checkboxes, submenus, icons), use DropdownMenu instead.",
   },
 
   DropdownMenu: {
@@ -417,7 +482,9 @@ server.tool(
       Input: ["input", "text field", "form", "text"],
       Label: ["label", "form label"],
       Checkbox: ["checkbox", "check", "toggle", "boolean"],
-      Dropdown: ["dropdown", "select", "picker", "option"],
+      MultiSelect: ["multi select", "multiselect", "multiple select", "tags picker", "checkbox list", "many options"],
+      Select: ["select", "picker", "option", "form select", "native select"],
+      Dropdown: ["dropdown", "deprecated select", "legacy picker"],
       DropdownMenu: ["menu", "context menu", "action menu", "radix dropdown", "submenu"],
       AppShell: ["layout", "shell", "app layout", "sidebar layout"],
       SidebarNav: ["sidebar", "navigation", "nav", "side menu"],

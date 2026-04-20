@@ -6,7 +6,7 @@ import {
   ThemeToggleButton,
   type ThemeToggleButtonProps,
 } from "../theme-toggle-button/ThemeToggleButton";
-import "./top-bar.module.css";
+import styles from "./top-bar.module.css";
 
 export type TopBarProps = HTMLAttributes<HTMLElement> & {
   leading?: ReactNode;
@@ -44,35 +44,35 @@ export function TopBar({
 }: TopBarProps) {
   const shouldStick = isSticky ?? sticky;
   const brandNode = !brand ? null : brandHref ? (
-    <a href={brandHref} className={"topBarBrand"}>
-      <span className={"topBarBrandContent"}>{brand}</span>
+    <a href={brandHref} className={styles.topBarBrand}>
+      <span className={styles.topBarBrandContent}>{brand}</span>
     </a>
   ) : (
-    <div className={"topBarBrand"}>
-      <span className={"topBarBrandContent"}>{brand}</span>
+    <div className={styles.topBarBrand}>
+      <span className={styles.topBarBrandContent}>{brand}</span>
     </div>
   );
 
   return (
     <header
-      className={cx("topBar", !shouldStick && "topBarStatic", className)}
+      className={cx(styles.topBar, !shouldStick && styles.topBarStatic, className)}
       {...rest}
     >
-      <div className={cx("topBarInner", innerClassName)}>
-        <div className={"topBarStart"}>
+      <div className={cx(styles.topBarInner, innerClassName)}>
+        <div className={styles.topBarStart}>
           {leading}
           {brandingLocation === "left" && brandNode}
           {start}
         </div>
         {(brandNode && brandingLocation === "center") || center || children ? (
-          <div className={"topBarCenter"}>
-            <div className={"topBarCenterGroup"}>
+          <div className={styles.topBarCenter}>
+            <div className={styles.topBarCenterGroup}>
               {brandingLocation === "center" && brandNode}
               {center ?? children}
             </div>
           </div>
         ) : null}
-        <div className={"topBarActions"}>
+        <div className={styles.topBarActions}>
           {showThemeToggle && <ThemeToggleButton {...themeToggleProps} />}
           {actions}
         </div>

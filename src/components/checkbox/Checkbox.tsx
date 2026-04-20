@@ -1,6 +1,6 @@
 import * as React from "react";
 import { cx } from "../../utils/cx";
-import "./checkbox.module.css";
+import styles from "./checkbox.module.css";
 
 export type CheckboxProps = React.InputHTMLAttributes<HTMLInputElement>;
 
@@ -10,7 +10,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       <input
         ref={ref}
         type="checkbox"
-        className={cx("checkbox", className)}
+        className={cx(styles.checkbox, className)}
         {...props}
       />
     );

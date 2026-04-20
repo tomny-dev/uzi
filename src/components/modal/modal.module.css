@@ -1,12 +1,44 @@
-.backdrop {
+.portalLayer {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 16px;
-  z-index: 100;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.backdrop[data-state="open"] {
+  animation: backdropFadeIn 160ms ease;
+}
+
+.backdrop[data-state="closed"] {
+  animation: backdropFadeOut 140ms ease;
+}
+
+.overlayContent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  max-height: 100%;
+  outline: none;
+}
+
+.overlayContent[data-state="open"] {
+  animation: modalContentIn 180ms ease;
+}
+
+.overlayContent[data-state="closed"] {
+  animation: modalContentOut 140ms ease;
 }
 
 .modal {
@@ -90,4 +122,48 @@
   display: flex;
   gap: 8px;
   margin-top: 20px;
+}
+
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes backdropFadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes modalContentIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modalContentOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
 }

@@ -1,4 +1,4 @@
-.uziSidebarNav {
+.sidebarNav {
   --sidebar-nav-icon-size: 18px;
   --sidebar-nav-icon-size-mobile: 16px;
   display: flex;
@@ -8,43 +8,43 @@
   min-height: 0;
 }
 
-.uziSidebarNavCollapsed {
+.sidebarNavCollapsed {
   gap: 10px;
 }
 
-.uziSidebarNavHeader,
-.uziSidebarNavFooter {
+.header,
+.footer {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.uziSidebarNavFooter {
+.footer {
   margin-top: auto;
   padding-top: 12px;
   border-top: 1px solid var(--border, #1f2937);
 }
 
-.uziSidebarNavSections {
+.sections {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
   gap: 14px;
 }
 
-.uziSidebarNavSection {
+.section {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.uziSidebarNavSectionItems {
+.sectionItems {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.uziSidebarNavSectionLabel {
+.sectionLabel {
   padding: 0 10px;
   font-size: 11px;
   font-weight: 700;
@@ -54,7 +54,7 @@
   opacity: 0.75;
 }
 
-.uziSidebarNavItem {
+.item {
   color: var(--foreground, #e2e8f0);
   background: transparent;
   border: none;
@@ -74,39 +74,39 @@
   transition: background 120ms ease, color 120ms ease;
 }
 
-button.uziSidebarNavItem {
+button.item {
   font-family: inherit;
   cursor: pointer;
 }
 
-.uziSidebarNavItem:focus-visible {
+.item:focus-visible {
   outline: var(--focus-ring);
   outline-offset: var(--focus-ring-offset);
 }
 
-.uziSidebarNavItem:hover {
+.item:hover {
   background: color-mix(in srgb, var(--primary, #22d3ee) 10%, transparent);
 }
 
-.uziSidebarNavItem.uziSidebarNavItemActive {
+.item.itemActive {
   background: color-mix(in srgb, var(--primary, #22d3ee) 18%, transparent);
   color: var(--foreground, #e2e8f0);
   font-weight: 700;
 }
 
-.uziSidebarNavItemCollapsed {
+.itemCollapsed {
   grid-template-columns: 1fr;
   justify-items: center;
   padding-right: 10px;
   padding-left: 10px;
 }
 
-.uziSidebarNavItemDisabled {
+.itemDisabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.uziSidebarNavIcon {
+.icon {
   width: var(--sidebar-nav-icon-size);
   height: var(--sidebar-nav-icon-size);
   min-width: var(--sidebar-nav-icon-size);
@@ -117,25 +117,25 @@ button.uziSidebarNavItem {
   vertical-align: middle;
 }
 
-.uziSidebarNavIcon > * {
+.icon > * {
   width: 100% !important;
   height: 100% !important;
   max-width: 100%;
   max-height: 100%;
 }
 
-.uziSidebarNavIcon :where(svg) {
+.icon :where(svg) {
   width: 100%;
   height: 100%;
   display: block;
   stroke: currentColor;
 }
 
-.uziSidebarNavItem.uziSidebarNavItemActive .uziSidebarNavIcon {
+.item.itemActive .icon {
   color: var(--primary, #22d3ee);
 }
 
-.uziSidebarNavItemBody {
+.itemBody {
   display: flex;
   min-width: 0;
   flex: 1 1 auto;
@@ -144,14 +144,14 @@ button.uziSidebarNavItem {
   overflow: hidden;
 }
 
-.uziSidebarNavLabelRow {
+.labelRow {
   display: flex;
   min-width: 0;
   align-items: center;
   gap: 8px;
 }
 
-.uziSidebarNavLabel {
+.label {
   flex: 1;
   min-width: 0;
   overflow: hidden;
@@ -159,13 +159,13 @@ button.uziSidebarNavItem {
   white-space: nowrap;
 }
 
-.uziSidebarNavDescription {
+.description {
   color: var(--muted-foreground, #94a3b8);
   font-size: 12px;
   line-height: 1.35;
 }
 
-.uziSidebarNavBadge {
+.badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -181,19 +181,19 @@ button.uziSidebarNavItem {
 }
 
 @media (max-width: 960px) {
-  .uziSidebarNav {
+  .sidebarNav {
     gap: 10px;
   }
 
-  .uziSidebarNavSections {
+  .sections {
     gap: 12px;
   }
 
-  .uziSidebarNavSectionItems {
+  .sectionItems {
     gap: 6px;
   }
 
-  .uziSidebarNavItem {
+  .item {
     padding: 9px 10px 9px 8px;
     border-radius: 9px;
     font-size: 14px;
@@ -201,24 +201,24 @@ button.uziSidebarNavItem {
     column-gap: 8px;
   }
 
-  .uziSidebarNavIcon {
+  .icon {
     width: var(--sidebar-nav-icon-size-mobile);
     height: var(--sidebar-nav-icon-size-mobile);
     min-width: var(--sidebar-nav-icon-size-mobile);
   }
 
-  .uziSidebarNavIcon :where(svg) {
+  .icon :where(svg) {
     width: var(--sidebar-nav-icon-size-mobile);
     height: var(--sidebar-nav-icon-size-mobile);
   }
 
-  .uziSidebarNavDescription {
+  .description {
     font-size: 11px;
   }
 }
 
 @media (max-width: 480px) {
-  .uziSidebarNavItem {
+  .item {
     padding: 8px 9px 8px 7px;
     font-size: 13px;
   }

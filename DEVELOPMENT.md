@@ -55,6 +55,16 @@ module.exports = {
 2. Add `"use client";` at the top of any component that uses React hooks
 3. Export from `src/index.ts`
 
+### Choose the right base
+
+Before building a new component, decide whether it should be native HTML, Radix-backed, or a higher-level `uzi` composition.
+
+- Use native HTML for simple controls like text inputs and labels.
+- Use Radix for interaction-heavy primitives such as dialogs, menus, popovers, toasts, and custom selects.
+- Use `uzi` itself for styling, tokens, and app templates like shells, nav, and headers.
+
+Avoid introducing new bespoke low-level widgets unless native HTML and Radix both clearly fail the use case.
+
 ## Pre-publish verification
 
 ```bash
@@ -63,6 +73,21 @@ pnpm pack
 ```
 
 Install the generated tarball in a consumer app to verify exports, CSS, and packaging before publishing.
+
+## Preview builds for pull requests
+
+Pull requests publish preview builds to npm under a PR-specific dist-tag without touching `latest`.
+
+Example install command for PR `123`:
+
+```bash
+pnpm add @tomny-dev/uzi@pr-123
+```
+
+Each workflow run also publishes a new exact prerelease version for that PR and posts both install commands back onto the PR:
+
+- `@pr-123` tracks the latest preview build for PR 123
+- `@0.x.y-pr.123.<run>.<attempt>.<sha>` pins one exact build
 
 ## Publishing
 

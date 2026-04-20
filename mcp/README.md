@@ -63,9 +63,26 @@ Add to your `codex.json` configuration:
 }
 ```
 
-### Consumer apps using the npm package
+### Consumer apps
 
-If your consumer app has `@tomny-dev/uzi` installed, point directly at the installed server:
+If you want agents to prefer `uzi` in a consumer app, do two things:
+
+1. Add repo guidance in that app's `CLAUDE.md`, `AGENTS.md`, or equivalent telling agents to prefer `@tomny-dev/uzi` for shared UI primitives.
+2. Point the MCP server at a checkout of this repo, or at an installed `@tomny-dev/uzi-mcp` package if you publish/install it separately.
+
+Example repo guidance:
+
+```md
+## UI Components
+
+- Prefer `@tomny-dev/uzi` for shared UI primitives and layout components.
+- Check `uzi` before creating new local primitives.
+- Only introduce a repo-local primitive when `uzi` lacks the required behavior or when the component is intentionally app-specific composition.
+```
+
+### Important packaging note
+
+The main `@tomny-dev/uzi` npm package currently publishes `dist/` only. It does **not** include `mcp/server.js`, so this config will not work:
 
 ```json
 {
@@ -73,6 +90,19 @@ If your consumer app has `@tomny-dev/uzi` installed, point directly at the insta
     "uzi": {
       "command": "node",
       "args": ["./node_modules/@tomny-dev/uzi/mcp/server.js"]
+    }
+  }
+}
+```
+
+Use a checkout of this repo instead:
+
+```json
+{
+  "mcpServers": {
+    "uzi": {
+      "command": "node",
+      "args": ["/absolute/path/to/uzi/mcp/server.js"]
     }
   }
 }
