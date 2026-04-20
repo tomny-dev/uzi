@@ -94,3 +94,6 @@ export { Progress } from "./components/progress/Progress";
 // Inputs
 export type { SelectProps, SelectOption } from "./components/select/Select";
 export { Select } from "./components/select/Select";
+
+export type { SegmentedToggleProps, SegmentedToggleOption } from "./components/segmented-toggle/SegmentedToggle";
+export { SegmentedToggle } from "./components/segmented-toggle/SegmentedToggle";
