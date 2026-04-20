@@ -219,8 +219,6 @@ function ToastItem({
     ["--toast-bg" as any]: palette.background,
     ["--toast-border" as any]: palette.border,
     ["--toast-text" as any]: palette.text,
-    ["--toast-button-bg" as any]: palette.buttonBg,
-    ["--toast-button-border" as any]: palette.buttonBorder,
     ["--toast-action-bg" as any]: palette.actionBg,
     ["--toast-action-border" as any]: palette.actionBorder,
   };
@@ -335,44 +333,36 @@ function getPalette(type: ToastType) {
   switch (type) {
     case "success":
       return {
-        background: "#22c55e",
-        border: "#16a34a",
-        text: "#0b1224",
-        buttonBg: "rgba(0, 0, 0, 0.08)",
-        buttonBorder: "rgba(0, 0, 0, 0.2)",
-        actionBg: "rgba(0, 0, 0, 0.1)",
-        actionBorder: "rgba(0, 0, 0, 0.2)",
+        background: "color-mix(in srgb, var(--success) 15%, var(--popover))",
+        border: "color-mix(in srgb, var(--success) 40%, transparent)",
+        text: "var(--popover-foreground)",
+        actionBg: "color-mix(in srgb, var(--success) 12%, transparent)",
+        actionBorder: "color-mix(in srgb, var(--success) 30%, transparent)",
       };
     case "error":
       return {
-        background: "#f87171",
-        border: "#ef4444",
-        text: "#0b1224",
-        buttonBg: "rgba(0, 0, 0, 0.08)",
-        buttonBorder: "rgba(0, 0, 0, 0.2)",
-        actionBg: "rgba(0, 0, 0, 0.1)",
-        actionBorder: "rgba(0, 0, 0, 0.2)",
+        background: "color-mix(in srgb, var(--destructive) 15%, var(--popover))",
+        border: "color-mix(in srgb, var(--destructive) 40%, transparent)",
+        text: "var(--popover-foreground)",
+        actionBg: "color-mix(in srgb, var(--destructive) 12%, transparent)",
+        actionBorder: "color-mix(in srgb, var(--destructive) 30%, transparent)",
       };
     case "warning":
       return {
-        background: "#fbbf24",
-        border: "#f59e0b",
-        text: "#0b1224",
-        buttonBg: "rgba(0, 0, 0, 0.08)",
-        buttonBorder: "rgba(0, 0, 0, 0.2)",
-        actionBg: "rgba(0, 0, 0, 0.1)",
-        actionBorder: "rgba(0, 0, 0, 0.2)",
+        background: "color-mix(in srgb, var(--warning) 15%, var(--popover))",
+        border: "color-mix(in srgb, var(--warning) 40%, transparent)",
+        text: "var(--popover-foreground)",
+        actionBg: "color-mix(in srgb, var(--warning) 12%, transparent)",
+        actionBorder: "color-mix(in srgb, var(--warning) 30%, transparent)",
       };
     case "info":
     default:
       return {
-        background: "#38bdf8",
-        border: "#0ea5e9",
-        text: "#0b1224",
-        buttonBg: "rgba(0, 0, 0, 0.08)",
-        buttonBorder: "rgba(0, 0, 0, 0.2)",
-        actionBg: "rgba(0, 0, 0, 0.1)",
-        actionBorder: "rgba(0, 0, 0, 0.2)",
+        background: "color-mix(in srgb, var(--primary) 15%, var(--popover))",
+        border: "color-mix(in srgb, var(--primary) 40%, transparent)",
+        text: "var(--popover-foreground)",
+        actionBg: "color-mix(in srgb, var(--primary) 12%, transparent)",
+        actionBorder: "color-mix(in srgb, var(--primary) 30%, transparent)",
       };
   }
 }

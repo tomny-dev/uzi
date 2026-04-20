@@ -61,8 +61,8 @@
 
 /* Variants */
 .variantPrimary {
-  background: var(--ts-btn-primary-bg, var(--primary, #22d3ee));
-  color: var(--ts-btn-primary-text, var(--primary-foreground, #0f172a));
+  background: var(--ts-btn-primary-bg, var(--primary));
+  color: var(--ts-btn-primary-text, var(--primary-foreground));
 }
 
 .variantPrimary:hover:not(:disabled) {
@@ -70,41 +70,41 @@
 }
 
 .variantSecondary {
-  background: var(--ts-btn-secondary-bg, var(--secondary, rgba(255, 255, 255, 0.06)));
-  color: var(--ts-btn-secondary-text, var(--secondary-foreground, var(--text, #e2e8f0)));
-  border-color: var(--ts-btn-secondary-border, var(--border, #1f2937));
+  background: var(--ts-btn-secondary-bg, var(--secondary));
+  color: var(--ts-btn-secondary-text, var(--secondary-foreground));
+  border-color: var(--ts-btn-secondary-border, var(--border));
 }
 
 .variantSecondary:hover:not(:disabled) {
-  background: var(--ts-btn-secondary-hover-bg, color-mix(in srgb, var(--secondary, rgba(255, 255, 255, 0.06)) 90%, black));
+  background: var(--ts-btn-secondary-hover-bg, color-mix(in srgb, var(--secondary) 90%, black));
 }
 
 .variantOutline {
-  background: var(--ts-btn-outline-bg, var(--background, transparent));
-  color: var(--ts-btn-outline-text, var(--foreground, var(--text, #e2e8f0)));
-  border-color: var(--ts-btn-outline-border, var(--border, #1f2937));
+  background: var(--ts-btn-outline-bg, var(--background));
+  color: var(--ts-btn-outline-text, var(--foreground));
+  border-color: var(--ts-btn-outline-border, var(--border));
 }
 
 .variantOutline:hover:not(:disabled) {
-  background: var(--ts-btn-outline-hover-bg, var(--accent, rgba(255, 255, 255, 0.06)));
-  color: var(--ts-btn-outline-hover-text, var(--accent-foreground, var(--foreground, #e2e8f0)));
+  background: var(--ts-btn-outline-hover-bg, var(--accent));
+  color: var(--ts-btn-outline-hover-text, var(--accent-foreground));
 }
 
 .variantGhost {
   background: transparent;
-  color: var(--ts-btn-ghost-text, var(--muted-foreground, var(--muted, #94a3b8)));
+  color: var(--ts-btn-ghost-text, var(--muted-foreground));
   padding-left: 8px;
   padding-right: 8px;
 }
 
 .variantGhost:hover:not(:disabled) {
-  background: var(--ts-btn-ghost-hover-bg, var(--accent, rgba(255, 255, 255, 0.05)));
-  color: var(--ts-btn-ghost-hover-text, var(--accent-foreground, var(--foreground, #e2e8f0)));
+  background: var(--ts-btn-ghost-hover-bg, var(--accent));
+  color: var(--ts-btn-ghost-hover-text, var(--accent-foreground));
 }
 
 .variantDestructive {
-  background: var(--ts-btn-danger-bg, var(--destructive, #f87171));
-  color: var(--ts-btn-danger-text, var(--destructive-foreground, #fff));
+  background: var(--ts-btn-danger-bg, var(--destructive));
+  color: var(--ts-btn-danger-text, var(--destructive-foreground));
 }
 
 .variantDestructive:hover:not(:disabled) {
@@ -113,7 +113,7 @@
 
 .variantLink {
   background: transparent;
-  color: var(--ts-btn-link-text, var(--primary, #22d3ee));
+  color: var(--ts-btn-link-text, var(--primary));
   border-color: transparent;
   min-height: auto;
   padding: 0;

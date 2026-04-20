@@ -54,10 +54,10 @@
   max-width: min(420px, calc(100vw - 32px));
   padding: 12px 14px;
   border-radius: 10px;
-  border: 1px solid var(--toast-border, #1f2937);
-  background: var(--toast-bg, #111827);
-  color: var(--toast-text, #e2e8f0);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  background: var(--popover);
+  color: var(--popover-foreground);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
   animation: toastSlideIn 180ms ease-out;
 }
 
@@ -108,15 +108,15 @@
   font-size: 12px;
   font-weight: 600;
   border-radius: 6px;
-  border: 1px solid var(--toast-action-border, rgba(0, 0, 0, 0.2));
-  background: var(--toast-action-bg, rgba(0, 0, 0, 0.1));
-  color: var(--toast-text, #e2e8f0);
+  border: 1px solid var(--toast-action-border, var(--border));
+  background: var(--toast-action-bg, color-mix(in srgb, var(--foreground) 8%, transparent));
+  color: var(--toast-text, var(--popover-foreground));
   cursor: pointer;
   transition: background 120ms ease;
 }
 
 .actionButton:hover {
-  background: var(--toast-button-bg, rgba(0, 0, 0, 0.15));
+  background: var(--toast-action-bg, color-mix(in srgb, var(--foreground) 12%, transparent));
 }
 
 .closeButton {
@@ -131,7 +131,7 @@
   border: none;
   border-radius: 4px;
   background: transparent;
-  color: var(--toast-text, #e2e8f0);
+  color: var(--popover-foreground);
   opacity: 0.6;
   cursor: pointer;
   transition: opacity 120ms ease, background 120ms ease;
@@ -139,7 +139,7 @@
 
 .closeButton:hover {
   opacity: 1;
-  background: var(--toast-button-bg, rgba(0, 0, 0, 0.1));
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
 }
 
 .closeButton:focus-visible,

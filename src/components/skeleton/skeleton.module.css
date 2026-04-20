@@ -1,5 +1,5 @@
 .skeleton {
-  background: color-mix(in srgb, var(--muted-foreground, #94a3b8) 14%, var(--background, #0f172a));
+  background: color-mix(in srgb, var(--muted-foreground) 14%, var(--background));
   animation: skeleton-pulse 1.6s ease-in-out infinite;
 }
 

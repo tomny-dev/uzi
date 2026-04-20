@@ -3,9 +3,9 @@
   height: 1rem;
   margin: 0;
   border-radius: 0.25rem;
-  border: 1px solid var(--ts-checkbox-border, var(--primary, var(--border, #1f2937)));
-  background: var(--ts-checkbox-bg, var(--background, #fff));
-  accent-color: var(--ts-checkbox-accent, var(--primary, #0f172a));
+  border: 1px solid var(--ts-checkbox-border, var(--border));
+  background: var(--ts-checkbox-bg, var(--background));
+  accent-color: var(--ts-checkbox-accent, var(--primary));
   cursor: pointer;
 }
 

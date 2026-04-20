@@ -10,25 +10,25 @@
 }
 
 .success {
-  border-color: color-mix(in srgb, var(--success, hsl(142 71% 45%)) 35%, transparent);
-  background: color-mix(in srgb, var(--success, hsl(142 71% 45%)) 10%, transparent);
-  color: color-mix(in srgb, var(--success, hsl(142 71% 45%)) 90%, var(--foreground, #e2e8f0));
+  border-color: color-mix(in srgb, var(--success) 35%, transparent);
+  background: color-mix(in srgb, var(--success) 10%, transparent);
+  color: color-mix(in srgb, var(--success) 90%, var(--foreground));
 }
 
 .error {
-  border-color: color-mix(in srgb, var(--destructive, #f87171) 35%, transparent);
-  background: color-mix(in srgb, var(--destructive, #f87171) 10%, transparent);
-  color: color-mix(in srgb, var(--destructive, #f87171) 90%, var(--foreground, #e2e8f0));
+  border-color: color-mix(in srgb, var(--destructive) 35%, transparent);
+  background: color-mix(in srgb, var(--destructive) 10%, transparent);
+  color: color-mix(in srgb, var(--destructive) 90%, var(--foreground));
 }
 
 .warning {
-  border-color: color-mix(in srgb, var(--warning, hsl(38 92% 50%)) 35%, transparent);
-  background: color-mix(in srgb, var(--warning, hsl(38 92% 50%)) 10%, transparent);
-  color: color-mix(in srgb, var(--warning, hsl(38 92% 50%)) 90%, var(--foreground, #e2e8f0));
+  border-color: color-mix(in srgb, var(--warning) 35%, transparent);
+  background: color-mix(in srgb, var(--warning) 10%, transparent);
+  color: color-mix(in srgb, var(--warning) 90%, var(--foreground));
 }
 
 .info {
-  border-color: color-mix(in srgb, var(--primary, #22d3ee) 35%, transparent);
-  background: color-mix(in srgb, var(--primary, #22d3ee) 10%, transparent);
-  color: color-mix(in srgb, var(--primary, #22d3ee) 90%, var(--foreground, #e2e8f0));
+  border-color: color-mix(in srgb, var(--primary) 35%, transparent);
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  color: color-mix(in srgb, var(--primary) 90%, var(--foreground));
 }
