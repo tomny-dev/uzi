@@ -58,19 +58,16 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
     },
     ref,
   ) => {
-    const internalValue =
-      value === "" && allowEmptyOption ? EMPTY_OPTION_VALUE : value;
-
     return (
-        <div
-          className={cx(
-            styles.wrapper,
-            fullWidth && styles.wrapperFullWidth,
-            className,
-          )}
-        >
+      <div
+        className={cx(
+          styles.wrapper,
+          fullWidth && styles.wrapperFullWidth,
+          className,
+        )}
+      >
         <SelectPrimitive.Root
-          value={internalValue}
+          value={value}
           onValueChange={(nextValue: string) =>
             onChange(nextValue === EMPTY_OPTION_VALUE ? "" : nextValue)
           }
@@ -78,12 +75,12 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
           disabled={disabled}
           required={required}
           autoComplete={autoComplete}
+          form={form}
         >
           <SelectPrimitive.Trigger
             ref={ref}
             id={id}
             className={styles.trigger}
-            form={form}
             title={title}
             aria-label={ariaLabel}
             aria-labelledby={ariaLabelledBy}
