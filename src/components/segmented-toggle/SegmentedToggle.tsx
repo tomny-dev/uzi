@@ -140,7 +140,7 @@ export function SegmentedToggle<T extends string = string>({
           onKeyDown={(event) =>
             handleKeyDown(event, opt.index)
           }
-          className={cx(styles.option, opt.value === value && styles.active)}
+          className={cx(styles.option)}
         >
           <span className={styles.label}>{opt.label}</span>
         </button>
