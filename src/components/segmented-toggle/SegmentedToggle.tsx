@@ -35,7 +35,10 @@ export function SegmentedToggle<T extends string = string>({
   const lastEnabledIndex = [...optionEntries]
     .reverse()
     .find((opt) => !opt.disabled)?.index;
-  const tabbableIndex = selectedIndex >= 0 ? selectedIndex : fallbackIndex;
+  const tabbableIndex =
+    selectedIndex >= 0 && !options[selectedIndex]?.disabled
+      ? selectedIndex
+      : fallbackIndex;
 
   const focusItem = (index: number) => {
     itemRefs.current[index]?.focus();
