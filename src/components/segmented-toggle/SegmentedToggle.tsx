@@ -29,12 +29,9 @@ export function SegmentedToggle<T extends string = string>({
   className,
 }: SegmentedToggleProps<T>) {
   const itemRefs = React.useRef<Array<HTMLButtonElement | null>>([]);
-  const optionEntries = options.map((opt, index) => ({ ...opt, index }));
   const selectedIndex = options.findIndex((opt) => opt.value === value);
   const fallbackIndex = options.findIndex((opt) => !opt.disabled);
-  const lastEnabledIndex = [...optionEntries]
-    .reverse()
-    .find((opt) => !opt.disabled)?.index;
+  const lastEnabledIndex = options.findLastIndex((opt) => !opt.disabled);
   const tabbableIndex =
     selectedIndex >= 0 && !options[selectedIndex]?.disabled
       ? selectedIndex
