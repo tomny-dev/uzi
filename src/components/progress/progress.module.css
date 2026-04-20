@@ -2,7 +2,7 @@
   height: 8px;
   border-radius: 9999px;
   overflow: hidden;
-  background: color-mix(in srgb, var(--border, #1f2937) 60%, transparent);
+  background: color-mix(in srgb, var(--border) 60%, transparent);
 }
 
 .fill {
@@ -11,7 +11,7 @@
   transition: width 0.4s ease;
 }
 
-.tone-default { background: var(--foreground, #e2e8f0); }
-.tone-success { background: var(--success, hsl(142 71% 45%)); }
-.tone-warning { background: var(--warning, hsl(38 92% 50%)); }
-.tone-danger  { background: var(--destructive, #f87171); }
+.tone-default { background: var(--foreground); }
+.tone-success { background: var(--success); }
+.tone-warning { background: var(--warning); }
+.tone-danger  { background: var(--destructive); }

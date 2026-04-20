@@ -3,9 +3,9 @@
   width: 100%;
   min-height: 2.25rem;
   border-radius: 0.5rem;
-  border: 1px solid var(--ts-input-border, var(--input, var(--border, #1f2937)));
-  background: var(--ts-input-bg, var(--background, #fff));
-  color: var(--ts-input-fg, var(--foreground, var(--text, #e2e8f0)));
+  border: 1px solid var(--ts-input-border, var(--input));
+  background: var(--ts-input-bg, var(--background));
+  color: var(--ts-input-fg, var(--foreground));
   padding: 0.25rem 0.75rem;
   font-size: 0.875rem;
   line-height: 1.25rem;
@@ -14,7 +14,7 @@
 }
 
 .input::placeholder {
-  color: var(--ts-input-placeholder, var(--muted-foreground, var(--muted, #94a3b8)));
+  color: var(--ts-input-placeholder, var(--muted-foreground));
 }
 
 .input:focus-visible {

@@ -2,9 +2,9 @@
   position: relative;
   overflow: visible;
   border-radius: var(--ts-card-radius, 12px);
-  border: 1px solid var(--ts-card-border, var(--border, #1f2937));
-  background: var(--ts-card-bg, var(--panel, #111827));
-  color: var(--ts-card-fg, var(--text, #e2e8f0));
+  border: 1px solid var(--ts-card-border, var(--border));
+  background: var(--ts-card-bg, var(--panel));
+  color: var(--ts-card-fg, var(--foreground));
   box-shadow: var(--ts-card-shadow, 0 16px 36px rgba(0, 0, 0, 0.28));
   padding: var(--ts-card-padding, 16px);
   transition:
@@ -15,20 +15,20 @@
 }
 
 .tone-default {
-  --ts-card-bg: var(--panel, #111827);
-  --ts-card-border: var(--border, #1f2937);
+  --ts-card-bg: var(--panel);
+  --ts-card-border: var(--border);
   --ts-card-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
 }
 
 .tone-muted {
-  --ts-card-bg: var(--ts-card-muted-bg, rgba(255, 255, 255, 0.02));
-  --ts-card-border: var(--ts-card-muted-border, rgba(255, 255, 255, 0.06));
+  --ts-card-bg: var(--muted);
+  --ts-card-border: var(--border);
   --ts-card-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
 }
 
 .tone-contrast {
-  --ts-card-bg: var(--ts-card-contrast-bg, #0b1224);
-  --ts-card-border: var(--ts-card-contrast-border, rgba(255, 255, 255, 0.1));
+  --ts-card-bg: var(--ts-card-contrast-bg, color-mix(in srgb, var(--background) 60%, black));
+  --ts-card-border: var(--border);
   --ts-card-shadow: 0 18px 50px rgba(0, 0, 0, 0.32);
 }
 
@@ -39,7 +39,7 @@
 .interactive:hover {
   transform: translateY(-1px);
   box-shadow: 0 22px 60px rgba(0, 0, 0, 0.32);
-  border-color: var(--ts-card-hover-border, color-mix(in srgb, var(--primary, #22d3ee) 40%, transparent));
+  border-color: var(--ts-card-hover-border, color-mix(in srgb, var(--primary) 40%, transparent));
 }
 
 .interactive:focus-within {
@@ -47,18 +47,7 @@
   outline-offset: var(--focus-ring-offset);
 }
 
-.padding-none {
-  --ts-card-padding: 0;
-}
-
-.padding-sm {
-  --ts-card-padding: 10px;
-}
-
-.padding-md {
-  --ts-card-padding: 16px;
-}
-
-.padding-lg {
-  --ts-card-padding: 20px;
-}
+.padding-none { --ts-card-padding: 0; }
+.padding-sm   { --ts-card-padding: 10px; }
+.padding-md   { --ts-card-padding: 16px; }
+.padding-lg   { --ts-card-padding: 20px; }

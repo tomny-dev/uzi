@@ -22,7 +22,7 @@
 .footer {
   margin-top: auto;
   padding-top: 12px;
-  border-top: 1px solid var(--border, #1f2937);
+  border-top: 1px solid var(--border);
 }
 
 .sections {
@@ -50,12 +50,12 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--muted-foreground, #94a3b8);
+  color: var(--muted-foreground);
   opacity: 0.75;
 }
 
 .item {
-  color: var(--foreground, #e2e8f0);
+  color: var(--foreground);
   background: transparent;
   border: none;
   box-shadow: none;
@@ -85,12 +85,12 @@ button.item {
 }
 
 .item:hover {
-  background: color-mix(in srgb, var(--primary, #22d3ee) 10%, transparent);
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
 }
 
 .item.itemActive {
-  background: color-mix(in srgb, var(--primary, #22d3ee) 18%, transparent);
-  color: var(--foreground, #e2e8f0);
+  background: color-mix(in srgb, var(--primary) 18%, transparent);
+  color: var(--foreground);
   font-weight: 700;
 }
 
@@ -110,7 +110,7 @@ button.item {
   width: var(--sidebar-nav-icon-size);
   height: var(--sidebar-nav-icon-size);
   min-width: var(--sidebar-nav-icon-size);
-  color: var(--muted-foreground, #94a3b8);
+  color: var(--muted-foreground);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -132,7 +132,7 @@ button.item {
 }
 
 .item.itemActive .icon {
-  color: var(--primary, #22d3ee);
+  color: var(--primary);
 }
 
 .itemBody {
@@ -160,7 +160,7 @@ button.item {
 }
 
 .description {
-  color: var(--muted-foreground, #94a3b8);
+  color: var(--muted-foreground);
   font-size: 12px;
   line-height: 1.35;
 }
@@ -172,9 +172,9 @@ button.item {
   gap: 6px;
   padding: 4px 8px;
   border-radius: 999px;
-  border: 1px solid var(--border, #1f2937);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--muted-foreground, #94a3b8);
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--foreground) 4%, transparent);
+  color: var(--muted-foreground);
   font-size: 11px;
   letter-spacing: 0.04em;
   text-transform: uppercase;

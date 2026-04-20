@@ -6,8 +6,8 @@
   justify-content: center;
   overflow: hidden;
   border-radius: 999px;
-  background: var(--ts-avatar-bg, var(--muted, rgba(255, 255, 255, 0.08)));
-  color: var(--ts-avatar-fg, var(--muted-foreground, var(--text, #e2e8f0)));
+  background: var(--ts-avatar-bg, var(--muted));
+  color: var(--ts-avatar-fg, var(--muted-foreground));
 }
 
 .size-sm {
@@ -38,8 +38,8 @@
   align-items: center;
   justify-content: center;
   border-radius: inherit;
-  background: var(--ts-avatar-fallback-bg, var(--muted, rgba(255, 255, 255, 0.08)));
-  color: var(--ts-avatar-fallback-fg, var(--muted-foreground, var(--text, #e2e8f0)));
+  background: var(--ts-avatar-fallback-bg, var(--muted));
+  color: var(--ts-avatar-fallback-fg, var(--muted-foreground));
   font-size: 0.85rem;
   font-weight: 700;
   line-height: 1;
