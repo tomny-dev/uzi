@@ -57,7 +57,7 @@
   border: 1px solid var(--border);
   background: var(--popover);
   color: var(--popover-foreground);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
   animation: toastSlideIn 180ms ease-out;
 }
 
