@@ -5,6 +5,7 @@
   background: var(--card);
   padding: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  gap: 2px;
 }
 
 .option {
@@ -17,16 +18,33 @@
   color: var(--muted-foreground);
   border: none;
   cursor: pointer;
-  transition: color 120ms ease;
+  transition:
+    color 120ms ease,
+    background 120ms ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
 
-.option:hover:not(.active) {
+.label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.option:hover:not([data-state="checked"]):not(:disabled) {
   color: var(--foreground);
 }
 
-.option.active {
+.option[data-state="checked"] {
   background: var(--foreground);
   color: var(--background);
+}
+
+.option:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .option:focus-visible {
