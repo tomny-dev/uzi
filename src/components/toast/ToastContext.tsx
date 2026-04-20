@@ -70,6 +70,7 @@ export function ToastProvider({
             type: options.type ?? "info",
             duration: options.duration ?? (options.type === "error" ? 6000 : merged.defaultDuration),
             dismissible: options.dismissible ?? true,
+            copyable: options.copyable ?? false,
             action: options.action,
           },
         ];
@@ -209,6 +210,7 @@ function ToastItem({
   onDismiss: (id: string) => void;
 }) {
   const [open, setOpen] = useState(true);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
   const timerRef = useRef<number | null>(null);
   const startRef = useRef<number>(0);
   const remainingRef = useRef<number>(toast.duration ?? 0);
@@ -218,6 +220,7 @@ function ToastItem({
   const styleVars: CSSProperties = {
     ["--toast-bg" as any]: palette.background,
     ["--toast-border" as any]: palette.border,
+    ["--toast-accent" as any]: palette.accent,
     ["--toast-text" as any]: palette.text,
     ["--toast-action-bg" as any]: palette.actionBg,
     ["--toast-action-border" as any]: palette.actionBorder,
@@ -268,6 +271,16 @@ function ToastItem({
     }
   }, [isPaused, schedule, toast.duration]);
 
+  const handleCopy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(toast.message);
+      setCopyState("copied");
+    } catch {
+      setCopyState("failed");
+    }
+    window.setTimeout(() => setCopyState("idle"), 1800);
+  }, [toast.message]);
+
   const icon = getIcon(toast.type);
 
   return (
@@ -289,10 +302,7 @@ function ToastItem({
         </ToastPrimitive.Description>
         {toast.action && (
           <div className={styles.actions}>
-            <ToastPrimitive.Action
-              asChild
-              altText={toast.action.label}
-            >
+            <ToastPrimitive.Action asChild altText={toast.action.label}>
               <button
                 type="button"
                 className={styles.actionButton}
@@ -307,24 +317,40 @@ function ToastItem({
           </div>
         )}
       </div>
-      {toast.dismissible !== false && (
-        <ToastPrimitive.Close asChild>
+      <div className={styles.controls}>
+        {toast.copyable && (
           <button
             type="button"
-            className={styles.closeButton}
-            aria-label="Dismiss notification"
+            className={styles.iconButton}
+            aria-label="Copy message"
+            onClick={handleCopy}
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-              <path
-                d="M11 3L3 11M3 3l8 8"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
+            {copyState === "copied" ? (
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden>
+                <path d="M2 6.5l3 3 6-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            ) : (
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden>
+                <rect x="4.5" y="1.5" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.25" />
+                <path d="M1.5 5.5v5a1.5 1.5 0 001.5 1.5h5" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" />
+              </svg>
+            )}
           </button>
-        </ToastPrimitive.Close>
-      )}
+        )}
+        {toast.dismissible !== false && (
+          <ToastPrimitive.Close asChild>
+            <button
+              type="button"
+              className={styles.iconButton}
+              aria-label="Dismiss notification"
+            >
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden>
+                <path d="M10 3L3 10M3 3l7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </button>
+          </ToastPrimitive.Close>
+        )}
+      </div>
     </ToastPrimitive.Root>
   );
 }
@@ -333,36 +359,40 @@ function getPalette(type: ToastType) {
   switch (type) {
     case "success":
       return {
-        background: "color-mix(in srgb, var(--success) 15%, var(--popover))",
-        border: "color-mix(in srgb, var(--success) 40%, transparent)",
+        background: "color-mix(in srgb, var(--success) 12%, var(--popover))",
+        border: "color-mix(in srgb, var(--success) 30%, transparent)",
+        accent: "var(--success)",
         text: "var(--popover-foreground)",
-        actionBg: "color-mix(in srgb, var(--success) 12%, transparent)",
-        actionBorder: "color-mix(in srgb, var(--success) 30%, transparent)",
+        actionBg: "color-mix(in srgb, var(--success) 14%, transparent)",
+        actionBorder: "color-mix(in srgb, var(--success) 35%, transparent)",
       };
     case "error":
       return {
-        background: "color-mix(in srgb, var(--destructive) 15%, var(--popover))",
-        border: "color-mix(in srgb, var(--destructive) 40%, transparent)",
+        background: "color-mix(in srgb, var(--destructive) 12%, var(--popover))",
+        border: "color-mix(in srgb, var(--destructive) 30%, transparent)",
+        accent: "var(--destructive)",
         text: "var(--popover-foreground)",
-        actionBg: "color-mix(in srgb, var(--destructive) 12%, transparent)",
-        actionBorder: "color-mix(in srgb, var(--destructive) 30%, transparent)",
+        actionBg: "color-mix(in srgb, var(--destructive) 14%, transparent)",
+        actionBorder: "color-mix(in srgb, var(--destructive) 35%, transparent)",
       };
     case "warning":
       return {
-        background: "color-mix(in srgb, var(--warning) 15%, var(--popover))",
-        border: "color-mix(in srgb, var(--warning) 40%, transparent)",
+        background: "color-mix(in srgb, var(--warning) 12%, var(--popover))",
+        border: "color-mix(in srgb, var(--warning) 30%, transparent)",
+        accent: "var(--warning)",
         text: "var(--popover-foreground)",
-        actionBg: "color-mix(in srgb, var(--warning) 12%, transparent)",
-        actionBorder: "color-mix(in srgb, var(--warning) 30%, transparent)",
+        actionBg: "color-mix(in srgb, var(--warning) 14%, transparent)",
+        actionBorder: "color-mix(in srgb, var(--warning) 35%, transparent)",
       };
     case "info":
     default:
       return {
-        background: "color-mix(in srgb, var(--primary) 15%, var(--popover))",
-        border: "color-mix(in srgb, var(--primary) 40%, transparent)",
+        background: "color-mix(in srgb, var(--primary) 12%, var(--popover))",
+        border: "color-mix(in srgb, var(--primary) 30%, transparent)",
+        accent: "var(--primary)",
         text: "var(--popover-foreground)",
-        actionBg: "color-mix(in srgb, var(--primary) 12%, transparent)",
-        actionBorder: "color-mix(in srgb, var(--primary) 30%, transparent)",
+        actionBg: "color-mix(in srgb, var(--primary) 14%, transparent)",
+        actionBorder: "color-mix(in srgb, var(--primary) 35%, transparent)",
       };
   }
 }
@@ -370,13 +400,29 @@ function getPalette(type: ToastType) {
 function getIcon(type: ToastType) {
   switch (type) {
     case "success":
-      return "OK";
+      return (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+          <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
     case "error":
-      return "X";
+      return (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+          <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+        </svg>
+      );
     case "warning":
-      return "!";
+      return (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+          <path d="M8 3v6M8 11.5v1" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+        </svg>
+      );
     case "info":
     default:
-      return "i";
+      return (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+          <path d="M8 7v5M8 4.5v.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+        </svg>
+      );
   }
 }

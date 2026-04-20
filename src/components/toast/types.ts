@@ -17,6 +17,7 @@ export interface Toast {
   type: ToastType;
   duration?: number;
   dismissible?: boolean;
+  copyable?: boolean;
   action?: {
     label: string;
     onClick: () => void;
@@ -28,6 +29,7 @@ export interface ToastOptions {
   type?: ToastType;
   duration?: number;
   dismissible?: boolean;
+  copyable?: boolean;
   action?: {
     label: string;
     onClick: () => void;
