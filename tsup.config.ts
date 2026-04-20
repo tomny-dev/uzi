@@ -8,12 +8,6 @@ export default defineConfig([
     sourcemap: true,
     clean: true,
     external: ["react", "react-dom"],
-    esbuildOptions(options) {
-      options.loader = {
-        ...options.loader,
-        ".css": "css",
-      };
-    },
     banner: {
       js: '"use client";',
     },

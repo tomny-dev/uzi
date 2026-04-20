@@ -1,4 +1,4 @@
-.button {
+.uziButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -18,100 +18,100 @@
   line-height: 1;
 }
 
-.button:focus-visible {
+.uziButton:focus-visible {
   outline: var(--focus-ring);
   outline-offset: var(--focus-ring-offset);
 }
 
-.button svg {
+.uziButton svg {
   width: 1rem;
   height: 1rem;
   flex-shrink: 0;
 }
 
-.button:disabled {
+.uziButton:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
 
 /* Sizes */
-.size-sm {
+.uziButtonSizeSm {
   font-size: 0.82rem;
   min-height: 2rem;
   padding: 6px 14px;
 }
 
-.size-md {
+.uziButtonSizeMd {
   font-size: 0.95rem;
   min-height: 2.25rem;
   padding: 10px 22px;
 }
 
-.size-lg {
+.uziButtonSizeLg {
   font-size: 1rem;
   min-height: 2.5rem;
   padding: 12px 28px;
 }
 
-.size-icon {
+.uziButtonSizeIcon {
   width: 2.25rem;
   height: 2.25rem;
   padding: 0;
 }
 
 /* Variants */
-.variant-primary {
+.uziButtonVariantPrimary {
   background: var(--ts-btn-primary-bg, var(--primary, #22d3ee));
   color: var(--ts-btn-primary-text, var(--primary-foreground, #0f172a));
 }
 
-.variant-primary:hover:not(:disabled) {
+.uziButtonVariantPrimary:hover:not(:disabled) {
   opacity: 0.88;
 }
 
-.variant-secondary {
+.uziButtonVariantSecondary {
   background: var(--ts-btn-secondary-bg, var(--secondary, rgba(255, 255, 255, 0.06)));
   color: var(--ts-btn-secondary-text, var(--secondary-foreground, var(--text, #e2e8f0)));
   border-color: var(--ts-btn-secondary-border, var(--border, #1f2937));
 }
 
-.variant-secondary:hover:not(:disabled) {
+.uziButtonVariantSecondary:hover:not(:disabled) {
   background: var(--ts-btn-secondary-hover-bg, color-mix(in srgb, var(--secondary, rgba(255, 255, 255, 0.06)) 90%, black));
 }
 
-.variant-outline {
+.uziButtonVariantOutline {
   background: var(--ts-btn-outline-bg, var(--background, transparent));
   color: var(--ts-btn-outline-text, var(--foreground, var(--text, #e2e8f0)));
   border-color: var(--ts-btn-outline-border, var(--border, #1f2937));
 }
 
-.variant-outline:hover:not(:disabled) {
+.uziButtonVariantOutline:hover:not(:disabled) {
   background: var(--ts-btn-outline-hover-bg, var(--accent, rgba(255, 255, 255, 0.06)));
   color: var(--ts-btn-outline-hover-text, var(--accent-foreground, var(--foreground, #e2e8f0)));
 }
 
-.variant-ghost {
+.uziButtonVariantGhost {
   background: transparent;
   color: var(--ts-btn-ghost-text, var(--muted-foreground, var(--muted, #94a3b8)));
   padding-left: 8px;
   padding-right: 8px;
 }
 
-.variant-ghost:hover:not(:disabled) {
+.uziButtonVariantGhost:hover:not(:disabled) {
   background: var(--ts-btn-ghost-hover-bg, var(--accent, rgba(255, 255, 255, 0.05)));
   color: var(--ts-btn-ghost-hover-text, var(--accent-foreground, var(--foreground, #e2e8f0)));
 }
 
-.variant-destructive {
+.uziButtonVariantDestructive {
   background: var(--ts-btn-danger-bg, var(--destructive, #f87171));
   color: var(--ts-btn-danger-text, var(--destructive-foreground, #fff));
 }
 
-.variant-destructive:hover:not(:disabled) {
+.uziButtonVariantDestructive:hover:not(:disabled) {
   opacity: 0.9;
 }
 
-.variant-link {
+.uziButtonVariantLink {
   background: transparent;
   color: var(--ts-btn-link-text, var(--primary, #22d3ee));
   border-color: transparent;
@@ -120,7 +120,7 @@
   border-radius: 0;
 }
 
-.variant-link:hover:not(:disabled) {
+.uziButtonVariantLink:hover:not(:disabled) {
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }

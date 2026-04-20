@@ -1,6 +1,6 @@
 import type { HTMLAttributes } from "react";
 import { cx } from "../../utils/cx";
-import "./progress.module.css";
+import styles from "./progress.module.css";
 
 export type ProgressTone = "default" | "success" | "warning" | "danger";
 
@@ -23,7 +23,7 @@ export function Progress({
   const clamped = Math.max(0, Math.min(100, value));
   return (
     <div
-      className={cx("track", className)}
+      className={cx(styles.track, className)}
       role="progressbar"
       aria-valuenow={clamped}
       aria-valuemin={0}
@@ -32,7 +32,7 @@ export function Progress({
       {...rest}
     >
       <div
-        className={cx("fill", `tone-${tone}`)}
+        className={cx(styles.fill, styles[`tone-${tone}`])}
         style={{ width: `${clamped}%` }}
       />
     </div>

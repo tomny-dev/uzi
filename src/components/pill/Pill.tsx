@@ -11,7 +11,7 @@
  */
 import type { HTMLAttributes, ReactNode } from "react";
 import { cx } from "../../utils/cx";
-import "./pill.module.css";
+import styles from "./pill.module.css";
 
 export type PillTone = "neutral" | "success" | "warning" | "info" | "danger";
 export type PillSize = "sm" | "md";
@@ -39,16 +39,16 @@ export function Pill({
   ...rest
 }: PillProps) {
   const Component: PillElement = as ?? "span";
-  const classes = cx("pill", `tone-${tone}`, `size-${size}`, className);
+  const classes = cx(styles.pill, styles[`tone-${tone}`], styles[`size-${size}`], className);
 
   return (
     <Component className={classes} {...rest}>
       {icon ? (
-        <span className={"icon"} aria-hidden="true">
+        <span className={styles.icon} aria-hidden="true">
           {icon}
         </span>
       ) : null}
-      <span className={"content"}>{children}</span>
+      <span className={styles.content}>{children}</span>
     </Component>
   );
 }

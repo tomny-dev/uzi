@@ -11,7 +11,7 @@
  */
 import type { HTMLAttributes } from "react";
 import { cx } from "../../utils/cx";
-import "./card.module.css";
+import styles from "./card.module.css";
 
 export type CardTone = "default" | "muted" | "contrast";
 export type CardPadding = "none" | "sm" | "md" | "lg";
@@ -42,10 +42,10 @@ export function Card({
   const TONE_CLASS: Record<CardTone, string | null> = { default: null, muted: "tone-muted", contrast: "tone-contrast" };
   const PADDING_CLASS: Record<CardPadding, string> = { none: "padding-none", sm: "padding-sm", md: "padding-md", lg: "padding-lg" };
   const classes = cx(
-    "card",
-    TONE_CLASS[tone],
-    PADDING_CLASS[padding],
-    interactive && "interactive",
+    styles.card,
+    TONE_CLASS[tone] ? styles[TONE_CLASS[tone]] : null,
+    styles[PADDING_CLASS[padding]],
+    interactive && styles.interactive,
     className,
   );
 

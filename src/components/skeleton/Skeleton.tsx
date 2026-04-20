@@ -2,7 +2,7 @@
 
 import type { HTMLAttributes } from "react";
 import { cx } from "../../utils/cx";
-import "./skeleton.module.css";
+import styles from "./skeleton.module.css";
 
 export type SkeletonProps = HTMLAttributes<HTMLDivElement> & {
   /** Width as a CSS value. */
@@ -23,7 +23,7 @@ export function Skeleton({
 }: SkeletonProps) {
   return (
     <div
-      className={cx("skeleton", `radius-${radius}`, className)}
+      className={cx(styles.skeleton, styles[`radius-${radius}`], className)}
       style={{ width, height, ...style }}
       aria-hidden="true"
       {...rest}

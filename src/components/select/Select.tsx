@@ -62,7 +62,13 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
       value === "" && allowEmptyOption ? EMPTY_OPTION_VALUE : value;
 
     return (
-      <div className={cx("wrapper", fullWidth && "wrapper-fullWidth", className)}>
+      <div
+        className={cx(
+          "uziSelectWrapper",
+          fullWidth && "uziSelectWrapperFullWidth",
+          className,
+        )}
+      >
         <SelectPrimitive.Root
           value={internalValue}
           onValueChange={(nextValue: string) =>
@@ -76,7 +82,7 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
           <SelectPrimitive.Trigger
             ref={ref}
             id={id}
-            className="select"
+            className="uziSelectTrigger"
             form={form}
             title={title}
             aria-label={ariaLabel}
@@ -84,8 +90,14 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             onBlur={onBlur}
             onFocus={onFocus}
           >
-            <SelectPrimitive.Value className="value" placeholder={placeholder} />
-            <SelectPrimitive.Icon className="chevron" aria-hidden="true">
+            <SelectPrimitive.Value
+              className="uziSelectValue"
+              placeholder={placeholder}
+            />
+            <SelectPrimitive.Icon
+              className="uziSelectChevron"
+              aria-hidden="true"
+            >
               <svg
                 viewBox="0 0 10 10"
                 fill="none"
@@ -106,25 +118,25 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
 
           <SelectPrimitive.Portal>
             <SelectPrimitive.Content
-              className="content"
+              className="uziSelectContent"
               position="popper"
               sideOffset={4}
               align="start"
             >
-              <SelectPrimitive.Viewport className="viewport">
+              <SelectPrimitive.Viewport className="uziSelectViewport">
                 {placeholder && allowEmptyOption ? (
                   <SelectPrimitive.Item
                     value={EMPTY_OPTION_VALUE}
-                    className="item"
+                    className="uziSelectItem"
                   >
-                    <span className="indicator">
+                    <span className="uziSelectIndicator">
                       <SelectPrimitive.ItemIndicator>
                         <svg
                           viewBox="0 0 16 16"
                           width="16"
                           height="16"
                           aria-hidden="true"
-                          className="indicatorIcon"
+                          className="uziSelectIndicatorIcon"
                         >
                           <path
                             d="M3.5 8.5 6.5 11.5 12.5 4.5"
@@ -146,16 +158,16 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
                     key={opt.value}
                     value={opt.value}
                     disabled={opt.disabled}
-                    className="item"
+                    className="uziSelectItem"
                   >
-                    <span className="indicator">
+                    <span className="uziSelectIndicator">
                       <SelectPrimitive.ItemIndicator>
                         <svg
                           viewBox="0 0 16 16"
                           width="16"
                           height="16"
                           aria-hidden="true"
-                          className="indicatorIcon"
+                          className="uziSelectIndicatorIcon"
                         >
                           <path
                             d="M3.5 8.5 6.5 11.5 12.5 4.5"

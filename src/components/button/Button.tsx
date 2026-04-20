@@ -30,21 +30,21 @@ type AsAnchor = BaseProps &
 export type ButtonProps = AsButton | AsAnchor;
 
 const variantClass: Record<ButtonVariant, string> = {
-  default: "variant-primary",
-  primary: "variant-primary",
-  secondary: "variant-secondary",
-  outline: "variant-outline",
-  ghost: "variant-ghost",
-  destructive: "variant-destructive",
-  link: "variant-link",
+  default: "uziButtonVariantPrimary",
+  primary: "uziButtonVariantPrimary",
+  secondary: "uziButtonVariantSecondary",
+  outline: "uziButtonVariantOutline",
+  ghost: "uziButtonVariantGhost",
+  destructive: "uziButtonVariantDestructive",
+  link: "uziButtonVariantLink",
 };
 
 const sizeClass: Record<ButtonSize, string> = {
-  default: "size-md",
-  sm: "size-sm",
-  md: "size-md",
-  lg: "size-lg",
-  icon: "size-icon",
+  default: "uziButtonSizeMd",
+  sm: "uziButtonSizeSm",
+  md: "uziButtonSizeMd",
+  lg: "uziButtonSizeLg",
+  icon: "uziButtonSizeIcon",
 };
 
 export function Button({
@@ -57,7 +57,7 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const classes = cx(
-    "button",
+    "uziButton",
     variantClass[variant],
     sizeClass[size],
     className,

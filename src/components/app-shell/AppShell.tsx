@@ -180,7 +180,11 @@ export function AppShell({
     className,
   );
 
-  const sidebarClasses = cx("appShellSidebar", sidebarOpen && "appShellSidebarOpen", sidebarClassName);
+  const sidebarClasses = cx(
+    "appShellSidebar",
+    sidebarOpen && "appShellSidebarOpen",
+    sidebarClassName,
+  );
 
   return (
     <div
@@ -196,7 +200,7 @@ export function AppShell({
           <button
             ref={hamburgerRef}
             type="button"
-            className={"appShellHamburger"}
+            className="appShellHamburger"
             onClick={toggleSidebar}
             aria-label={hamburgerLabel}
             aria-expanded={sidebarOpen}
@@ -216,7 +220,12 @@ export function AppShell({
         themeToggleProps={themeToggleProps}
       />
       {!isDesktop && sidebarOpen && (
-        <div className={"appShellBackdrop"} onClick={() => setSidebarOpen(false)} onTouchStart={() => setSidebarOpen(false)} aria-hidden="true" />
+        <div
+          className="appShellBackdrop"
+          onClick={() => setSidebarOpen(false)}
+          onTouchStart={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
       )}
       <aside ref={sidebarRef} id={sidebarId} className={sidebarClasses} aria-label="Sidebar navigation">
         {sidebar}

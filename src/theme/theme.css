@@ -3,6 +3,26 @@
   --focus-ring-offset: 2px;
   --success: hsl(142 71% 45%);
   --warning: hsl(38 92% 50%);
+  --uzi-control-min-height: 2.125rem;
+  --uzi-control-radius: 8px;
+  --uzi-control-padding-y: 6px;
+  --uzi-control-padding-x: 14px;
+  --uzi-control-padding-x-compact: 12px;
+  --uzi-control-font-size: 0.85rem;
+  --uzi-control-line-height: 1.25rem;
+  --uzi-control-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 1px 2px rgba(0, 0, 0, 0.12);
+  --uzi-control-shadow-hover:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 2px 8px rgba(0, 0, 0, 0.16);
+  --uzi-menu-radius: 0.625rem;
+  --uzi-menu-padding: 0.25rem;
+  --uzi-menu-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  --uzi-menu-item-radius: 0.5rem;
+  --uzi-menu-item-gap: 0.5rem;
+  --uzi-menu-item-padding-y: 0.5rem;
+  --uzi-menu-item-padding-x: 0.625rem;
 }
 
 :root,

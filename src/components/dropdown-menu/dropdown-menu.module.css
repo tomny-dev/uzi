@@ -1,62 +1,62 @@
-.content {
+.uziDropdownMenuContent {
   z-index: 50;
   min-width: 8rem;
   max-height: var(--radix-dropdown-menu-content-available-height);
   overflow-x: hidden;
   overflow-y: auto;
   border: 1px solid var(--ts-menu-border, var(--border, #1f2937));
-  border-radius: 0.5rem;
+  border-radius: var(--uzi-menu-radius);
   background: var(--ts-menu-bg, var(--popover, var(--panel, #111827)));
   color: var(--ts-menu-fg, var(--popover-foreground, var(--text, #e2e8f0)));
-  padding: 0.25rem;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  padding: var(--uzi-menu-padding);
+  box-shadow: var(--uzi-menu-shadow);
   transform-origin: var(--radix-dropdown-menu-content-transform-origin);
   animation: menuFadeIn 140ms ease;
 }
 
-.item {
+.uziDropdownMenuItem {
   position: relative;
   display: flex;
   width: 100%;
   cursor: default;
   user-select: none;
   align-items: center;
-  gap: 0.5rem;
-  border-radius: 0.375rem;
-  padding: 0.375rem 0.5rem;
+  gap: var(--uzi-menu-item-gap);
+  border-radius: var(--uzi-menu-item-radius);
+  padding: var(--uzi-menu-item-padding-y) var(--uzi-menu-item-padding-x);
   font-size: 0.875rem;
   line-height: 1.25rem;
   outline: none;
 }
 
-.item[data-inset="true"] {
+.uziDropdownMenuItem[data-inset="true"] {
   padding-left: 2rem;
 }
 
-.item[data-highlighted] {
+.uziDropdownMenuItem[data-highlighted] {
   background: var(--ts-menu-hover-bg, var(--accent, rgba(255, 255, 255, 0.06)));
   color: var(--ts-menu-hover-fg, var(--accent-foreground, var(--foreground, #e2e8f0)));
 }
 
-.item[data-disabled] {
+.uziDropdownMenuItem[data-disabled] {
   pointer-events: none;
   opacity: 0.5;
 }
 
-.destructive {
+.uziDropdownMenuItemDestructive {
   color: var(--ts-menu-danger, var(--destructive, #f87171));
 }
 
-.destructive[data-highlighted] {
+.uziDropdownMenuItemDestructive[data-highlighted] {
   background: color-mix(in srgb, var(--destructive, #f87171) 15%, transparent);
   color: var(--ts-menu-danger-fg, var(--destructive, #f87171));
 }
 
-.insetItem {
+.uziDropdownMenuInsetItem {
   padding-left: 2rem;
 }
 
-.indicator {
+.uziDropdownMenuIndicator {
   position: absolute;
   left: 0.5rem;
   display: inline-flex;
@@ -67,11 +67,11 @@
   color: currentColor;
 }
 
-.indicatorIcon {
+.uziDropdownMenuIndicatorIcon {
   display: block;
 }
 
-.radioDot {
+.uziDropdownMenuRadioDot {
   display: block;
   width: 0.5rem;
   height: 0.5rem;
@@ -79,24 +79,24 @@
   background: currentColor;
 }
 
-.label {
-  padding: 0.375rem 0.5rem;
+.uziDropdownMenuLabel {
+  padding: var(--uzi-menu-item-padding-y) var(--uzi-menu-item-padding-x);
   font-size: 0.875rem;
   font-weight: 600;
   line-height: 1.25rem;
 }
 
-.label[data-inset="true"] {
+.uziDropdownMenuLabel[data-inset="true"] {
   padding-left: 2rem;
 }
 
-.separator {
+.uziDropdownMenuSeparator {
   height: 1px;
   margin: 0.25rem -0.25rem;
   background: var(--ts-menu-separator, var(--border, rgba(255, 255, 255, 0.12)));
 }
 
-.chevron {
+.uziDropdownMenuChevron {
   margin-left: auto;
   flex-shrink: 0;
 }

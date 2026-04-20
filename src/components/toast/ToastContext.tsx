@@ -21,7 +21,7 @@ import type {
   ToastPosition,
   ToastType,
 } from "./types";
-import "./toast.module.css";
+import styles from "./toast.module.css";
 
 /** Default provider configuration. */
 const DEFAULT_CONFIG: Required<ToastConfig> = {
@@ -189,10 +189,10 @@ function ToastContainer({
         <ToastItem key={toast.id} toast={toast} isPaused={isPaused} onDismiss={onDismiss} />
       ))}
       <ToastPrimitive.Viewport
-        className={cx("stack", posClass)}
+        className={cx(styles.stack, styles[posClass])}
         label="Notifications"
-      onMouseEnter={() => pauseOnHover && onPauseChange(true)}
-      onMouseLeave={() => pauseOnHover && onPauseChange(false)}
+        onMouseEnter={() => pauseOnHover && onPauseChange(true)}
+        onMouseLeave={() => pauseOnHover && onPauseChange(false)}
       />
     </>
   );
@@ -279,25 +279,25 @@ function ToastItem({
         if (!nextOpen) triggerDismiss();
       }}
       duration={2147483647}
-      className={"toast"}
+      className={styles.toast}
       style={styleVars}
     >
-      <span className={"icon"} aria-hidden>
+      <span className={styles.icon} aria-hidden>
         {icon}
       </span>
-      <div className={"body"}>
-        <ToastPrimitive.Description className={"message"}>
+      <div className={styles.body}>
+        <ToastPrimitive.Description className={styles.message}>
           {toast.message}
         </ToastPrimitive.Description>
         {toast.action && (
-          <div className={"actions"}>
+          <div className={styles.actions}>
             <ToastPrimitive.Action
               asChild
               altText={toast.action.label}
             >
               <button
                 type="button"
-                className={"actionButton"}
+                className={styles.actionButton}
                 onClick={() => {
                   toast.action?.onClick();
                   triggerDismiss();
@@ -313,7 +313,7 @@ function ToastItem({
         <ToastPrimitive.Close asChild>
           <button
             type="button"
-            className={"closeButton"}
+            className={styles.closeButton}
             aria-label="Dismiss notification"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>

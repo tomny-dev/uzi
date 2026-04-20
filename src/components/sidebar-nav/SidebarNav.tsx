@@ -76,21 +76,25 @@ export function SidebarNav({
 
   return (
     <nav
-      className={cx("uziSidebarNav", collapsed && "uziSidebarNavCollapsed", className)}
+      className={cx(
+        "sidebarNav",
+        collapsed && "sidebarNavCollapsed",
+        className,
+      )}
       aria-label={ariaLabel}
       style={style}
     >
-      {header ? <div className={"uziSidebarNavHeader"}>{header}</div> : null}
-      <div className={"uziSidebarNavSections"}>
+      {header ? <div className="header">{header}</div> : null}
+      <div className="sections">
         {resolvedSections.map((section, sectionIndex) => (
           <div
             key={section.id ?? `section-${sectionIndex}`}
-            className={cx("uziSidebarNavSection", sectionClassName)}
+            className={cx("section", sectionClassName)}
           >
             {section.label && !collapsed ? (
-              <div className={"uziSidebarNavSectionLabel"}>{section.label}</div>
+              <div className="sectionLabel">{section.label}</div>
             ) : null}
-            <div className={"uziSidebarNavSectionItems"}>
+            <div className="sectionItems">
               {section.items.map((item, itemIndex) => (
                 <SidebarNavEntry
                   key={`${section.id ?? sectionIndex}-${item.href ?? item.title ?? itemIndex}`}
@@ -105,7 +109,7 @@ export function SidebarNav({
           </div>
         ))}
       </div>
-      {footer ? <div className={"uziSidebarNavFooter"}>{footer}</div> : null}
+      {footer ? <div className="footer">{footer}</div> : null}
     </nav>
   );
 }
@@ -128,22 +132,22 @@ function SidebarNavEntry({
   const rel = item.rel ?? (item.target === "_blank" ? "noreferrer" : undefined);
   const title = item.title ?? (typeof item.label === "string" ? item.label : undefined);
   const classes = cx(
-    "uziSidebarNavItem",
-    active && "uziSidebarNavItemActive",
-    collapsed && "uziSidebarNavItemCollapsed",
-    item.disabled && "uziSidebarNavItemDisabled",
+    "item",
+    active && "itemActive",
+    collapsed && "itemCollapsed",
+    item.disabled && "itemDisabled",
     itemClassName,
   );
   const content = (
     <>
-      {item.icon && <span className={"uziSidebarNavIcon"}>{item.icon}</span>}
+      {item.icon && <span className="icon">{item.icon}</span>}
       {!collapsed ? (
-        <span className={"uziSidebarNavItemBody"}>
-          <span className={"uziSidebarNavLabelRow"}>
-            <span className={"uziSidebarNavLabel"}>{item.label}</span>
-            {item.badge && <span className={"uziSidebarNavBadge"}>{item.badge}</span>}
+        <span className="itemBody">
+          <span className="labelRow">
+            <span className="label">{item.label}</span>
+            {item.badge && <span className="badge">{item.badge}</span>}
           </span>
-          {item.description ? <span className={"uziSidebarNavDescription"}>{item.description}</span> : null}
+          {item.description ? <span className="description">{item.description}</span> : null}
         </span>
       ) : null}
     </>

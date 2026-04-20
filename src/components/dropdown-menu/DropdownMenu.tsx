@@ -50,7 +50,7 @@ export function DropdownMenuContent({
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuPrimitive.Content
         sideOffset={sideOffset}
-        className={cx("content", className)}
+        className={cx("uziDropdownMenuContent", className)}
         {...props}
       />
     </DropdownMenuPrimitive.Portal>
@@ -70,8 +70,8 @@ export function DropdownMenuItem({
     <DropdownMenuPrimitive.Item
       data-inset={inset ? "true" : undefined}
       className={cx(
-        "item",
-        variant === "destructive" && "destructive",
+        "uziDropdownMenuItem",
+        variant === "destructive" && "uziDropdownMenuItemDestructive",
         className,
       )}
       {...props}
@@ -86,17 +86,21 @@ export function DropdownMenuCheckboxItem({
 }: React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem>) {
   return (
     <DropdownMenuPrimitive.CheckboxItem
-      className={cx("item", "insetItem", className)}
+      className={cx(
+        "uziDropdownMenuItem",
+        "uziDropdownMenuInsetItem",
+        className,
+      )}
       {...props}
     >
-      <span className={"indicator"}>
+      <span className="uziDropdownMenuIndicator">
         <DropdownMenuPrimitive.ItemIndicator>
           <svg
             viewBox="0 0 16 16"
             width="16"
             height="16"
             aria-hidden="true"
-            className={"indicatorIcon"}
+            className="uziDropdownMenuIndicatorIcon"
           >
             <path
               d="M3.5 8.5 6.5 11.5 12.5 4.5"
@@ -121,12 +125,16 @@ export function DropdownMenuRadioItem({
 }: React.ComponentProps<typeof DropdownMenuPrimitive.RadioItem>) {
   return (
     <DropdownMenuPrimitive.RadioItem
-      className={cx("item", "insetItem", className)}
+      className={cx(
+        "uziDropdownMenuItem",
+        "uziDropdownMenuInsetItem",
+        className,
+      )}
       {...props}
     >
-      <span className={"indicator"}>
+      <span className="uziDropdownMenuIndicator">
         <DropdownMenuPrimitive.ItemIndicator>
-          <span className={"radioDot"} />
+          <span className="uziDropdownMenuRadioDot" />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -144,7 +152,7 @@ export function DropdownMenuLabel({
   return (
     <DropdownMenuPrimitive.Label
       data-inset={inset ? "true" : undefined}
-      className={cx("label", className)}
+      className={cx("uziDropdownMenuLabel", className)}
       {...props}
     />
   );
@@ -156,7 +164,7 @@ export function DropdownMenuSeparator({
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Separator>) {
   return (
     <DropdownMenuPrimitive.Separator
-      className={cx("separator", className)}
+      className={cx("uziDropdownMenuSeparator", className)}
       {...props}
     />
   );
@@ -173,7 +181,7 @@ export function DropdownMenuSubTrigger({
   return (
     <DropdownMenuPrimitive.SubTrigger
       data-inset={inset ? "true" : undefined}
-      className={cx("item", className)}
+      className={cx("uziDropdownMenuItem", className)}
       {...props}
     >
       {children}
@@ -182,7 +190,7 @@ export function DropdownMenuSubTrigger({
         width="16"
         height="16"
         aria-hidden="true"
-        className={"chevron"}
+        className="uziDropdownMenuChevron"
       >
         <path
           d="M6 3.5 10.5 8 6 12.5"
@@ -203,7 +211,7 @@ export function DropdownMenuSubContent({
 }: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>) {
   return (
     <DropdownMenuPrimitive.SubContent
-      className={cx("content", className)}
+      className={cx("uziDropdownMenuContent", className)}
       {...props}
     />
   );
