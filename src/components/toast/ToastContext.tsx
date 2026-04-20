@@ -281,6 +281,7 @@ function ToastItem({
   const handleCopy = useCallback(async () => {
     if (copyTimerRef.current) window.clearTimeout(copyTimerRef.current);
     try {
+      if (!navigator.clipboard) throw new Error("Clipboard API unavailable");
       await navigator.clipboard.writeText(toast.message);
       setCopyState("copied");
     } catch {
