@@ -115,7 +115,7 @@ export function SegmentedToggle<T extends string = string>({
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
     >
-      {optionEntries.map((opt) => (
+      {options.map((opt, index) => (
         <button
           key={opt.value}
           ref={(node) => {
