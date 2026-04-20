@@ -135,7 +135,7 @@
 }
 
 .actionButton:hover {
-  background: color-mix(in srgb, var(--toast-action-bg, var(--foreground)) 80%, transparent);
+  background: color-mix(in srgb, var(--toast-action-bg, var(--foreground)), var(--foreground) 10%);
 }
 
 .controls {
