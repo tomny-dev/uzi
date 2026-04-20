@@ -119,7 +119,7 @@ export function SegmentedToggle<T extends string = string>({
         <button
           key={opt.value}
           ref={(node) => {
-            itemRefs.current[opt.index] = node;
+            itemRefs.current[index] = node;
           }}
           type="button"
           role="radio"
