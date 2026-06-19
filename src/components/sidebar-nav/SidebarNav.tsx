@@ -12,6 +12,7 @@ export type SidebarNavItem = {
   badge?: ReactNode;
   active?: boolean;
   disabled?: boolean;
+  exact?: boolean;
   title?: string;
   target?: AnchorHTMLAttributes<HTMLAnchorElement>["target"];
   rel?: AnchorHTMLAttributes<HTMLAnchorElement>["rel"];
@@ -29,6 +30,7 @@ export type SidebarNavProps = {
   sections?: SidebarNavSection[];
   currentPath?: string;
   getIsActive?: (item: SidebarNavItem, currentPath?: string) => boolean;
+  matchStrategy?: "prefix" | "most-specific";
   onItemClick?: (item: SidebarNavItem) => void;
   header?: ReactNode;
   footer?: ReactNode;
@@ -40,7 +42,7 @@ export type SidebarNavProps = {
   sectionClassName?: string;
 };
 
-const defaultIsActive = (item: SidebarNavItem, path?: string) => {
+const isActivePrefix = (item: SidebarNavItem, path?: string) => {
   if (item.active !== undefined) return item.active;
   if (!item.href) return false;
   if (!path) return false;
@@ -48,11 +50,46 @@ const defaultIsActive = (item: SidebarNavItem, path?: string) => {
   return path.startsWith(item.href);
 };
 
+const isActiveExact = (item: SidebarNavItem, path?: string) => {
+  if (item.active !== undefined) return item.active;
+  if (!item.href) return false;
+  if (!path) return false;
+  return item.href === path || path.startsWith(item.href.endsWith("/") ? item.href : `${item.href}/`);
+};
+
+const findMostSpecific = (items: SidebarNavItem[], currentPath?: string): Set<string> => {
+  const result = new Set<string>();
+  if (!currentPath) return result;
+
+  // Collect all items that could match the path
+  const matchingItems = items.filter(item => item.href && isActivePrefix(item, currentPath));
+
+  if (matchingItems.length === 0) return result;
+
+  // Find the longest href among prefix matches
+  let maxLen = 0;
+  for (const item of matchingItems) {
+    if (!item.href) continue;
+    const len = item.href.endsWith("/") ? item.href.length - 1 : item.href.length;
+    if (len > maxLen) maxLen = len;
+  }
+
+  // Only the items with the longest href are active
+  for (const item of matchingItems) {
+    if (!item.href) continue;
+    const len = item.href.endsWith("/") ? item.href.length - 1 : item.href.length;
+    if (len === maxLen) result.add(item.href);
+  }
+
+  return result;
+};
+
 export function SidebarNav({
   items = [],
   sections,
   currentPath,
-  getIsActive = defaultIsActive,
+  getIsActive,
+  matchStrategy = "prefix",
   onItemClick,
   header,
   footer,
@@ -66,6 +103,27 @@ export function SidebarNav({
   const resolvedSections = sections?.length
     ? sections
     : [{ id: "default", items }];
+
+  // Build the default isActive function based on matchStrategy
+  let defaultIsActiveFn: (item: SidebarNavItem, path?: string) => boolean;
+  if (matchStrategy === "most-specific") {
+    const mostSpecificHrefs = findMostSpecific(items, currentPath);
+    defaultIsActiveFn = (item: SidebarNavItem, _path?: string) => {
+      if (item.active !== undefined) return item.active;
+      if (item.exact) return isActiveExact(item, currentPath);
+      if (!item.href) return false;
+      return mostSpecificHrefs.has(item.href);
+    };
+  } else {
+    defaultIsActiveFn = (item: SidebarNavItem, path?: string) => {
+      if (item.active !== undefined) return item.active;
+      if (item.exact) return isActiveExact(item, path);
+      return isActivePrefix(item, path);
+    };
+  }
+
+  const resolvedGetIsActive = getIsActive ?? defaultIsActiveFn;
+
   const style =
     iconSize !== undefined
       ? ({
@@ -99,7 +157,7 @@ export function SidebarNav({
                 <SidebarNavEntry
                   key={`${section.id ?? sectionIndex}-${item.href ?? item.title ?? itemIndex}`}
                   item={item}
-                  active={getIsActive(item, currentPath)}
+                  active={resolvedGetIsActive(item, currentPath)}
                   collapsed={collapsed}
                   itemClassName={itemClassName}
                   onItemClick={onItemClick}
