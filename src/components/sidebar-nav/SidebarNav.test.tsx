@@ -194,7 +194,7 @@ describe("SidebarNav active matching", () => {
       expect(isActive(models)).toBe(true);
     });
 
-    it("does NOT match on child routes (exact means only this page and direct children)", () => {
+    it("matches its own exact path", () => {
       // exact: true with isActiveExact allows the href itself AND paths starting with href/
       const items = [
         { href: "/admin/models", label: "Models", exact: true },
@@ -213,7 +213,7 @@ describe("SidebarNav active matching", () => {
       expect(isActive(models)).toBe(false);
     });
 
-    it("does not match on deeper nested child route", () => {
+    it("matches on deeper nested child route", () => {
       // isActiveExact: item.href === path OR path.startsWith(item.href + "/")
       // For href="/admin/models" and path="/admin/models/123": startsWith("/admin/models/") = true
       const items = [

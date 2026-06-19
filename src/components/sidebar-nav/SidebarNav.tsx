@@ -54,6 +54,8 @@ const isActiveExact = (item: SidebarNavItem, path?: string) => {
   if (item.active !== undefined) return item.active;
   if (!item.href) return false;
   if (!path) return false;
+  // Root href "/" must match exactly — otherwise every path would match.
+  if (item.href === "/") return path === "/";
   return item.href === path || path.startsWith(item.href.endsWith("/") ? item.href : `${item.href}/`);
 };
 
@@ -61,8 +63,11 @@ const findMostSpecific = (items: SidebarNavItem[], currentPath?: string): Set<st
   const result = new Set<string>();
   if (!currentPath) return result;
 
-  // Collect all items that could match the path
-  const matchingItems = items.filter(item => item.href && isActivePrefix(item, currentPath));
+  // Collect all items that could match the path — use isActiveExact for exact-flagged items.
+  const matchingItems = items.filter(item => {
+    if (!item.href) return false;
+    return item.exact ? isActiveExact(item, currentPath) : isActivePrefix(item, currentPath);
+  });
 
   if (matchingItems.length === 0) return result;
 
@@ -107,7 +112,8 @@ export function SidebarNav({
   // Build the default isActive function based on matchStrategy
   let defaultIsActiveFn: (item: SidebarNavItem, path?: string) => boolean;
   if (matchStrategy === "most-specific") {
-    const mostSpecificHrefs = findMostSpecific(items, currentPath);
+    const allItems = resolvedSections.flatMap(section => section.items);
+    const mostSpecificHrefs = findMostSpecific(allItems, currentPath);
     defaultIsActiveFn = (item: SidebarNavItem, _path?: string) => {
       if (item.active !== undefined) return item.active;
       if (item.exact) return isActiveExact(item, currentPath);
