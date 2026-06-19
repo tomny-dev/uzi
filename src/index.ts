@@ -68,7 +68,7 @@ export {
 export type { AppShellProps } from "./components/app-shell/AppShell";
 export { AppShell } from "./components/app-shell/AppShell";
 
-export type { SidebarNavItem, SidebarNavProps, SidebarNavSection } from "./components/sidebar-nav/SidebarNav";
+export type { SidebarNavItem, SidebarNavProps, SidebarNavSection, MatchStrategy } from "./components/sidebar-nav/SidebarNav";
 export { SidebarNav } from "./components/sidebar-nav/SidebarNav";
 
 export type { TopBarProps } from "./components/top-bar/TopBar";

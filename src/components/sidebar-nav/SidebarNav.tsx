@@ -24,11 +24,14 @@ export type SidebarNavSection = {
   items: SidebarNavItem[];
 };
 
+export type MatchStrategy = "prefix" | "most-specific";
+
 export type SidebarNavProps = {
   items?: SidebarNavItem[];
   sections?: SidebarNavSection[];
   currentPath?: string;
   getIsActive?: (item: SidebarNavItem, currentPath?: string) => boolean;
+  matchStrategy?: MatchStrategy;
   onItemClick?: (item: SidebarNavItem) => void;
   header?: ReactNode;
   footer?: ReactNode;
@@ -48,11 +51,36 @@ const defaultIsActive = (item: SidebarNavItem, path?: string) => {
   return path.startsWith(item.href);
 };
 
+const matchesPath = (href: string, currentPath: string): boolean => {
+  if (href === "/") return currentPath === "/";
+  const normalizedHref = href.endsWith("/") ? href : `${href}/`;
+  return currentPath === href || currentPath.startsWith(normalizedHref);
+};
+
+const resolveIsActive = (
+  allHrefs: string[],
+  strategy: MatchStrategy,
+): ((item: SidebarNavItem) => boolean) => {
+  if (strategy !== "most-specific") {
+    return defaultIsActive;
+  }
+
+  return (item: SidebarNavItem): boolean => {
+    if (item.active !== undefined) return item.active;
+    if (!item.href) return false;
+
+    const matchingHrefs = allHrefs.filter((href) => matchesPath(href, item.href!));
+    const longestHref = matchingHrefs.sort((a, b) => b.length - a.length)[0];
+    return item.href === longestHref;
+  };
+};
+
 export function SidebarNav({
   items = [],
   sections,
   currentPath,
-  getIsActive = defaultIsActive,
+  getIsActive: customGetIsActive,
+  matchStrategy = "prefix",
   onItemClick,
   header,
   footer,
@@ -66,6 +94,15 @@ export function SidebarNav({
   const resolvedSections = sections?.length
     ? sections
     : [{ id: "default", items }];
+
+  // Collect all hrefs from all items for most-specific matching
+  const allHrefs = resolvedSections.flatMap((section) =>
+    section.items.map((item) => item.href).filter((href): href is string => !!href),
+  );
+
+  // Build the active-state function based on strategy (only when no custom override)
+  const isActiveFn = customGetIsActive ?? resolveIsActive(allHrefs, matchStrategy);
+
   const style =
     iconSize !== undefined
       ? ({
@@ -99,7 +136,7 @@ export function SidebarNav({
                 <SidebarNavEntry
                   key={`${section.id ?? sectionIndex}-${item.href ?? item.title ?? itemIndex}`}
                   item={item}
-                  active={getIsActive(item, currentPath)}
+                  active={isActiveFn(item)}
                   collapsed={collapsed}
                   itemClassName={itemClassName}
                   onItemClick={onItemClick}
