@@ -13,10 +13,11 @@ export type SidebarNavItem = {
   active?: boolean;
   disabled?: boolean;
   /**
-   * When `matchStrategy` is `"most-specific"`, exact-flagged items are checked via
-   * `isActiveExact` (exact match or child-path match) rather than participating in the
-   * length-based tiebreaker. When `matchStrategy` is `"prefix"` (default), this flag still
-   * causes `isActiveExact` to be used for that individual item regardless of the global strategy.
+   * When `matchStrategy` is `"most-specific"`, exact-flagged items participate in the
+   * length-based tiebreaker like all other items, but are filtered using `isActiveExact`
+   * (exact match or child-path match) rather than prefix matching. When `matchStrategy`
+   * is `"prefix"` (default), this flag still causes `isActiveExact` to be used for that
+   * individual item regardless of the global strategy.
    */
   exact?: boolean;
   title?: string;
@@ -70,9 +71,10 @@ const findMostSpecific = (items: SidebarNavItem[], currentPath?: string): Set<st
   if (!currentPath) return result;
 
   // Collect all items that could match the path — use isActiveExact for exact-flagged items.
-  // Exclude root "/" from prefix matching to avoid confusion (it would match every path).
   const matchingItems = items.filter(item => {
-    if (!item.href || item.href === "/") return false;
+    if (!item.href) return false;
+    // Root "/" only matches when currentPath is exactly "/".
+    if (item.href === "/") return currentPath === "/";
     return item.exact ? isActiveExact(item, currentPath) : isActivePrefix(item, currentPath);
   });
 
