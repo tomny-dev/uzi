@@ -1,6 +1,6 @@
 "use client";
 
-import { type AnchorHTMLAttributes, type CSSProperties, type ReactNode } from "react";
+import { useMemo, type AnchorHTMLAttributes, type CSSProperties, type ReactNode } from "react";
 import { cx } from "../../utils/cx";
 import styles from "./sidebar-nav.module.css";
 
@@ -12,6 +12,12 @@ export type SidebarNavItem = {
   badge?: ReactNode;
   active?: boolean;
   disabled?: boolean;
+  /**
+   * When `matchStrategy` is `"most-specific"`, exact-flagged items are checked via
+   * `isActiveExact` (exact match or child-path match) rather than participating in the
+   * length-based tiebreaker. When `matchStrategy` is `"prefix"` (default), this flag still
+   * causes `isActiveExact` to be used for that individual item regardless of the global strategy.
+   */
   exact?: boolean;
   title?: string;
   target?: AnchorHTMLAttributes<HTMLAnchorElement>["target"];
@@ -64,8 +70,9 @@ const findMostSpecific = (items: SidebarNavItem[], currentPath?: string): Set<st
   if (!currentPath) return result;
 
   // Collect all items that could match the path — use isActiveExact for exact-flagged items.
+  // Exclude root "/" from prefix matching to avoid confusion (it would match every path).
   const matchingItems = items.filter(item => {
-    if (!item.href) return false;
+    if (!item.href || item.href === "/") return false;
     return item.exact ? isActiveExact(item, currentPath) : isActivePrefix(item, currentPath);
   });
 
@@ -109,24 +116,34 @@ export function SidebarNav({
     ? sections
     : [{ id: "default", items }];
 
-  // Build the default isActive function based on matchStrategy
-  let defaultIsActiveFn: (item: SidebarNavItem, path?: string) => boolean;
-  if (matchStrategy === "most-specific") {
-    const allItems = resolvedSections.flatMap(section => section.items);
-    const mostSpecificHrefs = findMostSpecific(allItems, currentPath);
-    defaultIsActiveFn = (item: SidebarNavItem, _path?: string) => {
-      if (item.active !== undefined) return item.active;
-      if (item.exact) return isActiveExact(item, currentPath);
-      if (!item.href) return false;
-      return mostSpecificHrefs.has(item.href);
-    };
-  } else {
-    defaultIsActiveFn = (item: SidebarNavItem, path?: string) => {
-      if (item.active !== undefined) return item.active;
-      if (item.exact) return isActiveExact(item, path);
-      return isActivePrefix(item, path);
-    };
-  }
+  // Build the default isActive function based on matchStrategy — memoized to avoid
+  // allocating a new Set and closure on every render.
+  const allItems = useMemo(
+    () => resolvedSections.flatMap(section => section.items),
+    [resolvedSections],
+  );
+
+  const mostSpecificHrefs = useMemo(
+    () => (matchStrategy === "most-specific" ? findMostSpecific(allItems, currentPath) : new Set<string>()),
+    [allItems, matchStrategy, currentPath],
+  );
+
+  const defaultIsActiveFn = useMemo<(item: SidebarNavItem, path?: string) => boolean>(() => {
+    if (matchStrategy === "most-specific") {
+      return (item: SidebarNavItem, _path?: string) => {
+        if (item.active !== undefined) return item.active;
+        if (item.exact) return isActiveExact(item, currentPath);
+        if (!item.href) return false;
+        return mostSpecificHrefs.has(item.href);
+      };
+    } else {
+      return (item: SidebarNavItem, path?: string) => {
+        if (item.active !== undefined) return item.active;
+        if (item.exact) return isActiveExact(item, path);
+        return isActivePrefix(item, path);
+      };
+    }
+  }, [matchStrategy, mostSpecificHrefs, currentPath]);
 
   const resolvedGetIsActive = getIsActive ?? defaultIsActiveFn;
 

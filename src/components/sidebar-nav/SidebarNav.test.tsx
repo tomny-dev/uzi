@@ -168,7 +168,7 @@ describe("SidebarNav active matching", () => {
       expect(isActive(models)).toBe(true);
     });
 
-    it("handles two items with same length href correctly (both active)", () => {
+    it("handles two items with same length href correctly (one active when paths differ)", () => {
       const items = [
         { href: "/admin/models", label: "Models" },
         { href: "/admin/users", label: "Users" },
