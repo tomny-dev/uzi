@@ -18,6 +18,9 @@ export type SidebarNavItem = {
    * (exact match or child-path match) rather than prefix matching. When `matchStrategy`
    * is `"prefix"` (default), this flag still causes `isActiveExact` to be used for that
    * individual item regardless of the global strategy.
+   * Note: "exact" does not mean strict equality — it means the item matches via
+   * `isActiveExact` logic (the href itself or a child path like `/admin/`). This naming
+   * reflects that prefix matching is NOT used for these items, not that only exact paths match.
    */
   exact?: boolean;
   title?: string;
@@ -63,7 +66,8 @@ const isActiveExact = (item: SidebarNavItem, path?: string) => {
   if (!path) return false;
   // Root href "/" must match exactly — otherwise every path would match.
   if (item.href === "/") return path === "/";
-  return item.href === path || path.startsWith(item.href.endsWith("/") ? item.href : `${item.href}/`);
+  const normalizedHref = item.href.endsWith("/") ? item.href.slice(0, -1) : item.href;
+  return item.href === path || path.startsWith(normalizedHref + "/");
 };
 
 const findMostSpecific = (items: SidebarNavItem[], currentPath?: string): Set<string> => {
@@ -75,12 +79,15 @@ const findMostSpecific = (items: SidebarNavItem[], currentPath?: string): Set<st
     if (!item.href) return false;
     // Root "/" only matches when currentPath is exactly "/".
     if (item.href === "/") return currentPath === "/";
+    // Exact-flagged items use isActiveExact (exact or child-path match); others use prefix.
+    // This design lets authors mark items that should not activate via broad prefix matching.
     return item.exact ? isActiveExact(item, currentPath) : isActivePrefix(item, currentPath);
   });
 
   if (matchingItems.length === 0) return result;
 
-  // Find the longest href among prefix matches
+  // Find the longest href among prefix matches — exact-flagged items participate equally
+  // in this tiebreaker per their documented behavior.
   let maxLen = 0;
   for (const item of matchingItems) {
     if (!item.href) continue;
@@ -119,7 +126,7 @@ export function SidebarNav({
     : [{ id: "default", items }];
 
   // Build the default isActive function based on matchStrategy — memoized to avoid
-  // allocating a new Set and closure on every render.
+  // recalculating matchStrategy logic on every render.
   const allItems = useMemo(
     () => resolvedSections.flatMap(section => section.items),
     [resolvedSections],
