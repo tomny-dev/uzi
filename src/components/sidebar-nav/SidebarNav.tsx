@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, type AnchorHTMLAttributes, type CSSProperties, type ReactNode } from "react";
+import { type AnchorHTMLAttributes, type CSSProperties, type ReactNode, useMemo } from "react";
 import { cx } from "../../utils/cx";
 import styles from "./sidebar-nav.module.css";
 
@@ -13,14 +13,11 @@ export type SidebarNavItem = {
   active?: boolean;
   disabled?: boolean;
   /**
-   * When `matchStrategy` is `"most-specific"`, exact-flagged items participate in the
-   * length-based tiebreaker like all other items, but are filtered using `isActiveExact`
-   * (exact match or child-path match) rather than prefix matching. When `matchStrategy`
-   * is `"prefix"` (default), this flag still causes `isActiveExact` to be used for that
-   * individual item regardless of the global strategy.
-   * Note: "exact" does not mean strict equality — it means the item matches via
-   * `isActiveExact` logic (the href itself or a child path like `/admin/`). This naming
-   * reflects that prefix matching is NOT used for these items, not that only exact paths match.
+   * When `true`, this item uses exact matching (matches its own path and paths starting with `{href}/`)
+   * instead of prefix matching. This flag takes precedence over the global `matchStrategy` prop on a
+   * per-item basis — even when `matchStrategy="prefix"`, an item with `exact: true` will use exact matching.
+   * When `matchStrategy="most-specific"`, exact-flagged items participate in the length-based tiebreaker
+   * like all other candidates, provided they pass their own match check first.
    */
   exact?: boolean;
   title?: string;
@@ -66,8 +63,9 @@ const isActiveExact = (item: SidebarNavItem, path?: string) => {
   if (!path) return false;
   // Root href "/" must match exactly — otherwise every path would match.
   if (item.href === "/") return path === "/";
+  // Normalize trailing slashes for consistent matching with findMostSpecific length computation.
   const normalizedHref = item.href.endsWith("/") ? item.href.slice(0, -1) : item.href;
-  return item.href === path || path.startsWith(normalizedHref + "/");
+  return normalizedHref === path || path.startsWith(`${normalizedHref}/`);
 };
 
 const findMostSpecific = (items: SidebarNavItem[], currentPath?: string): Set<string> => {
@@ -75,19 +73,15 @@ const findMostSpecific = (items: SidebarNavItem[], currentPath?: string): Set<st
   if (!currentPath) return result;
 
   // Collect all items that could match the path — use isActiveExact for exact-flagged items.
+  // Exclude disabled items from matching since they are not interactive targets.
   const matchingItems = items.filter(item => {
-    if (!item.href) return false;
-    // Root "/" only matches when currentPath is exactly "/".
-    if (item.href === "/") return currentPath === "/";
-    // Exact-flagged items use isActiveExact (exact or child-path match); others use prefix.
-    // This design lets authors mark items that should not activate via broad prefix matching.
+    if (item.disabled || !item.href) return false;
     return item.exact ? isActiveExact(item, currentPath) : isActivePrefix(item, currentPath);
   });
 
   if (matchingItems.length === 0) return result;
 
-  // Find the longest href among prefix matches — exact-flagged items participate equally
-  // in this tiebreaker per their documented behavior.
+  // Find the longest href among prefix matches.
   let maxLen = 0;
   for (const item of matchingItems) {
     if (!item.href) continue;
@@ -95,7 +89,7 @@ const findMostSpecific = (items: SidebarNavItem[], currentPath?: string): Set<st
     if (len > maxLen) maxLen = len;
   }
 
-  // Only the items with the longest href are active
+  // Only the items with the longest href are active.
   for (const item of matchingItems) {
     if (!item.href) continue;
     const len = item.href.endsWith("/") ? item.href.length - 1 : item.href.length;
@@ -125,24 +119,15 @@ export function SidebarNav({
     ? sections
     : [{ id: "default", items }];
 
-  // Build the default isActive function based on matchStrategy — memoized to avoid
-  // recalculating matchStrategy logic on every render.
-  const allItems = useMemo(
-    () => resolvedSections.flatMap(section => section.items),
-    [resolvedSections],
-  );
-
-  const mostSpecificHrefs = useMemo(
-    () => (matchStrategy === "most-specific" ? findMostSpecific(allItems, currentPath) : new Set<string>()),
-    [allItems, matchStrategy, currentPath],
-  );
-
+  // Build the default isActive function based on matchStrategy.
   const defaultIsActiveFn = useMemo<(item: SidebarNavItem, path?: string) => boolean>(() => {
     if (matchStrategy === "most-specific") {
-      return (item: SidebarNavItem, _path?: string) => {
+      const allItems = resolvedSections.flatMap(section => section.items);
+      const mostSpecificHrefs = findMostSpecific(allItems, currentPath);
+      return (item: SidebarNavItem) => {
         if (item.active !== undefined) return item.active;
-        if (item.exact) return isActiveExact(item, currentPath);
         if (!item.href) return false;
+        // Exact-flagged items participate in the length-based tiebreaker like all other candidates.
         return mostSpecificHrefs.has(item.href);
       };
     } else {
@@ -152,7 +137,7 @@ export function SidebarNav({
         return isActivePrefix(item, path);
       };
     }
-  }, [matchStrategy, mostSpecificHrefs, currentPath]);
+  }, [matchStrategy, resolvedSections, currentPath]);
 
   const resolvedGetIsActive = getIsActive ?? defaultIsActiveFn;
 

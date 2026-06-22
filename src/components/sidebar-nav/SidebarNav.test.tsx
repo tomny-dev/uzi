@@ -371,7 +371,7 @@ describe("SidebarNav active matching", () => {
       expect(isActive(models)).toBe(false);
     });
 
-    it('most-specific mode highlights both when two items share longest length', () => {
+    it('most-specific mode highlights deepest on child route, both when two items share longest length', () => {
       const items = [
         { href: "/admin/models", label: "Models" },
         { href: "/admin/users", label: "Users" },
