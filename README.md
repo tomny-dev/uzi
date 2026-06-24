@@ -125,6 +125,13 @@ In practice, `uzi` should spend its complexity budget on reusable app scaffoldin
 - `showThemeToggle`
 - `themeToggleProps`
 
+## Documentation
+
+- [Getting Started](docs/getting-started.md) — Installation, setup, and first component
+- [Theming](docs/theming.md) — ThemeProvider, useTheme, accent palettes, CSS overrides
+- [Layout Patterns](docs/guides/layout-patterns.md) — Dashboard, full-width header, center-branded
+- [Form Patterns](docs/guides/form-patterns.md) — Input, Select, MultiSelect, SegmentedToggle patterns
+
 ## Notes
 
 - No Tailwind — components use CSS modules internally
