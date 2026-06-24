@@ -5,7 +5,7 @@ import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import { cx } from "../../utils/cx";
 import styles from "./avatar.module.css";
 
-export type AvatarSize = "sm" | "md" | "lg";
+export type AvatarSize = "sm" | "md" | "lg" | "xl";
 
 export type AvatarProps = React.ComponentProps<typeof AvatarPrimitive.Root> & {
   size?: AvatarSize;
@@ -17,7 +17,7 @@ export function Avatar({
   ...props
 }: AvatarProps) {
   const sizeClass =
-    size === "sm" ? styles["size-sm"] : size === "lg" ? styles["size-lg"] : styles["size-md"];
+    size === "sm" ? styles["size-sm"] : size === "lg" ? styles["size-lg"] : size === "xl" ? styles["size-xl"] : styles["size-md"];
 
   return (
     <AvatarPrimitive.Root
