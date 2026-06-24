@@ -132,9 +132,9 @@ export function SidebarNav({
   itemClassName,
   sectionClassName,
 }: SidebarNavProps) {
-  const resolvedSections = sections?.length
-    ? sections
-    : [{ id: "default", items }];
+  const resolvedSections = useMemo(() => {
+    return sections?.length ? sections : [{ id: "default", items }];
+  }, [sections, items]);
 
   // Stable reference to all items — avoids recreating on every render when `sections` is falsy.
   const allItems = useMemo(() => resolvedSections.flatMap(section => section.items), [resolvedSections]);
