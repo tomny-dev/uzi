@@ -35,6 +35,9 @@ The library manages state internally, reads from `localStorage` on mount, and pe
 **Controlled**:
 
 ```tsx
+import { useState } from "react";
+import { ThemeProvider, type UziTheme } from "@tomny-dev/uzi";
+
 function App() {
   const [theme, setTheme] = useState<UziTheme>("dark");
   return (
@@ -63,6 +66,8 @@ import { useTheme } from "@tomny-dev/uzi";
 | `toggleTheme` | `() => void` | Toggle between `"light"` and `"dark"`. Ignores `"system"` — always flips the resolved theme. No-op when theme is controlled externally. |
 
 ```tsx
+import { Button, useTheme } from "@tomny-dev/uzi";
+
 function ThemeToggle() {
   const { resolvedTheme, toggleTheme, accent, setAccent } = useTheme();
   return (

@@ -134,12 +134,12 @@ Key props:
 ```tsx
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { SegmentedToggle } from "@tomny-dev/uzi";
 
 type ViewMode = "grid" | "list" | "table";
 
-const viewOptions: Array<{ label: React.ReactNode; value: ViewMode }> = [
+const viewOptions: Array<{ label: ReactNode; value: ViewMode }> = [
   { label: "Grid", value: "grid" },
   { label: "List", value: "list" },
   { label: "Table", value: "table" },

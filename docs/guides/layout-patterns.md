@@ -88,7 +88,7 @@ Place the brand in the center of the top bar — common for search pages, dashbo
 ```tsx
 "use client";
 
-import { TopBar } from "@tomny-dev/uzi";
+import { TopBar, Button, useTheme } from "@tomny-dev/uzi";
 
 export function CenterBrandedHeader() {
   return (
@@ -123,7 +123,9 @@ On mobile, the sidebar stays open until the user taps the backdrop or scrolls. F
 "use client";
 
 import { useEffect, useState } from "react";
-import { AppShell, SidebarNav } from "@tomny-dev/uzi";
+import { AppShell, SidebarNav, type SidebarNavItem } from "@tomny-dev/uzi";
+
+const navItems: SidebarNavItem[] = []; // Define your navigation items here
 
 export function RouterAwareShell() {
   const [pathname, setPathname] = useState("/");
