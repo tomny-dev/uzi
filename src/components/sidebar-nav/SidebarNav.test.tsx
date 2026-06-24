@@ -292,10 +292,10 @@ describe("SidebarNav active matching", () => {
         { href: "/admin", label: "Dashboard" },
         { href: "/admin/models", label: "Models", active: true },
       ];
-      render(<SidebarNav items={items} currentPath="/admin/other" matchStrategy="most-specific" />);
+      render(<SidebarNav items={items} currentPath="/unknown" matchStrategy="most-specific" />);
       const dashboard = getAnchorByText("Dashboard");
       const models = getAnchorByText("Models");
-      // Even though no item matches the path, manual active=true forces it
+      // No item matches the path, but manual active=true forces Models to be active
       expect(isActive(dashboard)).toBe(false);
       expect(isActive(models)).toBe(true);
     });

@@ -68,17 +68,33 @@ const isActiveExact = (item: SidebarNavItem, path?: string) => {
   return normalizedHref === path || path.startsWith(`${normalizedHref}/`);
 };
 
+// Natural matching helpers that ignore manual `active` overrides — used inside findMostSpecific
+// so that manually-set active flags don't hijack the length-based tiebreaker.
+const isNaturalPrefixMatch = (href: string, path: string) => {
+  if (href === "/") return path === "/";
+  return path.startsWith(href);
+};
+
+const isNaturalExactMatch = (href: string, path: string) => {
+  if (href === "/") return path === "/";
+  const normalizedHref = href.endsWith("/") ? href.slice(0, -1) : href;
+  return normalizedHref === path || path.startsWith(`${normalizedHref}/`);
+};
+
 const hrefLength = (href: string) => (href.endsWith("/") ? href.length - 1 : href.length);
 
 const findMostSpecific = (items: SidebarNavItem[], currentPath?: string): Set<string> => {
   const result = new Set<string>();
   if (!currentPath) return result;
 
-  // Collect all items that could match the path — use isActiveExact for exact-flagged items.
+  // Collect all items that naturally match the path — use natural matching helpers so that
+  // manually-set `active` flags don't participate in the length-based tiebreaker.
   // Exclude disabled items from matching since they are not interactive targets.
   const matchingItems = items.filter(item => {
     if (item.disabled || !item.href) return false;
-    return item.exact ? isActiveExact(item, currentPath) : isActivePrefix(item, currentPath);
+    return item.exact
+      ? isNaturalExactMatch(item.href, currentPath)
+      : isNaturalPrefixMatch(item.href, currentPath);
   });
 
   if (matchingItems.length === 0) return result;
