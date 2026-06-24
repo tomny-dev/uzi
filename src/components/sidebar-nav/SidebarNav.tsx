@@ -78,7 +78,7 @@ const isNaturalPrefixMatch = (href: string, path: string) => {
 const isNaturalExactMatch = (href: string, path: string) => {
   if (href === "/") return path === "/";
   const normalizedHref = href.endsWith("/") ? href.slice(0, -1) : href;
-  return normalizedHref === path || path.startsWith(`${normalizedHref}/`);
+  return normalizedHref === path;
 };
 
 const hrefLength = (href: string) => (href.endsWith("/") ? href.length - 1 : href.length);
@@ -136,10 +136,12 @@ export function SidebarNav({
     ? sections
     : [{ id: "default", items }];
 
+  // Stable reference to all items — avoids recreating on every render when `sections` is falsy.
+  const allItems = useMemo(() => resolvedSections.flatMap(section => section.items), [resolvedSections]);
+
   // Build the default isActive function based on matchStrategy.
   const defaultIsActiveFn = useMemo<(item: SidebarNavItem, path?: string) => boolean>(() => {
     if (matchStrategy === "most-specific") {
-      const allItems = resolvedSections.flatMap(section => section.items);
       const mostSpecificHrefs = findMostSpecific(allItems, currentPath);
       return (item: SidebarNavItem) => {
         if (item.active !== undefined) return item.active;
@@ -154,7 +156,7 @@ export function SidebarNav({
         return isActivePrefix(item, path);
       };
     }
-  }, [matchStrategy, resolvedSections, currentPath]);
+  }, [matchStrategy, allItems, currentPath]);
 
   const resolvedGetIsActive = getIsActive ?? defaultIsActiveFn;
 
