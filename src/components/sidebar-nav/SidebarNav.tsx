@@ -1,6 +1,6 @@
 "use client";
 
-import { type AnchorHTMLAttributes, type CSSProperties, type ReactNode } from "react";
+import { type AnchorHTMLAttributes, type CSSProperties, type ReactNode, useMemo } from "react";
 import { cx } from "../../utils/cx";
 import styles from "./sidebar-nav.module.css";
 
@@ -12,6 +12,14 @@ export type SidebarNavItem = {
   badge?: ReactNode;
   active?: boolean;
   disabled?: boolean;
+  /**
+   * When `true`, this item uses exact matching (matches its own path and paths starting with `{href}/`)
+   * instead of prefix matching. This flag takes precedence over the global `matchStrategy` prop on a
+   * per-item basis — even when `matchStrategy="prefix"`, an item with `exact: true` will use exact matching.
+   * When `matchStrategy="most-specific"`, exact-flagged items participate in the length-based tiebreaker
+   * like all other candidates, provided they pass their own match check first.
+   */
+  exact?: boolean;
   title?: string;
   target?: AnchorHTMLAttributes<HTMLAnchorElement>["target"];
   rel?: AnchorHTMLAttributes<HTMLAnchorElement>["rel"];
@@ -29,6 +37,7 @@ export type SidebarNavProps = {
   sections?: SidebarNavSection[];
   currentPath?: string;
   getIsActive?: (item: SidebarNavItem, currentPath?: string) => boolean;
+  matchStrategy?: "prefix" | "most-specific";
   onItemClick?: (item: SidebarNavItem) => void;
   header?: ReactNode;
   footer?: ReactNode;
@@ -40,7 +49,7 @@ export type SidebarNavProps = {
   sectionClassName?: string;
 };
 
-const defaultIsActive = (item: SidebarNavItem, path?: string) => {
+const isActivePrefix = (item: SidebarNavItem, path?: string) => {
   if (item.active !== undefined) return item.active;
   if (!item.href) return false;
   if (!path) return false;
@@ -48,11 +57,71 @@ const defaultIsActive = (item: SidebarNavItem, path?: string) => {
   return path.startsWith(item.href);
 };
 
+const isActiveExact = (item: SidebarNavItem, path?: string) => {
+  if (item.active !== undefined) return item.active;
+  if (!item.href) return false;
+  if (!path) return false;
+  // Root href "/" must match exactly — otherwise every path would match.
+  if (item.href === "/") return path === "/";
+  // Normalize trailing slashes for consistent matching with findMostSpecific length computation.
+  const normalizedHref = item.href.endsWith("/") ? item.href.slice(0, -1) : item.href;
+  return normalizedHref === path || path.startsWith(`${normalizedHref}/`);
+};
+
+// Natural matching helpers that ignore manual `active` overrides — used inside findMostSpecific
+// so that manually-set active flags don't hijack the length-based tiebreaker.
+const isNaturalPrefixMatch = (href: string, path: string) => {
+  if (href === "/") return path === "/";
+  return path.startsWith(href);
+};
+
+const isNaturalExactMatch = (href: string, path: string) => {
+  if (href === "/") return path === "/";
+  const normalizedHref = href.endsWith("/") ? href.slice(0, -1) : href;
+  return normalizedHref === path;
+};
+
+const hrefLength = (href: string) => (href.endsWith("/") ? href.length - 1 : href.length);
+
+const findMostSpecific = (items: SidebarNavItem[], currentPath?: string): Set<string> => {
+  const result = new Set<string>();
+  if (!currentPath) return result;
+
+  // Collect all items that naturally match the path — use natural matching helpers so that
+  // manually-set `active` flags don't participate in the length-based tiebreaker.
+  // Exclude disabled items from matching since they are not interactive targets.
+  const matchingItems = items.filter(item => {
+    if (item.disabled || !item.href) return false;
+    return item.exact
+      ? isNaturalExactMatch(item.href, currentPath)
+      : isNaturalPrefixMatch(item.href, currentPath);
+  });
+
+  if (matchingItems.length === 0) return result;
+
+  // Find the longest href among prefix matches.
+  let maxLen = 0;
+  for (const item of matchingItems) {
+    if (!item.href) continue;
+    const len = hrefLength(item.href);
+    if (len > maxLen) maxLen = len;
+  }
+
+  // Only the items with the longest href are active.
+  for (const item of matchingItems) {
+    if (!item.href) continue;
+    if (hrefLength(item.href) === maxLen) result.add(item.href);
+  }
+
+  return result;
+};
+
 export function SidebarNav({
   items = [],
   sections,
   currentPath,
-  getIsActive = defaultIsActive,
+  getIsActive,
+  matchStrategy = "prefix",
   onItemClick,
   header,
   footer,
@@ -63,9 +132,34 @@ export function SidebarNav({
   itemClassName,
   sectionClassName,
 }: SidebarNavProps) {
-  const resolvedSections = sections?.length
-    ? sections
-    : [{ id: "default", items }];
+  const resolvedSections = useMemo(() => {
+    return sections?.length ? sections : [{ id: "default", items }];
+  }, [sections, items]);
+
+  // Stable reference to all items — avoids recreating on every render when `sections` is falsy.
+  const allItems = useMemo(() => resolvedSections.flatMap(section => section.items), [resolvedSections]);
+
+  // Build the default isActive function based on matchStrategy.
+  const defaultIsActiveFn = useMemo<(item: SidebarNavItem, path?: string) => boolean>(() => {
+    if (matchStrategy === "most-specific") {
+      const mostSpecificHrefs = findMostSpecific(allItems, currentPath);
+      return (item: SidebarNavItem) => {
+        if (item.active !== undefined) return item.active;
+        if (!item.href) return false;
+        // Exact-flagged items participate in the length-based tiebreaker like all other candidates.
+        return mostSpecificHrefs.has(item.href);
+      };
+    } else {
+      return (item: SidebarNavItem, path?: string) => {
+        if (item.active !== undefined) return item.active;
+        if (item.exact) return isActiveExact(item, path);
+        return isActivePrefix(item, path);
+      };
+    }
+  }, [matchStrategy, allItems, currentPath]);
+
+  const resolvedGetIsActive = getIsActive ?? defaultIsActiveFn;
+
   const style =
     iconSize !== undefined
       ? ({
@@ -99,7 +193,7 @@ export function SidebarNav({
                 <SidebarNavEntry
                   key={`${section.id ?? sectionIndex}-${item.href ?? item.title ?? itemIndex}`}
                   item={item}
-                  active={getIsActive(item, currentPath)}
+                  active={resolvedGetIsActive(item, currentPath)}
                   collapsed={collapsed}
                   itemClassName={itemClassName}
                   onItemClick={onItemClick}
