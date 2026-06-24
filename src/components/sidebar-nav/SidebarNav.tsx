@@ -68,6 +68,8 @@ const isActiveExact = (item: SidebarNavItem, path?: string) => {
   return normalizedHref === path || path.startsWith(`${normalizedHref}/`);
 };
 
+const hrefLength = (href: string) => (href.endsWith("/") ? href.length - 1 : href.length);
+
 const findMostSpecific = (items: SidebarNavItem[], currentPath?: string): Set<string> => {
   const result = new Set<string>();
   if (!currentPath) return result;
@@ -85,15 +87,14 @@ const findMostSpecific = (items: SidebarNavItem[], currentPath?: string): Set<st
   let maxLen = 0;
   for (const item of matchingItems) {
     if (!item.href) continue;
-    const len = item.href.endsWith("/") ? item.href.length - 1 : item.href.length;
+    const len = hrefLength(item.href);
     if (len > maxLen) maxLen = len;
   }
 
   // Only the items with the longest href are active.
   for (const item of matchingItems) {
     if (!item.href) continue;
-    const len = item.href.endsWith("/") ? item.href.length - 1 : item.href.length;
-    if (len === maxLen) result.add(item.href);
+    if (hrefLength(item.href) === maxLen) result.add(item.href);
   }
 
   return result;
