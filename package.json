@@ -6,9 +6,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -61,5 +58,6 @@
     "vite": "^8.0.0",
     "vite-plugin-css-injected-by-js": "^5.0.1",
     "vitest": "^4.1.9"
-  }
+  },
+  "types": "./dist/index.d.ts"
 }
