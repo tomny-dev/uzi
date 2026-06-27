@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { SidebarNav } from "./SidebarNav";
 
 // Mock CSS modules to avoid import issues in tests
@@ -28,7 +28,10 @@ vi.mock("./sidebar-nav.module.css", () => ({
 
 // Helper to find an anchor by its visible text content (aria-current is on <a>, not inner span)
 const getAnchorByText = (text: string): HTMLAnchorElement => {
-  return screen.getByRole("link", { name: text }) as HTMLAnchorElement;
+  const anchors = Array.from(document.querySelectorAll("a"));
+  const anchor = anchors.find((a) => a.textContent?.trim() === text);
+  if (!anchor) throw new Error(`Anchor with text "${text}" not found`);
+  return anchor;
 };
 
 // DOM assertion helpers that work with vitest's native assertions and TypeScript
