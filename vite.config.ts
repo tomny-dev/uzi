@@ -26,6 +26,14 @@ export default defineConfig({
     minify: false,
     rollupOptions: {
       external,
+      output: {
+        // Keep modules separate so downstream bundlers
+        // (Next.js/Turbopack) see intact React import aliases.
+        // Without this, Rollup merges all components into a
+        // single file whose renamed imports get corrupted.
+        preserveModules: true,
+        preserveModulesRoot: "src",
+      },
     },
   },
   css: {
