@@ -23,6 +23,7 @@ export default defineConfig({
     sourcemap: true,
     cssCodeSplit: false,
     emptyOutDir: true,
+    minify: false,
     rollupOptions: {
       external,
     },
