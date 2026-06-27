@@ -132,6 +132,20 @@ In practice, `uzi` should spend its complexity budget on reusable app scaffoldin
 - [Layout Patterns](docs/guides/layout-patterns.md) — Dashboard, full-width header, center-branded
 - [Form Patterns](docs/guides/form-patterns.md) — Input, Select, MultiSelect, SegmentedToggle patterns
 
+## SSR Notes
+
+This package bundles CSS inline into the JavaScript output via `vite-plugin-css-injected-by-js`.
+At runtime, a `<style>` tag is injected into the document head so consumers do **not** need
+to import `./styles.css` for client-side rendering.
+
+If your app uses SSR (Next.js, Remix, etc.), the injected `<style>` tag won't run on the
+server, so there may be a brief flash of unstyled content on the first client render.
+Consumers who need SSR-safe styles should continue importing the separate stylesheet:
+
+```css
+@import "@tomny-dev/uzi/styles.css";
+```
+
 ## Notes
 
 - No Tailwind — components use CSS modules internally
