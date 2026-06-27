@@ -57,6 +57,9 @@ importers:
       vite:
         specifier: ^7.1.12
         version: 7.3.2
+      vite-plugin-css-injected-by-js:
+        specifier: ^5.0.1
+        version: 5.0.1(vite@7.3.2)
       vitest:
         specifier: ^4.1.9
         version: 4.1.9(jsdom@29.1.1)(vite@7.3.2)
@@ -2379,6 +2382,14 @@ packages:
     dependencies:
       react: 19.2.5
     dev: false
+
+  /vite-plugin-css-injected-by-js@5.0.1(vite@7.3.2):
+    resolution: {integrity: sha512-JSB0jjN4VCKqG7XTUdrwiIl5gA+z2yi/tAl9WHo0X4sdyJ1yrmbLOEjf95TDoDIIuKr4GJIc7lMJG0CT88eEUQ==}
+    peerDependencies:
+      vite: '>8.0.0-0'
+    dependencies:
+      vite: 7.3.2
+    dev: true
 
   /vite@7.3.2:
     resolution: {integrity: sha512-Bby3NOsna2jsjfLVOHKes8sGwgl4TT0E6vvpYgnAYDIF/tie7MRaFthmKuHx1NSXjiTueXH3do80FMQgvEktRg==}
