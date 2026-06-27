@@ -45,7 +45,21 @@ jobs:
           echo "PREVIEW_VERSION=$PREVIEW_VERSION" >> "$GITHUB_ENV"
           echo "PREVIEW_TAG=pr-${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
 
+      - name: Check npm authentication
+        run: |
+          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+            echo "::error::NPM_TOKEN secret is not configured in repository settings."
+            exit 1
+          fi
+          echo "NPM_TOKEN_SET=true" >> "$GITHUB_ENV"
+
+      - name: Verify npm token permissions
+        run: npm whoami
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Publish preview to npm
+        if: env.NPM_TOKEN_SET
         run: pnpm publish --access public --tag "$PREVIEW_TAG" --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

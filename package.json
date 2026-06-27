@@ -3,6 +3,9 @@
   "version": "0.2.0",
   "description": "Rapid-fire React UI components. Ship faster, build more.",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -16,8 +19,7 @@
       "types": "./dist/server.d.ts",
       "import": "./dist/server.js",
       "require": "./dist/server.cjs"
-    },
-    "./styles.css": "./dist/style.css"
+    }
   },
   "files": [
     "dist"
