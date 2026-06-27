@@ -16,7 +16,8 @@
       "types": "./dist/server.d.ts",
       "import": "./dist/server.js",
       "require": "./dist/server.cjs"
-    }
+    },
+    "./styles.css": "./dist/style.css"
   },
   "files": [
     "dist"

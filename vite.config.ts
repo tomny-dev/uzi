@@ -1,7 +1,6 @@
 import path from "node:path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 
 const external = [
   "react",
@@ -11,7 +10,7 @@ const external = [
 ];
 
 export default defineConfig({
-  plugins: [react(), cssInjectedByJsPlugin()],
+  plugins: [react()],
   build: {
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
@@ -25,9 +24,6 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       external,
-      output: {
-        banner: '"use client";',
-      },
     },
   },
   css: {
