@@ -7,6 +7,7 @@ const external = [
   "react-dom",
   "react/jsx-runtime",
   "react/jsx-dev-runtime",
+  /^@radix-ui\//,
 ];
 
 export default defineConfig({
