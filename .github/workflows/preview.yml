@@ -49,10 +49,14 @@ jobs:
         run: |
           if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
             echo "::error::NPM_TOKEN secret is not configured in repository settings."
-            echo "Add a secret named NPM_TOKEN with a valid npm access token that has write access to the @tomny-dev organization."
             exit 1
           fi
           echo "NPM_TOKEN_SET=true" >> "$GITHUB_ENV"
+
+      - name: Verify npm token permissions
+        run: npm whoami
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish preview to npm
         if: env.NPM_TOKEN_SET
