@@ -13,7 +13,7 @@
   max-width: 400px;
   border-radius: var(--ts-card-radius, 12px);
   border: 1px solid var(--ts-card-border, var(--border));
-  background: var(--ts-card-bg, var(--panel));
+  background: var(--ts-card-bg, var(--card));
   color: var(--ts-card-fg, var(--foreground));
   box-shadow: var(--ts-card-shadow, 0 16px 36px rgba(0, 0, 0, 0.28));
   padding: 20px;

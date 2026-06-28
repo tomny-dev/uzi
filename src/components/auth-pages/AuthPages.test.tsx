@@ -247,8 +247,9 @@ describe("ForgotPasswordPage", () => {
   it("shows error for invalid email", async () => {
     render(<ForgotPasswordPage title="Reset password" footer={forgotFooter} />);
     fireEvent.change(getEmailInput(), { target: { value: "invalid" } });
-    fireEvent.click(getSubmitButton());
-    ;
+    const form = document.querySelector("form") as HTMLFormElement;
+    fireEvent.submit(form);
+    expect(screen.getByText("Enter a valid email")).toBeTruthy();
   });
 
   it("shows loading state", () => {
