@@ -101,3 +101,11 @@ export { SegmentedToggle } from "./components/segmented-toggle/SegmentedToggle";
 // Templates
 export type { AuthCardProps } from "./components/auth-card/AuthCard";
 export { AuthCard } from "./components/auth-card/AuthCard";
+
+// Auth page templates — fully baked, zero wiring needed
+export type {
+  SignInPageProps,
+  SignUpPageProps,
+  ForgotPasswordPageProps,
+} from "./components/auth-pages/AuthPages";
+export { SignInPage, SignUpPage, ForgotPasswordPage } from "./components/auth-pages/AuthPages";
