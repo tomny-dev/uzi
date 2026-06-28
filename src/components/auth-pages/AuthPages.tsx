@@ -331,7 +331,7 @@ export function SignUpPage({
             <div className={styles.checkboxRow}>
               <label className={styles.checkboxLabel}>
                 <input
-              id={id + "-email"}
+                  id={id + "-agreed"}
                   type="checkbox"
                   checked={agreed}
                   onChange={(e) => { setAgreed(e.target.checked); if (submitted) setSubmitted(false); }}

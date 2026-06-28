@@ -4,17 +4,11 @@ import * as React from "react";
 import { AuthCard } from "./AuthCard";
 
 vi.mock("./auth-card.module.css", () => ({
-  default: {
-    authLayout: "uzi-authLayout",
-    authCard: "uzi-authCard",
-    authBrand: "uzi-authBrand",
-    authHeader: "uzi-authHeader",
-    authTitle: "uzi-authTitle",
-    authSubtitle: "uzi-authSubtitle",
-    authBody: "uzi-authBody",
-    divider: "uzi-divider",
-    authFooter: "uzi-authFooter",
-  },
+  default: new Proxy({} as Record<string, string>, {
+    get(_, key) {
+      return `uzi-${String(key)}`;
+    },
+  }),
 }));
 
 describe("AuthCard", () => {
@@ -105,15 +99,14 @@ describe("AuthCard", () => {
     expect(container.querySelector(".my-custom-class")).toBeTruthy();
   });
 
-  it("renders as a forwardRef component", () => {
-    // Just ensures it renders without throwing — forwardRef is a structural requirement
+  it("forwards ref to the outer div", () => {
     const ref = React.createRef<HTMLDivElement>();
     render(
       <AuthCard title="Sign in" ref={ref}>
         <p>Form content</p>
       </AuthCard>,
     );
-    // Component renders successfully — no assertion needed beyond no throw
-    expect(document.querySelector(".uzi-authCard")).toBeTruthy();
+    expect(ref.current).toBeTruthy();
+    expect(ref.current!.className).toContain("uzi-authLayout");
   });
 });
