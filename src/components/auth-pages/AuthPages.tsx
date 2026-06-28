@@ -68,7 +68,6 @@ function PasswordField({ id, placeholder, value, onChange, error }: PasswordFiel
         <button
           ref={toggleRef}
           type="button"
-          tabIndex={-1}
           onClick={() => setShow((s) => !s)}
           className={styles.toggle}
           aria-label={show ? "Hide password" : "Show password"}
@@ -87,12 +86,22 @@ interface CheckboxRowProps {
   linkHref?: string;
 }
 
-function CheckboxRow({ label, linkText, linkHref }: CheckboxRowProps) {
+interface CheckboxRowPropsExtended extends CheckboxRowProps {
+  checked?: boolean;
+  onChange?: (checked: boolean) => void;
+}
+
+function CheckboxRow({ label, linkText, linkHref, checked, onChange }: CheckboxRowPropsExtended) {
   if (!label) return null;
   return (
     <div className={styles.checkboxRow}>
       <label className={styles.checkboxLabel}>
-        <input type="checkbox" className={styles.checkbox} />
+        <input
+          type="checkbox"
+          className={styles.checkbox}
+          checked={checked}
+          onChange={(e) => onChange?.(e.target.checked)}
+        />
         <span>{label}</span>
       </label>
       {linkHref && (
@@ -206,6 +215,8 @@ export function SignInPage({
             label={rememberLabel}
             linkText={forgotLinkText}
             linkHref={forgotLinkHref}
+            checked={rememberMe}
+            onChange={(c) => { setRememberMe(c); if (submitted) setSubmitted(false); }}
           />
           <button
             type="submit"
@@ -439,7 +450,7 @@ export function ForgotPasswordPage({
           <form ref={formRef} onSubmit={handleSubmit} className={styles.authForm}>
             <Field label={emailPlaceholder} id={id + "-email"} error={error}>
               <input
-              id={id + "-email"}
+                id={id + "-email"}
                 type="email"
                 placeholder="you@example.com"
                 value={email}
