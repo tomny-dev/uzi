@@ -97,3 +97,7 @@ export { Select } from "./components/select/Select";
 
 export type { SegmentedToggleProps, SegmentedToggleOption } from "./components/segmented-toggle/SegmentedToggle";
 export { SegmentedToggle } from "./components/segmented-toggle/SegmentedToggle";
+
+// Templates
+export type { AuthCardProps } from "./components/auth-card/AuthCard";
+export { AuthCard } from "./components/auth-card/AuthCard";
