@@ -44,18 +44,19 @@ function Field({ label, id, children, error }: FieldProps) {
 // ── Password input with visibility toggle ──
 interface PasswordFieldProps {
   id: string;
+  label?: string;
   placeholder?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
 }
 
-function PasswordField({ id, placeholder, value, onChange, error }: PasswordFieldProps) {
+function PasswordField({ id, label, placeholder, value, onChange, error }: PasswordFieldProps) {
   const [show, setShow] = React.useState(false);
   const toggleRef = React.useRef<HTMLButtonElement>(null);
 
   return (
-    <Field label="Password" id={id} error={error}>
+    <Field label={label ?? "Password"} id={id} error={error}>
       <div className={styles.passwordWrapper}>
         <input
           id={id}
@@ -120,7 +121,7 @@ interface BaseAuthPageProps {
   /** Page subtitle */
   subtitle?: string;
   /** Footer content (e.g., "No account? Sign up") */
-  footer: React.ReactNode;
+  footer?: React.ReactNode;
   /** Called with form data on valid submit */
   onSubmit?: (data: Record<string, string | boolean>) => void;
   /** Loading state for the submit button */
@@ -160,7 +161,6 @@ export function SignInPage({
   forgotLinkHref,
 }: SignInPageProps) {
   const id = React.useId();
-  const formRef = React.useRef<HTMLFormElement>(null);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [rememberMe, setRememberMe] = React.useState(false);
@@ -191,7 +191,7 @@ export function SignInPage({
           <h1 className={styles.authTitle}>{title}</h1>
           {subtitle && <p className={styles.authSubtitle}>{subtitle}</p>}
         </div>
-        <form ref={formRef} onSubmit={handleSubmit} className={styles.authForm}>
+        <form onSubmit={handleSubmit} className={styles.authForm}>
           <Field label={emailPlaceholder} id={id + "-email"} error={submitted ? errors.email : undefined}>
             <input
               id={id + "-email"}
@@ -205,6 +205,7 @@ export function SignInPage({
             />
           </Field>
           <PasswordField
+            label={passwordPlaceholder}
             id={id + "-password"}
             placeholder={passwordPlaceholder}
             value={password}
@@ -276,7 +277,6 @@ export function SignUpPage({
   checkboxLinkHref,
 }: SignUpPageProps) {
   const id = React.useId();
-  const formRef = React.useRef<HTMLFormElement>(null);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
@@ -311,7 +311,7 @@ export function SignUpPage({
           <h1 className={styles.authTitle}>{title}</h1>
           {subtitle && <p className={styles.authSubtitle}>{subtitle}</p>}
         </div>
-        <form ref={formRef} onSubmit={handleSubmit} className={styles.authForm}>
+        <form onSubmit={handleSubmit} className={styles.authForm}>
           <Field label={emailPlaceholder} id={id + "-email"} error={submitted ? errors.email : undefined}>
             <input
               id={id + "-email"}
@@ -325,6 +325,7 @@ export function SignUpPage({
             />
           </Field>
           <PasswordField
+            label={passwordPlaceholder}
             id={id + "-password"}
             placeholder={passwordPlaceholder}
             value={password}
@@ -332,6 +333,7 @@ export function SignUpPage({
             error={submitted ? errors.password : undefined}
           />
           <PasswordField
+            label={confirmPasswordPlaceholder}
             id={id + "-confirm"}
             placeholder={confirmPasswordPlaceholder}
             value={confirmPassword}
@@ -416,7 +418,6 @@ export function ForgotPasswordPage({
   backLinkHref = "/signin",
 }: ForgotPasswordPageProps) {
   const id = React.useId();
-  const formRef = React.useRef<HTMLFormElement>(null);
   const [email, setEmail] = React.useState("");
   const [error, setError] = React.useState("");
   const [sent, setSent] = React.useState(false);
@@ -447,7 +448,7 @@ export function ForgotPasswordPage({
             </a>
           </div>
         ) : (
-          <form ref={formRef} onSubmit={handleSubmit} className={styles.authForm}>
+          <form onSubmit={handleSubmit} className={styles.authForm}>
             <Field label={emailPlaceholder} id={id + "-email"} error={error}>
               <input
                 id={id + "-email"}

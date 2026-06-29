@@ -42,7 +42,14 @@ const forgotFooter = <a href="/signin">Sign in</a>;
 // Query by full label text as rendered
 const getEmailInput = () => screen.getByLabelText("Email address");
 const getPasswordInput = () => screen.getByLabelText("Password");
-const getPasswordInputs = () => screen.getAllByLabelText("Password");
+const getPasswordInputs = () => {
+  const inputs: HTMLElement[] = [];
+  const pw = screen.queryByLabelText("Password");
+  if (pw) inputs.push(pw);
+  const cpw = screen.queryByLabelText("Confirm password");
+  if (cpw) inputs.push(cpw);
+  return inputs;
+};
 
 const getSubmitButton = () => screen.getByRole("button", { name: /Sign in|Create account|Send reset link|Signing in|Sending|Reset now/i });
 const findEyeToggle = () => screen.getByRole("button", { name: /Show|Hide password/i });
@@ -148,10 +155,17 @@ describe("SignUpPage", () => {
     expect(screen.getByRole("heading", { level: 1, name: "Create an account" })).toBeTruthy();
   });
 
-  it("renders email, password, and confirm password fields", () => {
+  it("renders email, password, and confirm password fields with distinct labels", () => {
     render(<SignUpPage title="Sign up" footer={signUpFooter} />);
     expect(getEmailInput()).toBeTruthy();
+    expect(screen.getByLabelText("Password")).toBeTruthy();
+    expect(screen.getByLabelText("Confirm password")).toBeTruthy();
     expect(getPasswordInputs().length).toBe(2);
+  });
+
+  it("works without footer", () => {
+    render(<SignUpPage title="Sign up" />);
+    expect(screen.getByRole("heading", { level: 1, name: "Sign up" })).toBeTruthy();
   });
 
   it("shows password length validation error", () => {
