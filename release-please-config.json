@@ -3,8 +3,6 @@
     ".": {
       "release-type": "node",
       "package-name": "@tomny-dev/uzi",
-      "component": "uzi",
-      "include-component-in-tag": true,
       "bump-minor-pre-major": true
     }
   }
