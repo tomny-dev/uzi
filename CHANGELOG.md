@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.9](https://github.com/tomny-dev/uzi/compare/uzi-v0.2.8...uzi-v0.2.9) (2026-06-30)
+
+
+### Bug Fixes
+
+* **ui:** improve auth card spacing ([#27](https://github.com/tomny-dev/uzi/issues/27)) ([86db09b](https://github.com/tomny-dev/uzi/commit/86db09b9bbdfbd2c385bfe07946f858a22e4f044))
+
 ## [0.2.8](https://github.com/tomny-dev/uzi/compare/uzi-v0.2.7...uzi-v0.2.8) (2026-06-30)
 
 
