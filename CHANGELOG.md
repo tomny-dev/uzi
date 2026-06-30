@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.10](https://github.com/tomny-dev/uzi/compare/uzi-v0.2.9...uzi-v0.2.10) (2026-06-30)
+
+
+### Bug Fixes
+
+* modal layering fix ([62b8765](https://github.com/tomny-dev/uzi/commit/62b8765d3451dc02ee55cacef190685c3f4f26b4))
+
 ## [0.2.9](https://github.com/tomny-dev/uzi/compare/uzi-v0.2.8...uzi-v0.2.9) (2026-06-30)
 
 
