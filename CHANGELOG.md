@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.8](https://github.com/tomny-dev/uzi/compare/uzi-v0.2.7...uzi-v0.2.8) (2026-06-30)
+
+
+### Bug Fixes
+
+* Update CLAUDE.md to generalize agent reference ([b35d05b](https://github.com/tomny-dev/uzi/commit/b35d05b5a9aebefedf4dc598980c696a6e667a76))
+
 ## [0.2.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.1.16...uzi-v0.2.0) (2026-06-27)
 
 
