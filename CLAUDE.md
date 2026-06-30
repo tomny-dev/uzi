@@ -11,18 +11,23 @@ pnpm install       # install deps
 pnpm dev           # watch mode
 pnpm build         # production build (Vite + tsc -> dist/)
 pnpm lint          # type check only
+pnpm test          # unit tests
 ```
 
 ## Publishing
 
-Every push to `main` automatically:
-1. Bumps the patch version in `package.json`
-2. Commits the version bump with `[skip ci]`
-3. Publishes to npm as `@tomny-dev/uzi`
+Versioning and stable npm publishing are managed by Release Please:
+
+1. Merge feature and fix PRs into `main` using Conventional Commit titles such as `fix: constrain modal height` or `feat: add auth card`.
+2. The release workflow opens or updates a Release Please PR that bumps `package.json`, updates `CHANGELOG.md`, and advances `.release-please-manifest.json`.
+3. Merge the Release Please PR to create the `vX.Y.Z` tag and GitHub release.
+4. The same release workflow validates and publishes `@tomny-dev/uzi@X.Y.Z` to npm.
+
+PR titles and squash/merge commit titles matter. Do not merge release-worthy changes with titles like `[codex] ...` or `fix modal sizing`, because Release Please will not treat those as releasable Conventional Commits.
 
 Pull requests also publish preview builds to npm under a PR-specific dist-tag (for example `pr-123`) without updating `latest`. Use these to test consumer apps before merge.
 
-For minor/major bumps, edit `package.json` version manually before pushing.
+Stable releases publish with npm provenance. Configure npm Trusted Publishing for the `Release` workflow, or keep a scoped `NPM_TOKEN` repository secret as a fallback.
 
 ## Adding Components
 
