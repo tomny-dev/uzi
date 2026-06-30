@@ -2,11 +2,14 @@
 
 ## Commands
 
+Use Node 24 LTS for local development and CI parity.
+
 ```bash
 pnpm install
 pnpm dev    # watch mode
 pnpm build  # production build
 pnpm lint   # type check
+pnpm test   # unit tests
 ```
 
 ## Local development against a consumer app
@@ -76,7 +79,7 @@ Install the generated tarball in a consumer app to verify exports, CSS, and pack
 
 ## Preview builds for pull requests
 
-Pull requests publish preview builds to npm under a PR-specific dist-tag without touching `latest`.
+Ready-for-review pull requests from this repository publish preview builds to npm under a PR-specific dist-tag without touching `latest`.
 
 Example install command for PR `123`:
 
@@ -91,6 +94,11 @@ Each workflow run also publishes a new exact prerelease version for that PR and 
 
 ## Publishing
 
-Every push to `main` automatically bumps the patch version and publishes to npm as `@tomny-dev/uzi`.
+Versioning and stable npm publishing are managed by Release Please:
 
-For minor/major bumps, edit the version in `package.json` manually before pushing.
+1. Merge feature and fix PRs into `main` using Conventional Commit messages such as `fix: ...` or `feat: ...`.
+2. The release workflow opens or updates a Release Please PR that bumps `package.json`, updates `CHANGELOG.md`, and advances `.release-please-manifest.json`.
+3. Merge the Release Please PR to create the `vX.Y.Z` tag and GitHub release.
+4. The same release workflow validates and publishes `@tomny-dev/uzi@X.Y.Z` to npm.
+
+Stable releases publish with npm provenance. Configure npm Trusted Publishing for the `Release` workflow, or keep a scoped `NPM_TOKEN` repository secret as a fallback. Preview builds continue to use `NPM_TOKEN` because they publish PR-specific prerelease versions.

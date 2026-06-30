@@ -1,3 +1,5 @@
 node_modules/
 dist/
+package-artifacts/
+package-lock.json
 *.tsbuildinfo
