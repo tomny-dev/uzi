@@ -8,6 +8,13 @@ These instructions apply to the entire repository.
 
 `@tomny-dev/uzi` is a React component library built with Vite, TypeScript, CSS modules, and pnpm. Do not commit generated `dist/` output.
 
+## Start Here
+
+- Use `AGENTS.md` as the canonical agent instruction file.
+- Read `DEVELOPMENT.md` for setup, local consumer-app testing, preview builds, and publishing.
+- Read `README.md` and `docs/` for component APIs, theming, layout, and form patterns.
+- For component work, prefer native HTML for simple controls, Radix for interaction-heavy primitives, and `uzi` composition for design-system templates.
+
 ## Commands
 
 Use Node 24 LTS for local development and CI parity.
