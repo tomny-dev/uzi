@@ -1,6 +1,6 @@
 ## Summary
 
--
+<!-- Provide a brief summary of the changes and the motivation behind them. -->
 
 ## Release Title Check
 
@@ -9,4 +9,4 @@
 
 ## Validation
 
--
+<!-- Describe how you validated your changes (e.g., manual testing, unit tests, etc.) -->
