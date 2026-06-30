@@ -2,10 +2,10 @@
   "packages": {
     ".": {
       "release-type": "node",
-      "bump-minor-pre-major": true,
-      "extra-files": [
-        "package.json"
-      ]
+      "package-name": "@tomny-dev/uzi",
+      "component": "uzi",
+      "include-component-in-tag": true,
+      "bump-minor-pre-major": true
     }
   }
 }

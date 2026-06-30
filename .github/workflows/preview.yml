@@ -14,7 +14,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
       pull-requests: write
+    concurrency:
+      group: preview-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
 
@@ -22,9 +26,11 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "pnpm"
+          node-version: "22.14.0"
           registry-url: "https://registry.npmjs.org"
+
+      - name: Use current npm
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -32,8 +38,8 @@ jobs:
       - name: Type check
         run: pnpm lint
 
-      - name: Build
-        run: pnpm build
+      - name: Test
+        run: pnpm test
 
       - name: Set preview package version
         shell: bash
@@ -44,6 +50,9 @@ jobs:
           npm version "$PREVIEW_VERSION" --no-git-tag-version
           echo "PREVIEW_VERSION=$PREVIEW_VERSION" >> "$GITHUB_ENV"
           echo "PREVIEW_TAG=pr-${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
+
+      - name: Build
+        run: pnpm build
 
       - name: Check npm authentication
         run: |
@@ -60,7 +69,7 @@ jobs:
 
       - name: Publish preview to npm
         if: env.NPM_TOKEN_SET
-        run: pnpm publish --access public --tag "$PREVIEW_TAG" --no-git-checks
+        run: npm publish --access public --tag "$PREVIEW_TAG" --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

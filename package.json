@@ -3,6 +3,14 @@
   "version": "0.2.7",
   "description": "Rapid-fire React UI components. Ship faster, build more.",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomny-dev/uzi.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tomny-dev/uzi/issues"
+  },
+  "homepage": "https://github.com/tomny-dev/uzi#readme",
   "publishConfig": {
     "access": "public"
   },
