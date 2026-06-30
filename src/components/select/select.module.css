@@ -101,7 +101,7 @@
 }
 
 .content {
-  z-index: 50;
+  z-index: var(--uzi-popover-z-index, 1100);
   min-width: var(--radix-select-trigger-width);
   max-height: min(18rem, var(--radix-select-content-available-height));
   overflow: hidden;

@@ -1,6 +1,6 @@
 .stack {
   position: fixed;
-  z-index: 2147483000;
+  z-index: var(--uzi-toast-z-index, 2147483000);
   display: flex;
   flex-direction: column;
   gap: 10px;

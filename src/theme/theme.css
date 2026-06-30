@@ -40,6 +40,9 @@ body {
   --uzi-menu-item-gap: 0.5rem;
   --uzi-menu-item-padding-y: 0.5rem;
   --uzi-menu-item-padding-x: 0.625rem;
+  --uzi-modal-z-index: 1000;
+  --uzi-popover-z-index: 1100;
+  --uzi-toast-z-index: 2147483000;
 }
 
 :root,
@@ -139,4 +142,3 @@ body {
   --primary-foreground: hsl(210 40% 98%);
   --ring: hsl(346 77% 49%);
 }
-
