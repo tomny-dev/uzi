@@ -2,6 +2,8 @@
 
 ## Commands
 
+Use Node 24 LTS for local development and CI parity.
+
 ```bash
 pnpm install
 pnpm dev    # watch mode

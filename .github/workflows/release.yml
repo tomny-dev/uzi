@@ -35,7 +35,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' }}
         with:
-          node-version: "22.14.0"
+          node-version: "24.x"
           registry-url: "https://registry.npmjs.org"
 
       - name: Use current npm
