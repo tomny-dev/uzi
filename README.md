@@ -153,6 +153,8 @@ and React context providers. Next.js Server Components can import and render the
 Next.js will preserve the client boundary without requiring a local wrapper.
 
 Use `@tomny-dev/uzi/server` for the server-safe `getThemeScript` export.
+Use `@tomny-dev/uzi/utils` for environment-neutral utilities such as `cx`, including
+calls made directly from Server Components.
 
 ## Notes
 
