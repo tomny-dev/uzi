@@ -146,6 +146,14 @@ Consumers who need SSR-safe styles should continue importing the separate styles
 @import "@tomny-dev/uzi/styles.css";
 ```
 
+### Next.js App Router
+
+The main `@tomny-dev/uzi` entry is a client entry because it exports interactive components
+and React context providers. Next.js Server Components can import and render these exports;
+Next.js will preserve the client boundary without requiring a local wrapper.
+
+Use `@tomny-dev/uzi/server` for the server-safe `getThemeScript` export.
+
 ## Notes
 
 - No Tailwind — components use CSS modules internally
