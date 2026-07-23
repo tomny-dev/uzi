@@ -11,10 +11,13 @@ const external = [
 export default defineConfig({
   build: {
     lib: {
-      entry: path.resolve(__dirname, "src/server.ts"),
+      entry: {
+        server: path.resolve(__dirname, "src/server.ts"),
+        utils: path.resolve(__dirname, "src/utils.ts"),
+      },
       name: "UziServer",
       formats: ["es", "cjs"],
-      fileName: (format) => (format === "es" ? "server.js" : "server.cjs"),
+      fileName: (format, entryName) => `${entryName}.${format === "es" ? "js" : "cjs"}`,
     },
     sourcemap: true,
     emptyOutDir: false,

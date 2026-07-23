@@ -46,10 +46,14 @@ export function App() {
 `cx` is a lightweight utility that concatenates truthy string arguments with spaces. It is used by every uzi component for class merging so consumers can pass custom `className` props without conflicts.
 
 ```ts
-import { cx } from "@tomny-dev/uzi";
+import { cx } from "@tomny-dev/uzi/utils";
 
 cx("base-class", false, null, "conditional-class"); // "base-class conditional-class"
 ```
+
+The `@tomny-dev/uzi/utils` entry is environment-neutral, so `cx` can be called from
+Next.js Server Components as well as Client Components. The root package continues to
+export `cx` for compatibility with existing client-side imports.
 
 It is **not** `clsx` or `tailwind-merge` — it simply filters out falsy values and joins the rest with spaces. This means later arguments always win in case of duplicate class names.
 
