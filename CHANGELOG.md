@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.11](https://github.com/tomny-dev/uzi/compare/uzi-v0.2.10...uzi-v0.2.11) (2026-07-23)
+
+
+### Bug Fixes
+
+* preserve Next.js client boundary ([#30](https://github.com/tomny-dev/uzi/issues/30)) ([1dfd747](https://github.com/tomny-dev/uzi/commit/1dfd7471ab94185af4bd9164841a93b3b130abe6))
+
 ## [0.2.10](https://github.com/tomny-dev/uzi/compare/uzi-v0.2.9...uzi-v0.2.10) (2026-06-30)
 
 
