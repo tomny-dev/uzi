@@ -13,6 +13,7 @@ vi.mock("./sidebar-nav.module.css", () => ({
     sectionLabel: "uzi-sectionLabel",
     sectionItems: "uzi-sectionItems",
     item: "uzi-item",
+    itemWithoutIcon: "uzi-itemWithoutIcon",
     itemActive: "uzi-itemActive",
     itemCollapsed: "uzi-itemCollapsed",
     itemDisabled: "uzi-itemDisabled",
@@ -388,5 +389,23 @@ describe("SidebarNav active matching", () => {
       expect(isActive(models)).toBe(true);
       expect(isActive(users)).toBe(false);
     });
+  });
+});
+
+describe("SidebarNav item layout", () => {
+  it("uses the iconless layout only when no icon is provided", () => {
+    render(
+      <SidebarNav
+        items={[
+          { href: "/", label: "Home" },
+          { href: "/conditional", label: "Conditional", icon: false },
+          { href: "/settings", label: "Settings", icon: <svg aria-label="Settings icon" /> },
+        ]}
+      />,
+    );
+
+    expect(getAnchorByText("Home").classList.contains("uzi-itemWithoutIcon")).toBe(true);
+    expect(getAnchorByText("Conditional").classList.contains("uzi-itemWithoutIcon")).toBe(true);
+    expect(getAnchorByText("Settings").classList.contains("uzi-itemWithoutIcon")).toBe(false);
   });
 });

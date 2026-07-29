@@ -225,8 +225,10 @@ function SidebarNavEntry({
 }: SidebarNavEntryProps) {
   const rel = item.rel ?? (item.target === "_blank" ? "noreferrer" : undefined);
   const title = item.title ?? (typeof item.label === "string" ? item.label : undefined);
+  const hasIcon = Boolean(item.icon);
   const classes = cx(
     styles.item,
+    !hasIcon && styles.itemWithoutIcon,
     active && styles.itemActive,
     collapsed && styles.itemCollapsed,
     item.disabled && styles.itemDisabled,
@@ -234,7 +236,7 @@ function SidebarNavEntry({
   );
   const content = (
     <>
-      {item.icon && <span className={styles.icon}>{item.icon}</span>}
+      {hasIcon ? <span className={styles.icon}>{item.icon}</span> : null}
       {!collapsed ? (
         <span className={styles.itemBody}>
           <span className={styles.labelRow}>

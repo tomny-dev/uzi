@@ -74,6 +74,10 @@
   transition: background 120ms ease, color 120ms ease;
 }
 
+.item.itemWithoutIcon {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 button.item {
   font-family: inherit;
   cursor: pointer;
