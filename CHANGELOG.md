@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.12](https://github.com/tomny-dev/uzi/compare/uzi-v0.2.11...uzi-v0.2.12) (2026-07-29)
+
+
+### Bug Fixes
+
+* **sidebar-nav:** avoid reserving space for missing icons ([#33](https://github.com/tomny-dev/uzi/issues/33)) ([8a9252f](https://github.com/tomny-dev/uzi/commit/8a9252f38ea9c02886a0b15be89483b1c4afddbf))
+
 ## [0.2.11](https://github.com/tomny-dev/uzi/compare/uzi-v0.2.10...uzi-v0.2.11) (2026-07-23)
 
 
