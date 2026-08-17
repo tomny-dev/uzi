@@ -21,7 +21,7 @@ export function PageHeader({
   className,
   ...rest
 }: PageHeaderProps) {
-  const Heading = `h${headingLevel}` as const;
+  const Heading = `h${headingLevel}` as "h1" | "h2" | "h3";
 
   return (
     <header className={cx(styles.header, className)} {...rest}>
