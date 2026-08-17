@@ -76,6 +76,30 @@ export { SidebarNav } from "./components/sidebar-nav/SidebarNav";
 export type { TopBarProps } from "./components/top-bar/TopBar";
 export { TopBar } from "./components/top-bar/TopBar";
 
+export type { PageContainerProps, PageContainerWidth } from "./components/page-container/PageContainer";
+export { PageContainer } from "./components/page-container/PageContainer";
+
+export type { PageHeaderHeadingLevel, PageHeaderProps } from "./components/page-header/PageHeader";
+export { PageHeader } from "./components/page-header/PageHeader";
+
+export type { SectionHeaderHeadingLevel, SectionHeaderProps } from "./components/section-header/SectionHeader";
+export { SectionHeader } from "./components/section-header/SectionHeader";
+
+export type { EmptyStateProps, EmptyStateSize } from "./components/empty-state/EmptyState";
+export { EmptyState } from "./components/empty-state/EmptyState";
+
+export type {
+  InlineAlign,
+  InlineJustify,
+  InlineProps,
+  LayoutGap,
+  StackProps,
+} from "./components/layout-primitives/LayoutPrimitives";
+export { Inline, Stack } from "./components/layout-primitives/LayoutPrimitives";
+
+export type { StatGroupProps, StatProps } from "./components/stat/Stat";
+export { Stat, StatGroup } from "./components/stat/Stat";
+
 export type { ThemeToggleButtonProps } from "./components/theme-toggle-button/ThemeToggleButton";
 export { ThemeToggleButton } from "./components/theme-toggle-button/ThemeToggleButton";
 
