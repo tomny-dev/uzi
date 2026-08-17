@@ -114,6 +114,12 @@ In practice, `uzi` should spend its complexity budget on reusable app scaffoldin
 | `AppShell` | Responsive layout with collapsible sidebar |
 | `SidebarNav` | Sidebar navigation list |
 | `TopBar` | Composable header shell for brand, nav triggers, and actions |
+| `PageContainer` | Centered responsive page-width container with configurable max width |
+| `PageHeader` | Page title, eyebrow, description, and action composition |
+| `SectionHeader` | Reusable section title, description, and actions |
+| `EmptyState` | Empty-result/resource state with visual and action slots |
+| `Stack` / `Inline` | Small gap/alignment layout helpers for common composition |
+| `Stat` / `StatGroup` | Domain-agnostic summary value and responsive stat grouping |
 | `ThemeToggleButton` | Reusable light/dark toggle wired to `ThemeProvider` |
 | `ThemeProvider` / `useTheme` | Light/dark + accent palette theming |
 | `ToastProvider` / `useToast` | Radix-backed toast notification system |
@@ -130,6 +136,7 @@ In practice, `uzi` should spend its complexity budget on reusable app scaffoldin
 - [Getting Started](docs/getting-started.md) — Installation, setup, and first component
 - [Theming](docs/theming.md) — ThemeProvider, useTheme, accent palettes, CSS overrides
 - [Layout Patterns](docs/guides/layout-patterns.md) — Dashboard, full-width header, center-branded
+- [Application Scaffolding](docs/guides/application-scaffolding.md) — Page containers, headers, empty states, stats, and layout composition
 - [Form Patterns](docs/guides/form-patterns.md) — Input, Select, MultiSelect, SegmentedToggle patterns
 
 ## SSR Notes
@@ -151,6 +158,8 @@ Consumers who need SSR-safe styles should continue importing the separate styles
 The main `@tomny-dev/uzi` entry is a client entry because it exports interactive components
 and React context providers. Next.js Server Components can import and render these exports;
 Next.js will preserve the client boundary without requiring a local wrapper.
+
+The application-scaffolding components themselves do not use hooks or browser-only APIs, but they remain exposed through the main client entry in this release. A separate server-safe layout entry can be considered later if consumer measurements justify the added package surface.
 
 Use `@tomny-dev/uzi/server` for the server-safe `getThemeScript` export.
 Use `@tomny-dev/uzi/utils` for environment-neutral utilities such as `cx`, including
