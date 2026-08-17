@@ -9,7 +9,7 @@ import {
   Stack,
   Stat,
   StatGroup,
-} from "./index";
+} from "../index";
 
 describe("application scaffolding primitives", () => {
   it("renders page and section headings with requested semantics", () => {
