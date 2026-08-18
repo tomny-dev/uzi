@@ -85,7 +85,11 @@ export { PageHeader } from "./components/page-header/PageHeader";
 export type { SectionHeaderHeadingLevel, SectionHeaderProps } from "./components/section-header/SectionHeader";
 export { SectionHeader } from "./components/section-header/SectionHeader";
 
-export type { EmptyStateProps, EmptyStateSize } from "./components/empty-state/EmptyState";
+export type {
+  EmptyStateHeadingLevel,
+  EmptyStateProps,
+  EmptyStateSize,
+} from "./components/empty-state/EmptyState";
 export { EmptyState } from "./components/empty-state/EmptyState";
 
 export type {
