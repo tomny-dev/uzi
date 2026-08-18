@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { useState } from "react";
 import { Checkbox } from "./Checkbox";
 import { Label } from "../label/Label";
 
@@ -68,7 +69,6 @@ export const Required: Story = {
 
 export const ControlledState: Story = {
   render: () => {
-    const { useState } = require("react");
     const [checked, setChecked] = useState(false);
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
