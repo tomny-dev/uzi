@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { useEffect, useRef } from "react";
 import { ForgotPasswordPage } from "./AuthPages";
 
 const meta = {
@@ -9,6 +10,32 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+function ForgotPasswordSentState() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const input = containerRef.current?.querySelector<HTMLInputElement>('input[type="email"]');
+    const form = containerRef.current?.querySelector("form");
+    if (!input || !form) return;
+
+    const valueSetter = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      "value",
+    )?.set;
+    valueSetter?.call(input, "person@example.com");
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+
+    const timeout = window.setTimeout(() => form.requestSubmit(), 0);
+    return () => window.clearTimeout(timeout);
+  }, []);
+
+  return (
+    <div ref={containerRef}>
+      <ForgotPasswordPage onSubmit={() => {}} loading={false} />
+    </div>
+  );
+}
 
 export const Default: Story = {
   render: () => <ForgotPasswordPage />,
@@ -43,17 +70,7 @@ export const CustomText: Story = {
 };
 
 export const SentState: Story = {
-  render: () => {
-    const { useState, useEffect } = require("react");
-    const [sent, setSent] = useState(false);
-    useEffect(() => { setSent(true); }, []);
-    return (
-      <ForgotPasswordPage
-        onSubmit={() => {}}
-        loading={false}
-      />
-    );
-  },
+  render: () => <ForgotPasswordSentState />,
 };
 
 export const LoadingState: Story = {
