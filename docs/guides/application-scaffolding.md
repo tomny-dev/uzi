@@ -50,15 +50,15 @@ Provides a centered responsive content width and horizontal gutters. Use `maxWid
 
 ### `PageHeader`
 
-Provides a page-level title, optional eyebrow/badge content, description, and actions. `headingLevel` controls the semantic heading (`1`, `2`, or `3`) without coupling the component to a specific page type.
+Provides a page-level title, optional eyebrow/badge content, description, and actions. `headingLevel` controls the semantic heading from `1` through `6` without coupling the component to a specific page type.
 
 ### `SectionHeader`
 
-Provides a smaller section heading, optional description, and actions. It is intended for content sections inside a page rather than the page's primary heading.
+Provides a smaller section heading, optional description, and actions. It is intended for content sections inside a page rather than the page's primary heading. `headingLevel` supports `2` through `6` for nested document structure.
 
 ### `EmptyState`
 
-Provides reusable empty-result or empty-resource presentation with optional visual, description, and primary/secondary actions. Use `size="compact"` when the state lives inside a smaller panel.
+Provides reusable empty-result or empty-resource presentation with optional visual, description, and primary/secondary actions. Use `size="compact"` when the state lives inside a smaller panel. Use `headingLevel` (`2` through `6`) to keep the empty-state title consistent with the surrounding document outline.
 
 ### `Stack` and `Inline`
 
