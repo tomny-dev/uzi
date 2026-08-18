@@ -2,7 +2,7 @@ import type { HTMLAttributes, ReactNode } from "react";
 import { cx } from "../../utils/cx";
 import styles from "./page-header.module.css";
 
-export type PageHeaderHeadingLevel = 1 | 2 | 3;
+export type PageHeaderHeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
 export type PageHeaderProps = Omit<HTMLAttributes<HTMLElement>, "title"> & {
   title: ReactNode;
@@ -21,16 +21,16 @@ export function PageHeader({
   className,
   ...rest
 }: PageHeaderProps) {
-  const Heading = `h${headingLevel}` as "h1" | "h2" | "h3";
+  const Heading = `h${headingLevel}` as `h${PageHeaderHeadingLevel}`;
 
   return (
     <header className={cx(styles.header, className)} {...rest}>
       <div className={styles.content}>
-        {eyebrow && <div className={styles.eyebrow}>{eyebrow}</div>}
+        {eyebrow != null && <div className={styles.eyebrow}>{eyebrow}</div>}
         <Heading className={styles.title}>{title}</Heading>
-        {description && <div className={styles.description}>{description}</div>}
+        {description != null && <div className={styles.description}>{description}</div>}
       </div>
-      {actions && <div className={styles.actions}>{actions}</div>}
+      {actions != null && <div className={styles.actions}>{actions}</div>}
     </header>
   );
 }
