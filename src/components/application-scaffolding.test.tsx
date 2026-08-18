@@ -32,7 +32,7 @@ describe("application scaffolding primitives", () => {
         <EmptyState
           title="No results"
           description="Try another filter."
-          headingLevel={4}
+          headingLevel={1}
           primaryAction={<button type="button">Clear filters</button>}
         />
         <StatGroup columns={2}>
@@ -42,7 +42,7 @@ describe("application scaffolding primitives", () => {
       </>,
     );
 
-    expect(screen.getByRole("heading", { level: 4, name: "No results" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "No results" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Clear filters" })).toBeInTheDocument();
     expect(screen.getByText("Wins")).toBeInTheDocument();
     expect(screen.getByText("12")).toBeInTheDocument();
