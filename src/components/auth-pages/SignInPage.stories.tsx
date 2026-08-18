@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { useEffect, useState } from "react";
 import { SignInPage } from "./AuthPages";
 
 const meta = {
@@ -53,13 +54,12 @@ export const CustomPlaceholders: Story = {
 
 export const WithErrorState: Story = {
   render: () => {
-    const { useState, useEffect } = require("react");
     const [submitted, setSubmitted] = useState(false);
     useEffect(() => { setSubmitted(true); }, []);
     return (
       <SignInPage
         onSubmit={() => {}}
-        loading={false}
+        loading={submitted && false}
       />
     );
   },
