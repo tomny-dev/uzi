@@ -58,7 +58,7 @@ Provides a smaller section heading, optional description, and actions. It is int
 
 ### `EmptyState`
 
-Provides reusable empty-result or empty-resource presentation with optional visual, description, and primary/secondary actions. Use `size="compact"` when the state lives inside a smaller panel. Use `headingLevel` (`2` through `6`) to keep the empty-state title consistent with the surrounding document outline.
+Provides reusable empty-result or empty-resource presentation with optional visual, description, and primary/secondary actions. Use `size="compact"` when the state lives inside a smaller panel. Use `headingLevel` (`1` through `6`) to keep the empty-state title consistent with either a page-level or nested document outline.
 
 ### `Stack` and `Inline`
 
