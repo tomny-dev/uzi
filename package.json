@@ -48,6 +48,8 @@
     "dev": "vite build --watch",
     "lint": "tsc --noEmit",
     "test": "vitest run",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
     "verify:package": "node scripts/verify-client-boundary.mjs"
   },
   "peerDependencies": {
@@ -63,12 +65,18 @@
     "@radix-ui/react-toast": "^1.2.15"
   },
   "devDependencies": {
+    "@storybook/addon-essentials": "^8.6.14",
+    "@storybook/addon-links": "^8.6.18",
+    "@storybook/addon-storysource": "^8.6.14",
+    "@storybook/react": "8",
+    "@storybook/react-vite": "^8.6.18",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^5.2.0",
     "jsdom": "^29.1.1",
+    "storybook": "^8.6.18",
     "typescript": "^5.4.3",
     "vite": "^8.0.0",
     "vite-plugin-css-injected-by-js": "^5.0.1",
