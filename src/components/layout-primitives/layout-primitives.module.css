@@ -1,0 +1,21 @@
+.stack {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.inline {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.nowrap {
+  flex-wrap: nowrap;
+}
+
+.gap-xs { gap: 0.25rem; }
+.gap-sm { gap: 0.5rem; }
+.gap-md { gap: 1rem; }
+.gap-lg { gap: 1.5rem; }
+.gap-xl { gap: 2rem; }
