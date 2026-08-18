@@ -3,7 +3,7 @@ import { cx } from "../../utils/cx";
 import styles from "./empty-state.module.css";
 
 export type EmptyStateSize = "compact" | "default";
-export type EmptyStateHeadingLevel = 2 | 3 | 4 | 5 | 6;
+export type EmptyStateHeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
 export type EmptyStateProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & {
   title: ReactNode;
