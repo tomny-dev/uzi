@@ -15,23 +15,24 @@ describe("application scaffolding primitives", () => {
   it("renders page and section headings with requested semantics", () => {
     render(
       <>
-        <PageHeader title="Dashboard" description="Overview" eyebrow="Workspace" headingLevel={2} />
-        <SectionHeader title="Recent activity" headingLevel={3} />
+        <PageHeader title="Dashboard" description="Overview" eyebrow="Workspace" headingLevel={5} />
+        <SectionHeader title="Recent activity" headingLevel={6} />
       </>,
     );
 
-    expect(screen.getByRole("heading", { level: 2, name: "Dashboard" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { level: 3, name: "Recent activity" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 5, name: "Dashboard" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 6, name: "Recent activity" })).toBeInTheDocument();
     expect(screen.getByText("Workspace")).toBeInTheDocument();
     expect(screen.getByText("Overview")).toBeInTheDocument();
   });
 
-  it("renders empty-state actions and stats", () => {
+  it("renders empty-state actions and configurable heading semantics", () => {
     render(
       <>
         <EmptyState
           title="No results"
           description="Try another filter."
+          headingLevel={4}
           primaryAction={<button type="button">Clear filters</button>}
         />
         <StatGroup columns={2}>
@@ -41,7 +42,7 @@ describe("application scaffolding primitives", () => {
       </>,
     );
 
-    expect(screen.getByRole("heading", { level: 2, name: "No results" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 4, name: "No results" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Clear filters" })).toBeInTheDocument();
     expect(screen.getByText("Wins")).toBeInTheDocument();
     expect(screen.getByText("12")).toBeInTheDocument();
