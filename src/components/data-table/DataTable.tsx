@@ -23,7 +23,7 @@ export type DataTableRowAction = {
 export interface DataTableProps<T = Record<string, unknown>> {
   data: T[];
   columns: readonly Column<T>[];
-  /** Called when a row action is triggered */
+  /** Array of action buttons to render per row */
   onRowAction?: DataTableRowAction[];
   /** Called when rows are selected; receives selected row IDs */
   onSelectionChange?: (selectedIds: string[]) => void;
@@ -107,7 +107,12 @@ export function DataTable<T extends Record<string, unknown> = Record<string, unk
       const bVal = b[sortKey as keyof T];
       if (aVal == null) return 1;
       if (bVal == null) return -1;
-      const cmp = String(aVal).localeCompare(String(bVal));
+      let cmp = 0;
+      if (typeof aVal === "number" && typeof bVal === "number") {
+        cmp = aVal - bVal;
+      } else {
+        cmp = String(aVal).localeCompare(String(bVal));
+      }
       return sortDir === "asc" ? cmp : -cmp;
     });
   }, [data, sortKey, sortDir]);

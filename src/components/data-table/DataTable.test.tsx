@@ -163,4 +163,44 @@ describe("DataTable", () => {
     const checkboxes = container.querySelectorAll("input[type='checkbox']");
     expect(checkboxes.length).toBe(3);
   });
+
+  it("sorts numeric values in correct ascending order", () => {
+    const numericData = [
+      { id: "1", value: 10 },
+      { id: "2", value: 2 },
+      { id: "3", value: 20 },
+      { id: "4", value: 1 },
+    ];
+    const numericCols = [
+      { key: "value", label: "Value", sortable: true, accessor: (r: typeof numericData[0]) => r.value },
+    ] as const;
+    const { container, rerender } = render(<DataTable data={numericData} columns={numericCols} />);
+    const sortBtn = container.querySelector(".uzi-sortableHeader") as HTMLButtonElement;
+    fireEvent.click(sortBtn);
+    rerender(<DataTable data={numericData} columns={numericCols} />);
+    const rows = container.querySelectorAll(".uzi-tbody .uzi-row");
+    const cellTexts = Array.from(rows).map((row) => row.querySelector(".uzi-cell")?.textContent);
+    expect(cellTexts).toEqual(["1", "2", "10", "20"]);
+  });
+
+  it("sorts numeric values in correct descending order", () => {
+    const numericData = [
+      { id: "1", value: 10 },
+      { id: "2", value: 2 },
+      { id: "3", value: 20 },
+      { id: "4", value: 1 },
+    ];
+    const numericCols = [
+      { key: "value", label: "Value", sortable: true, accessor: (r: typeof numericData[0]) => r.value },
+    ] as const;
+    const { container, rerender } = render(<DataTable data={numericData} columns={numericCols} />);
+    const sortBtn = container.querySelector(".uzi-sortableHeader") as HTMLButtonElement;
+    fireEvent.click(sortBtn);
+    rerender(<DataTable data={numericData} columns={numericCols} />);
+    fireEvent.click(sortBtn);
+    rerender(<DataTable data={numericData} columns={numericCols} />);
+    const rows = container.querySelectorAll(".uzi-tbody .uzi-row");
+    const cellTexts = Array.from(rows).map((row) => row.querySelector(".uzi-cell")?.textContent);
+    expect(cellTexts).toEqual(["20", "10", "2", "1"]);
+  });
 });
