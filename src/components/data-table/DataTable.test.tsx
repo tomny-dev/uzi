@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import * as React from "react";
 import { DataTable } from "./DataTable";
 
@@ -164,5 +164,3 @@ describe("DataTable", () => {
     expect(checkboxes.length).toBe(3);
   });
 });
-
-import { fireEvent } from "@testing-library/react";
