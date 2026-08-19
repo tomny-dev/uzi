@@ -41,5 +41,8 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Build Storybook
+        run: pnpm build-storybook
+
       - name: Pack package
         run: mkdir -p package-artifacts && npm pack --pack-destination package-artifacts
