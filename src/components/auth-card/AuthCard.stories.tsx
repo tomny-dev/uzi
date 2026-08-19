@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { AuthCard } from "./AuthCard";
 import type { AuthCardProps } from "./AuthCard";
+import { Button } from "../button/Button";
 import { Input } from "../input/Input";
 import { Label } from "../label/Label";
 
@@ -34,7 +35,7 @@ export const DefaultSignIn: Story = {
           <Label htmlFor="password">Password</Label>
           <Input id="password" type="password" placeholder="••••••••" />
         </div>
-        <button type="button" style={{ padding: "0.5rem", background: "var(--primary)", color: "var(--primary-foreground)", border: "none", borderRadius: "6px", cursor: "pointer" }}>Sign in</button>
+        <Button type="button">Sign in</Button>
       </div>
     </AuthCard>
   ),
@@ -66,7 +67,7 @@ export const WithBrand: Story = {
         <Input placeholder="Full name" />
         <Input type="email" placeholder="you@example.com" />
         <Input type="password" placeholder="••••••••" />
-        <button type="button" style={{ padding: "0.5rem", background: "var(--primary)", color: "var(--primary-foreground)", border: "none", borderRadius: "6px", cursor: "pointer" }}>Create account</button>
+        <Button type="button">Create account</Button>
       </div>
     </AuthCard>
   ),
@@ -85,7 +86,7 @@ export const ResetPassword: Story = {
     >
       <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
         <Input type="email" placeholder="you@example.com" />
-        <button type="button" style={{ padding: "0.5rem", background: "var(--primary)", color: "var(--primary-foreground)", border: "none", borderRadius: "6px", cursor: "pointer" }}>Send reset link</button>
+        <Button type="button">Send reset link</Button>
       </div>
     </AuthCard>
   ),
@@ -100,7 +101,7 @@ export const NoFooter: Story = {
       <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
         <Input type="email" placeholder="you@example.com" />
         <Input type="password" placeholder="••••••••" />
-        <button type="button" style={{ padding: "0.5rem", background: "var(--primary)", color: "var(--primary-foreground)", border: "none", borderRadius: "6px", cursor: "pointer" }}>Sign in</button>
+        <Button type="button">Sign in</Button>
       </div>
     </AuthCard>
   ),
@@ -111,12 +112,12 @@ export const CustomClassName: Story = {
     <AuthCard
       title="Custom auth"
       subtitle="With custom styling"
-      className=""
+      className="storybook-auth-card"
       footer={<span>Custom footer</span>}
     >
       <Input placeholder="Username" />
       <Input type="password" placeholder="••••••••" />
-      <button type="button" style={{ padding: "0.5rem", background: "var(--primary)", color: "var(--primary-foreground)", border: "none", borderRadius: "6px", cursor: "pointer" }}>Submit</button>
+      <Button type="button">Submit</Button>
     </AuthCard>
   ),
 };
