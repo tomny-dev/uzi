@@ -61,31 +61,58 @@ describe("DataTable", () => {
     expect(screen.getByText("Nothing here")).toBeTruthy();
   });
 
+  it("uses the exact visible column count for empty rows", () => {
+    const { container } = render(<DataTable data={[]} columns={mockColumns} />);
+    const emptyCell = container.querySelector(".uzi-emptyCell") as HTMLTableCellElement;
+    expect(emptyCell.colSpan).toBe(mockColumns.length);
+  });
+
   it("renders loading skeleton", () => {
     const { container } = render(<DataTable data={mockData} columns={mockColumns} loading />);
     expect(container.querySelector(".uzi-loadingCell")).toBeTruthy();
     expect(container.querySelectorAll(".uzi-skeletonBar").length).toBeGreaterThan(0);
   });
 
-  it("supports sortable columns", () => {
+  it("supports sortable columns with aria-sort on the column header", () => {
     const sortedCols = [
       { key: "name", label: "Name", sortable: true, accessor: (r: typeof mockData[0]) => r.name },
     ] as const;
-    const { container } = render(<DataTable data={mockData} columns={sortedCols} />);
-    const sortBtn = container.querySelector(".uzi-sortableHeader") as HTMLButtonElement;
-    expect(sortBtn).toBeTruthy();
-    expect(sortBtn.getAttribute("aria-sort")).toBe("none");
+    render(<DataTable data={mockData} columns={sortedCols} />);
+    const header = screen.getByRole("columnheader", { name: /Name/ });
+    expect(header.getAttribute("aria-sort")).toBe("none");
   });
 
   it("shows sort direction when sorted ascending", () => {
     const sortedCols = [
       { key: "name", label: "Name", sortable: true, accessor: (r: typeof mockData[0]) => r.name },
     ] as const;
-    const { container, rerender } = render(<DataTable data={mockData} columns={sortedCols} />);
+    const { container } = render(<DataTable data={mockData} columns={sortedCols} />);
     const sortBtn = container.querySelector(".uzi-sortableHeader") as HTMLButtonElement;
     fireEvent.click(sortBtn);
-    rerender(<DataTable data={mockData} columns={sortedCols} />);
-    expect(sortBtn.getAttribute("aria-sort")).toBe("ascending");
+    const header = screen.getByRole("columnheader", { name: /Name/ });
+    expect(header.getAttribute("aria-sort")).toBe("ascending");
+  });
+
+  it("sorts by primitive accessor values when the column key is synthetic", () => {
+    const syntheticData = [
+      { id: "1", first: "Charlie", last: "Zulu" },
+      { id: "2", first: "Alice", last: "Yankee" },
+      { id: "3", first: "Bob", last: "Xray" },
+    ];
+    const columns = [
+      {
+        key: "displayName",
+        label: "Display name",
+        sortable: true,
+        accessor: (row: typeof syntheticData[0]) => `${row.first} ${row.last}`,
+      },
+    ] as const;
+
+    const { container } = render(<DataTable data={syntheticData} columns={columns} />);
+    fireEvent.click(container.querySelector(".uzi-sortableHeader") as HTMLButtonElement);
+    const rows = container.querySelectorAll(".uzi-tbody .uzi-row");
+    const cellTexts = Array.from(rows).map((row) => row.querySelector(".uzi-cell")?.textContent);
+    expect(cellTexts).toEqual(["Alice Yankee", "Bob Xray", "Charlie Zulu"]);
   });
 
   it("renders pagination when data exceeds page size", () => {
@@ -121,7 +148,7 @@ describe("DataTable", () => {
       <DataTable data={mockData} columns={mockColumns} selectable />,
     );
     const checkboxes = container.querySelectorAll("input[type='checkbox']");
-    expect(checkboxes.length).toBe(4); // 1 header + 3 rows
+    expect(checkboxes.length).toBe(4);
   });
 
   it("renders row actions", () => {
@@ -174,10 +201,9 @@ describe("DataTable", () => {
     const numericCols = [
       { key: "value", label: "Value", sortable: true, accessor: (r: typeof numericData[0]) => r.value },
     ] as const;
-    const { container, rerender } = render(<DataTable data={numericData} columns={numericCols} />);
+    const { container } = render(<DataTable data={numericData} columns={numericCols} />);
     const sortBtn = container.querySelector(".uzi-sortableHeader") as HTMLButtonElement;
     fireEvent.click(sortBtn);
-    rerender(<DataTable data={numericData} columns={numericCols} />);
     const rows = container.querySelectorAll(".uzi-tbody .uzi-row");
     const cellTexts = Array.from(rows).map((row) => row.querySelector(".uzi-cell")?.textContent);
     expect(cellTexts).toEqual(["1", "2", "10", "20"]);
@@ -193,12 +219,10 @@ describe("DataTable", () => {
     const numericCols = [
       { key: "value", label: "Value", sortable: true, accessor: (r: typeof numericData[0]) => r.value },
     ] as const;
-    const { container, rerender } = render(<DataTable data={numericData} columns={numericCols} />);
+    const { container } = render(<DataTable data={numericData} columns={numericCols} />);
     const sortBtn = container.querySelector(".uzi-sortableHeader") as HTMLButtonElement;
     fireEvent.click(sortBtn);
-    rerender(<DataTable data={numericData} columns={numericCols} />);
     fireEvent.click(sortBtn);
-    rerender(<DataTable data={numericData} columns={numericCols} />);
     const rows = container.querySelectorAll(".uzi-tbody .uzi-row");
     const cellTexts = Array.from(rows).map((row) => row.querySelector(".uzi-cell")?.textContent);
     expect(cellTexts).toEqual(["20", "10", "2", "1"]);
