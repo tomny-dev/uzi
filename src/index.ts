@@ -139,3 +139,23 @@ export type {
   ForgotPasswordPageProps,
 } from "./components/auth-pages/AuthPages";
 export { SignInPage, SignUpPage, ForgotPasswordPage } from "./components/auth-pages/AuthPages";
+
+// DataTable — sortable, paginated, selectable data table template
+export type {
+  Column,
+  DataTableProps,
+  DataTableRowAction,
+  SortDirection,
+} from "./components/data-table/DataTable";
+export { DataTable } from "./components/data-table/DataTable";
+
+// SettingsPage — settings layout with sections, danger zone, and sticky footer
+export type {
+  SettingsPageProps,
+  SettingsSection,
+} from "./components/settings-page/SettingsPage";
+export { SettingsPage } from "./components/settings-page/SettingsPage";
+
+// ErrorPage — generic error page with NotFoundPage and MaintenancePage variants
+export type { ErrorPageProps } from "./components/error-page/ErrorPage";
+export { ErrorPage, NotFoundPage, MaintenancePage } from "./components/error-page/ErrorPage";
