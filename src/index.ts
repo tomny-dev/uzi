@@ -159,3 +159,7 @@ export { SettingsPage } from "./components/settings-page/SettingsPage";
 // ErrorPage — generic error page with NotFoundPage and MaintenancePage variants
 export type { ErrorPageProps } from "./components/error-page/ErrorPage";
 export { ErrorPage, NotFoundPage, MaintenancePage } from "./components/error-page/ErrorPage";
+
+// EmptyStatePage — card-based empty state template with variants (noData, noConnection, noPermissions)
+export type { EmptyStatePageProps, EmptyStatePageVariant } from "./components/empty-state-page/EmptyStatePage";
+export { EmptyStatePage } from "./components/empty-state-page/EmptyStatePage";
