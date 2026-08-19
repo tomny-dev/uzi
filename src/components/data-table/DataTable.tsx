@@ -93,6 +93,8 @@ export function DataTable<T extends Record<string, unknown> = Record<string, unk
 
   const totalPages = Math.max(1, Math.ceil(data.length / pageSize));
   const safePage = Math.min(page, totalPages);
+  const columnSpan =
+    columns.length + (selectable ? 1 : 0) + (onRowAction && onRowAction.length > 0 ? 1 : 0);
 
   React.useEffect(() => {
     if (page > totalPages) {
@@ -102,9 +104,21 @@ export function DataTable<T extends Record<string, unknown> = Record<string, unk
 
   const sortedData = React.useMemo(() => {
     if (!sortKey) return data;
+
+    const sortColumn = columns.find((column) => column.key === sortKey);
+    const getSortValue = (row: T): unknown => {
+      if (sortColumn?.accessor) {
+        const accessed = sortColumn.accessor(row);
+        if (typeof accessed === "string" || typeof accessed === "number") {
+          return accessed;
+        }
+      }
+      return row[sortKey as keyof T];
+    };
+
     return [...data].sort((a, b) => {
-      const aVal = a[sortKey as keyof T];
-      const bVal = b[sortKey as keyof T];
+      const aVal = getSortValue(a);
+      const bVal = getSortValue(b);
       if (aVal == null) return 1;
       if (bVal == null) return -1;
       let cmp = 0;
@@ -115,7 +129,7 @@ export function DataTable<T extends Record<string, unknown> = Record<string, unk
       }
       return sortDir === "asc" ? cmp : -cmp;
     });
-  }, [data, sortKey, sortDir]);
+  }, [columns, data, sortKey, sortDir]);
 
   const displayedData = React.useMemo(() => {
     const start = (safePage - 1) * pageSize;
@@ -148,47 +162,51 @@ export function DataTable<T extends Record<string, unknown> = Record<string, unk
                   />
                 </th>
               )}
-              {columns.map((col) => (
-                <th
-                  key={col.key}
-                  className={cx(
-                    styles.headerCell,
-                    col.width && styles.headerCellFixed,
-                    col.align && styles[`align${col.align.charAt(0).toUpperCase() + col.align.slice(1)}`],
-                  )}
-                  style={col.width ? { width: col.width } : undefined}
-                >
-                  {col.sortable ? (
-                    <button
-                      type="button"
-                      className={cx(styles.sortableHeader, styles.clickableHeader)}
-                      onClick={() => handleSort(col.key)}
-                      aria-sort={
-                        sortKey === col.key
-                          ? sortDir === "asc"
-                            ? "ascending"
-                            : "descending"
-                          : "none"
-                      }
-                    >
-                      <span className={styles.headerLabel}>{col.label}</span>
-                      <span className={styles.sortIcon} aria-hidden="true">
-                        {sortKey === col.key ? (
-                          sortDir === "asc" ? (
-                            "\u25B2"
+              {columns.map((col) => {
+                const ariaSort = col.sortable
+                  ? sortKey === col.key
+                    ? sortDir === "asc"
+                      ? "ascending"
+                      : "descending"
+                    : "none"
+                  : undefined;
+
+                return (
+                  <th
+                    key={col.key}
+                    className={cx(
+                      styles.headerCell,
+                      col.width && styles.headerCellFixed,
+                      col.align && styles[`align${col.align.charAt(0).toUpperCase() + col.align.slice(1)}`],
+                    )}
+                    style={col.width ? { width: col.width } : undefined}
+                    aria-sort={ariaSort}
+                  >
+                    {col.sortable ? (
+                      <button
+                        type="button"
+                        className={cx(styles.sortableHeader, styles.clickableHeader)}
+                        onClick={() => handleSort(col.key)}
+                      >
+                        <span className={styles.headerLabel}>{col.label}</span>
+                        <span className={styles.sortIcon} aria-hidden="true">
+                          {sortKey === col.key ? (
+                            sortDir === "asc" ? (
+                              "\u25B2"
+                            ) : (
+                              "\u25BC"
+                            )
                           ) : (
-                            "\u25BC"
-                          )
-                        ) : (
-                          "\u25B2\u25BC"
-                        )}
-                      </span>
-                    </button>
-                  ) : (
-                    <span className={styles.headerLabel}>{col.label}</span>
-                  )}
-                </th>
-              ))}
+                            "\u25B2\u25BC"
+                          )}
+                        </span>
+                      </button>
+                    ) : (
+                      <span className={styles.headerLabel}>{col.label}</span>
+                    )}
+                  </th>
+                );
+              })}
               {onRowAction && onRowAction.length > 0 && (
                 <th className={styles.headerCell} style={{ width: "5rem" }}>
                   <span className={styles.headerLabel}>Actions</span>
@@ -199,10 +217,7 @@ export function DataTable<T extends Record<string, unknown> = Record<string, unk
           <tbody className={styles.tbody}>
             {loading ? (
               <tr>
-                <td
-                  colSpan={columns.length + (selectable ? 2 : 1)}
-                  className={styles.loadingCell}
-                >
+                <td colSpan={columnSpan} className={styles.loadingCell}>
                   <div className={styles.loadingRow} aria-busy="true">
                     <div className={styles.skeletonBar} />
                     <div className={styles.skeletonBar} />
@@ -222,7 +237,7 @@ export function DataTable<T extends Record<string, unknown> = Record<string, unk
               </tr>
             ) : data.length === 0 ? (
               <tr>
-                <td colSpan={columns.length + (selectable ? 2 : 1)} className={styles.emptyCell}>
+                <td colSpan={columnSpan} className={styles.emptyCell}>
                   {emptyMessage}
                 </td>
               </tr>
