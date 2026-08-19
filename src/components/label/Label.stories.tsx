@@ -1,4 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { Checkbox } from "../checkbox/Checkbox";
+import { Input } from "../input/Input";
 import { Label } from "./Label";
 
 const meta = {
@@ -23,11 +25,11 @@ export const InlineWithInput: Story = {
     <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", width: "280px" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
         <Label htmlFor="name">Name</Label>
-        <input id="name" type="text" placeholder="Your name" style={{ padding: "0.5rem", border: "1px solid var(--border)", borderRadius: "6px" }} />
+        <Input id="name" type="text" placeholder="Your name" />
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
         <Label htmlFor="email">Email</Label>
-        <input id="email" type="email" placeholder="you@example.com" style={{ padding: "0.5rem", border: "1px solid var(--border)", borderRadius: "6px" }} />
+        <Input id="email" type="email" placeholder="you@example.com" />
       </div>
     </div>
   ),
@@ -44,7 +46,7 @@ export const CustomClassName: Story = {
 export const WithCheckbox: Story = {
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-      <input id="agree" type="checkbox" style={{ width: "16px", height: "16px" }} />
+      <Checkbox id="agree" />
       <Label htmlFor="agree" style={{ margin: 0 }}>I agree to the terms</Label>
     </div>
   ),
