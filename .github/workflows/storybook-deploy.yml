@@ -1,7 +1,6 @@
-name: CI
+name: Deploy Storybook
 
 on:
-  pull_request:
   push:
     branches:
       - main
@@ -9,14 +8,15 @@ on:
 
 permissions:
   contents: read
+  deployments: write
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  group: storybook-production
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: Node 24.x
+  deploy:
+    name: Cloudflare Pages
     runs-on: ubuntu-latest
 
     steps:
@@ -32,17 +32,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Type check
-        run: pnpm lint
-
-      - name: Test
-        run: pnpm test
-
-      - name: Build
-        run: pnpm build
-
       - name: Build Storybook
         run: pnpm build-storybook
 
-      - name: Pack package
-        run: mkdir -p package-artifacts && npm pack --pack-destination package-artifacts
+      - name: Deploy Storybook
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy storybook-static --project-name=uzi-storybook --branch=main
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          packageManager: pnpm
