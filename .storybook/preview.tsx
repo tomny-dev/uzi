@@ -1,7 +1,6 @@
 import type { Preview } from "@storybook/react";
 import React from "react";
 import { ThemeProvider, useTheme } from "../src/theme/ThemeProvider";
-import { ToastProvider } from "../src/components/toast/ToastContext";
 
 import "../src/theme/theme.css";
 
@@ -50,4 +49,3 @@ const preview: Preview = {
 };
 
 export default preview;
-
