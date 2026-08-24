@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.3.0...uzi-v0.4.0) (2026-08-24)
+
+
+### Features
+
+* add DataTable, SettingsPage, and ErrorPage templates ([#42](https://github.com/tomny-dev/uzi/issues/42)) ([1cd6181](https://github.com/tomny-dev/uzi/commit/1cd61815566ed5c66b2ad829ad8bd3035b213711))
+* add Storybook with interactive component playground ([#40](https://github.com/tomny-dev/uzi/issues/40)) ([4aeabe9](https://github.com/tomny-dev/uzi/commit/4aeabe9b20bfd96c627d6d1b2e9381b591b3d64b))
+
 ## [0.3.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.2.12...uzi-v0.3.0) (2026-08-18)
 
 
