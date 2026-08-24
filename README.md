@@ -20,6 +20,34 @@ If you want the packaged component styles, import the exported stylesheet once i
 @import "@tomny-dev/uzi/styles.css";
 ```
 
+## Storybook
+
+Uzi includes Storybook as the interactive component catalog for exploring components, variants, states, and composition patterns.
+
+To run Storybook locally:
+
+```bash
+pnpm install
+pnpm storybook
+```
+
+Then open `http://localhost:6006`.
+
+To verify the production Storybook build:
+
+```bash
+pnpm build-storybook
+```
+
+The static output is written to `storybook-static/`. Story files live beside their components under `src/components/**` using the `*.stories.tsx` naming convention.
+
+CI builds Storybook on every pull request and push to `main`. After changes land on `main`, the Storybook deployment workflow publishes `storybook-static/` to the `uzi-storybook` Cloudflare Pages project. The deployment workflow requires these repository secrets:
+
+- `CLOUDFLARE_API_TOKEN` — API token with Pages Write permission.
+- `CLOUDFLARE_ACCOUNT_ID` — Cloudflare account identifier.
+
+The Cloudflare Pages project should use `main` as its production branch. A custom domain such as `uzi.tomny.dev` can be attached to that Pages project after the project exists.
+
 ## Using With Coding Agents
 
 Installing `@tomny-dev/uzi` in an app does not by itself cause Claude Code, Codex, or similar agents to prefer `uzi` components. You should add that policy to the consumer repo's agent guidance.
