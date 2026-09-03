@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/tomny-dev/uzi/compare/uzi-v0.4.0...uzi-v0.4.1) (2026-09-03)
+
+
+### Bug Fixes
+
+* restore Release Please release state ([#50](https://github.com/tomny-dev/uzi/issues/50)) ([e9eddc3](https://github.com/tomny-dev/uzi/commit/e9eddc37eb063cd76f10683e7d17e2591e016e95))
+
 ## [0.4.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.3.0...uzi-v0.4.0) (2026-08-24)
 
 
