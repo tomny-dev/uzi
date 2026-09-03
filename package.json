@@ -1,6 +1,6 @@
 {
   "name": "@tomny-dev/uzi",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Rapid-fire React UI components. Ship faster, build more.",
   "type": "module",
   "repository": {
@@ -23,12 +23,12 @@
     "./server": {
       "types": "./dist/server.d.ts",
       "import": "./dist/server.js",
-      "require": "./dist/server.cjs"
+      "require": "./dist/index.cjs"
     },
     "./utils": {
       "types": "./dist/utils.d.ts",
       "import": "./dist/utils.js",
-      "require": "./dist/utils.cjs"
+      "require": "./dist/index.cjs"
     },
     "./styles.css": "./dist/style.css"
   },
