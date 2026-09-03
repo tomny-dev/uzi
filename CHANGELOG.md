@@ -13,7 +13,7 @@
 
 ### Features
 
-* add reusable application scaffolding primitives ([#37](https://github.com/tomny-dev/uzi/issues/37)) ([85f00a0](https://github.com/tomny-dev/uzi/commit/85f00a0d66f3b74646afe2b60973eb))
+* add reusable application scaffolding primitives ([#37](https://github.com/tomny-dev/uzi/issues/37)) ([85f00a0](https://github.com/tomny-dev/uzi/commit/85f00a0d66f3d0d8623f71fb125a76430eebec0f))
 
 ## [0.2.12](https://github.com/tomny-dev/uzi/compare/uzi-v0.2.11...uzi-v0.2.12) (2026-07-29)
 
