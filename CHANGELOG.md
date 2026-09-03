@@ -1,17 +1,5 @@
 # Changelog
 
-## [0.5.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.4.0...uzi-v0.5.0) (2026-09-03)
-
-
-### ⚠ BREAKING CHANGES
-
-* require Node.js 24 or newer for the published package and MCP package.
-
-
-### Dependencies
-
-* update MCP dependencies: `@hono/node-server` 1.19.14 → 2.1.1, `fast-uri` 3.1.5 → 3.1.7, and `qs` 6.15.3 → 6.16.0 ([#46](https://github.com/tomny-dev/uzi/issues/46))
-
 ## [0.4.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.3.0...uzi-v0.4.0) (2026-08-24)
 
 
@@ -25,7 +13,7 @@
 
 ### Features
 
-* add reusable application scaffolding primitives ([#37](https://github.com/tomny-dev/uzi/issues/37)) ([85f00a0](https://github.com/tomny-dev/uzi/commit/85f00a0d66f3d0d8623f71fb125a76430eebec0f))
+* add reusable application scaffolding primitives ([#37](https://github.com/tomny-dev/uzi/issues/37)) ([85f00a0](https://github.com/tomny-dev/uzi/commit/85f00a0d66f3b74646afe2b60973eb))
 
 ## [0.2.12](https://github.com/tomny-dev/uzi/compare/uzi-v0.2.11...uzi-v0.2.12) (2026-07-29)
 
@@ -76,4 +64,4 @@
 * **ci:** correct release-please config locations ([3830c59](https://github.com/tomny-dev/uzi/commit/3830c597b9afc504c8f21f970ea40f1509dd3c23))
 * inline CSS into JS bundle so body margin reset applies automatically ([#16](https://github.com/tomny-dev/uzi/issues/16)) ([937f107](https://github.com/tomny-dev/uzi/commit/937f107261b08eb0087b9f7c0ede53e375f3c1e5))
 * replace hardcoded rgba colors with design token color-mix ([1e63c19](https://github.com/tomny-dev/uzi/commit/1e63c199c0e1e050629a09b110e0df43639860cc))
-* use plain string class names instead of CSS module objects ([0b36547](https://github.com/tomny-dev/uzi/commit/0b3654777e06589503b035489f1dd92e5eb5cbba))
+* use plain string class names instead of CSS module objects ([0b36547](https://github.com/tomny-dev/uzi/commit/0b3654777e58695232dfce0eafb79dc5fdc5773c5))
