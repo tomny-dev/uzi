@@ -1,17 +1,5 @@
 # Changelog
 
-## [0.5.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.4.0...uzi-v0.5.0) (2026-09-03)
-
-
-### ⚠ BREAKING CHANGES
-
-* require Node.js 24 or newer for the published package and MCP package.
-
-
-### Dependencies
-
-* update MCP dependencies: `@hono/node-server` 1.19.14 → 2.1.1, `fast-uri` 3.1.5 → 3.1.7, and `qs` 6.15.3 → 6.16.0 ([#46](https://github.com/tomny-dev/uzi/issues/46))
-
 ## [0.4.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.3.0...uzi-v0.4.0) (2026-08-24)
 
 
