@@ -5,23 +5,21 @@
 }
 
 .label {
-  color: var(--muted-foreground);
-  font-size: 0.75rem;
+  color: var(--uzi-text-secondary, var(--muted-foreground));
+  font-size: var(--uzi-font-small, 0.8125rem);
   font-weight: 600;
-  letter-spacing: 0.025em;
-  text-transform: uppercase;
 }
 
 .value {
-  color: var(--foreground);
-  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  color: var(--uzi-text-primary, var(--foreground));
+  font-size: clamp(1.375rem, 2.5vw, 1.875rem);
   font-weight: 700;
   line-height: 1.15;
 }
 
 .detail {
-  color: var(--muted-foreground);
-  font-size: 0.8125rem;
+  color: var(--uzi-text-muted, var(--muted-foreground));
+  font-size: var(--uzi-font-small, 0.8125rem);
   line-height: 1.5;
 }
 

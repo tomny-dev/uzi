@@ -12,6 +12,14 @@ export { Avatar, AvatarFallback, AvatarImage } from "./components/avatar/Avatar"
 export type { CardProps, CardPadding, CardTone } from "./components/card/Card";
 export { Card } from "./components/card/Card";
 
+export type {
+  SurfaceLevel,
+  SurfacePadding,
+  SurfaceProps,
+  SurfaceRadius,
+} from "./components/surface/Surface";
+export { Surface } from "./components/surface/Surface";
+
 export type { PillProps, PillSize, PillTone } from "./components/pill/Pill";
 export { Pill } from "./components/pill/Pill";
 
@@ -103,6 +111,9 @@ export { Inline, Stack } from "./components/layout-primitives/LayoutPrimitives";
 
 export type { StatGroupProps, StatProps } from "./components/stat/Stat";
 export { Stat, StatGroup } from "./components/stat/Stat";
+
+export type { ToolbarDensity, ToolbarGroupProps, ToolbarProps } from "./components/toolbar/Toolbar";
+export { Toolbar, ToolbarGroup } from "./components/toolbar/Toolbar";
 
 export type { ThemeToggleButtonProps } from "./components/theme-toggle-button/ThemeToggleButton";
 export { ThemeToggleButton } from "./components/theme-toggle-button/ThemeToggleButton";
