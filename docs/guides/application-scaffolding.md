@@ -13,6 +13,9 @@ import {
   Stack,
   Stat,
   StatGroup,
+  Surface,
+  Toolbar,
+  ToolbarGroup,
 } from "@tomny-dev/uzi";
 
 export function DashboardPage() {
@@ -82,3 +85,14 @@ A useful rule: if a proposed Uzi prop names a product concept rather than a visu
 ## Next.js client boundary
 
 These components themselves do not use hooks or browser-only APIs. The main `@tomny-dev/uzi` entry remains a client entry because it also exports interactive components and providers. This issue does not change that package boundary; a broader server-safe export redesign should be handled separately if consumer measurements show a meaningful benefit.
+
+
+## Visual hierarchy conventions
+
+Use [Visual Hierarchy](./visual-hierarchy.md) as the baseline for surface depth, typography, borders, shadows, and data-dense toolbars.
+
+- Use `Surface` for visual grouping when the content is not a discrete object.
+- Use `Card` for discrete objects; do not wrap every section in a card.
+- Use `Toolbar` / `ToolbarGroup` for compact filter and action rows.
+- Prefer whitespace and surface contrast over borders, and borders over shadows.
+- Keep ordinary labels sentence-case; reserve uppercase treatments for short categorical/state labels.

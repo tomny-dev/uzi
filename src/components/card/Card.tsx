@@ -1,8 +1,9 @@
 /**
- * Lightweight container component used for panels across the app.
+ * Lightweight container for discrete content objects across the app.
  *
  * @remarks
  * Supports tone variants, padding presets, and an optional interactive affordance.
+ * Use Surface for visual grouping that does not represent a discrete object.
  *
  * @param props.as - Semantic element to render (defaults to `div`).
  * @param props.tone - Visual tone variant.

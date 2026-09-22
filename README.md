@@ -129,7 +129,8 @@ In practice, `uzi` should spend its complexity budget on reusable app scaffoldin
 |---|---|
 | `Avatar` | Profile image with fallback states |
 | `Button` | Primary, secondary, outline, ghost variants |
-| `Card` | Surface container with tone/padding control |
+| `Card` | Discrete object container with tone/padding control |
+| `Surface` | Semantic visual grouping with base/subtle/raised/selected hierarchy |
 | `Checkbox` | Checkbox form primitive |
 | `Input` | Text input primitive |
 | `Label` | Form label primitive |
@@ -148,6 +149,7 @@ In practice, `uzi` should spend its complexity budget on reusable app scaffoldin
 | `EmptyState` | Empty-result/resource state with visual and action slots |
 | `Stack` / `Inline` | Small gap/alignment layout helpers for common composition |
 | `Stat` / `StatGroup` | Domain-agnostic summary value and responsive stat grouping |
+| `Toolbar` / `ToolbarGroup` | Responsive compact filter/action workspace |
 | `ThemeToggleButton` | Reusable light/dark toggle wired to `ThemeProvider` |
 | `ThemeProvider` / `useTheme` | Light/dark + accent palette theming |
 | `ToastProvider` / `useToast` | Radix-backed toast notification system |
@@ -165,6 +167,7 @@ In practice, `uzi` should spend its complexity budget on reusable app scaffoldin
 - [Theming](docs/theming.md) — ThemeProvider, useTheme, accent palettes, CSS overrides
 - [Layout Patterns](docs/guides/layout-patterns.md) — Dashboard, full-width header, center-branded
 - [Application Scaffolding](docs/guides/application-scaffolding.md) — Page containers, headers, empty states, stats, and layout composition
+- [Visual Hierarchy](docs/guides/visual-hierarchy.md) — Surface levels, typography, borders, shadows, and toolbar conventions
 - [Form Patterns](docs/guides/form-patterns.md) — Input, Select, MultiSelect, SegmentedToggle patterns
 
 ## SSR Notes

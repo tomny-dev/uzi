@@ -55,6 +55,23 @@ const COMPONENTS = {
     ],
   },
 
+  Surface: {
+    description: "Semantic visual grouping primitive for page hierarchy without card/object semantics.",
+    props: {
+      as: { type: "div | section | article | aside", default: "div" },
+      level: { type: "SurfaceLevel", default: "base", options: ["base", "subtle", "raised", "selected"] },
+      padding: { type: "SurfacePadding", default: "md", options: ["none", "sm", "md", "lg"] },
+      radius: { type: "SurfaceRadius", default: "md", options: ["none", "sm", "md", "lg"] },
+      bordered: { type: "boolean", default: false },
+      children: { type: "ReactNode" },
+    },
+    examples: [
+      '<Surface level="subtle" padding="lg"><p>Grouped content</p></Surface>',
+      '<Surface level="selected" bordered><p>Selected region</p></Surface>',
+    ],
+    notes: "Use Surface for visual grouping. Use Card when the content represents a discrete object.",
+  },
+
   Pill: {
     description: "Inline badge or tag for statuses, labels, and counts.",
     props: {
@@ -347,6 +364,31 @@ toast.success("File uploaded", {
     ],
   },
 
+  Toolbar: {
+    description: "Responsive compact workspace for filters and page-level actions.",
+    props: {
+      density: { type: "ToolbarDensity", default: "compact", options: ["compact", "default"] },
+      sticky: { type: "boolean", default: false },
+      children: { type: "ReactNode", description: "Usually ToolbarGroup elements" },
+    },
+    examples: [
+      '<Toolbar><ToolbarGroup label="Status"><Select ... /></ToolbarGroup><ToolbarGroup><Button>Refresh</Button></ToolbarGroup></Toolbar>',
+    ],
+    notes: "Prefer Toolbar over a large Card when controls form a filter/action row.",
+  },
+
+  ToolbarGroup: {
+    description: "Labeled responsive group of related controls inside Toolbar.",
+    props: {
+      label: { type: "ReactNode", optional: true },
+      grow: { type: "boolean", default: false },
+      children: { type: "ReactNode" },
+    },
+    examples: [
+      '<ToolbarGroup label="Search" grow><Input placeholder="Search..." /></ToolbarGroup>',
+    ],
+  },
+
   ThemeProvider: {
     description: "Theme context provider. Supports light/dark/system with accent color control and localStorage persistence.",
     props: {
@@ -474,7 +516,8 @@ server.tool(
     const keywords = {
       Button: ["button", "click", "action", "submit", "link", "cta"],
       Avatar: ["avatar", "profile", "user image", "initials", "photo"],
-      Card: ["card", "surface", "container", "panel", "box"],
+      Card: ["card", "object", "container", "panel", "box"],
+      Surface: ["surface", "group", "visual hierarchy", "section", "panel", "layer"],
       Pill: ["badge", "tag", "pill", "label", "status", "chip"],
       Modal: ["modal", "dialog", "overlay", "popup", "confirmation"],
       ToastProvider: ["toast", "notification", "alert", "snackbar", "provider"],
@@ -488,6 +531,8 @@ server.tool(
       DropdownMenu: ["menu", "context menu", "action menu", "radix dropdown", "submenu"],
       AppShell: ["layout", "shell", "app layout", "sidebar layout"],
       SidebarNav: ["sidebar", "navigation", "nav", "side menu"],
+      Toolbar: ["toolbar", "filters", "filter bar", "actions", "workspace controls"],
+      ToolbarGroup: ["toolbar group", "filter group", "control group"],
       ThemeProvider: ["theme", "dark mode", "light mode", "accent", "color scheme"],
       useTheme: ["theme", "dark mode", "toggle theme", "accent"],
       cx: ["classname", "class", "conditional style", "utility"],
