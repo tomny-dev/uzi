@@ -35,17 +35,6 @@ jobs:
       - name: Build Storybook
         run: pnpm build-storybook
 
-      - name: Ensure Cloudflare Pages project exists
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        shell: bash
-        run: |
-          projects="$(pnpm dlx wrangler@4 pages project list --json)"
-          if ! grep -Eq '"name"[[:space:]]*:[[:space:]]*"uzi-storybook"' <<<"$projects"; then
-            pnpm dlx wrangler@4 pages project create uzi-storybook --production-branch=main
-          fi
-
       - name: Deploy Storybook
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
