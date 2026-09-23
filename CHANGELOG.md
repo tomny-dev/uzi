@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.6.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.5.0...uzi-v0.6.0) (2026-09-23)
+
+
+### Features
+
+* establish shared visual hierarchy conventions ([#55](https://github.com/tomny-dev/uzi/issues/55)) ([27a754b](https://github.com/tomny-dev/uzi/commit/27a754ba38df36f0a20b5eca96aefcd7a93377f0))
+
+
+### Bug Fixes
+
+* bootstrap Storybook Pages project before deploy ([#58](https://github.com/tomny-dev/uzi/issues/58)) ([82a1b2e](https://github.com/tomny-dev/uzi/commit/82a1b2e7d9f25940bfe266586f89a8b6f69e541d))
+* deploy Storybook to existing Pages project ([#59](https://github.com/tomny-dev/uzi/issues/59)) ([7644e6d](https://github.com/tomny-dev/uzi/commit/7644e6d636bf7acb201c86310624e5ddff832f29))
+* deploy Storybook without mutating pnpm workspace ([#56](https://github.com/tomny-dev/uzi/issues/56)) ([c4feb8e](https://github.com/tomny-dev/uzi/commit/c4feb8e232464ec0671c4b18583285373fd3994a))
+
 ## [0.5.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.4.0...uzi-v0.5.0) (2026-09-03)
 
 
