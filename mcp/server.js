@@ -40,7 +40,7 @@ const COMPONENTS = {
   },
 
   Card: {
-    description: "Surface container with tone and padding control. Can render as div, section, or article.",
+    description: "Discrete object container with tone and padding control. Can render as div, section, or article.",
     props: {
       tone: { type: "CardTone", default: "default", options: ["default", "muted", "contrast"] },
       padding: { type: "CardPadding", default: "md", options: ["none", "sm", "md", "lg"] },
@@ -53,6 +53,7 @@ const COMPONENTS = {
       '<Card tone="muted" padding="lg"><p>Content here</p></Card>',
       '<Card as="section" interactive onClick={handleClick}>Clickable card</Card>',
     ],
+    notes: "Use Card for discrete objects. Use Surface for visual grouping that is not itself an object.",
   },
 
   Surface: {
@@ -374,14 +375,15 @@ toast.success("File uploaded", {
     examples: [
       '<Toolbar><ToolbarGroup label="Status"><Select ... /></ToolbarGroup><ToolbarGroup><Button>Refresh</Button></ToolbarGroup></Toolbar>',
     ],
-    notes: "Prefer Toolbar over a large Card when controls form a filter/action row.",
+    notes: "Prefer Toolbar over a large Card when controls form a filter/action row. Toolbar is visual-only by default; do not add role='toolbar' unless the consumer also implements the composite keyboard behavior expected by that ARIA role.",
   },
 
   ToolbarGroup: {
     description: "Labeled responsive group of related controls inside Toolbar.",
     props: {
-      label: { type: "ReactNode", optional: true },
+      label: { type: "ReactNode", optional: true, description: "Visible group label. String labels also become the accessible group name." },
       grow: { type: "boolean", default: false },
+      "aria-label": { type: "string", optional: true, description: "Accessible group name, especially when label is non-string content." },
       children: { type: "ReactNode" },
     },
     examples: [
@@ -394,10 +396,13 @@ toast.success("File uploaded", {
     props: {
       theme: { type: "UziTheme", optional: true, options: ["light", "dark", "system"], description: "Controlled theme" },
       defaultTheme: { type: "UziTheme", default: "system" },
-      accent: { type: "UziAccent", optional: true, options: ["blue", "violet", "emerald", "amber", "rose"] },
-      defaultAccent: { type: "UziAccent", default: "blue" },
-      storageKey: { type: "string", default: '"uzi-theme"', description: "localStorage key" },
-      onThemeChange: { type: "(theme: UziResolvedTheme) => void", optional: true },
+      accent: { type: "UziAccent", optional: true, options: ["blue", "cyan", "violet", "emerald", "amber", "rose"] },
+      defaultAccent: { type: "UziAccent", default: "blue", options: ["blue", "cyan", "violet", "emerald", "amber", "rose"] },
+      storageKey: { type: "string", default: '"uzi-theme"', description: "localStorage key for the theme preference" },
+      accentStorageKey: { type: "string", default: '"uzi-accent"', description: "localStorage key for the accent preference" },
+      disableStorage: { type: "boolean", default: false, description: "Skip localStorage reads and writes" },
+      toastConfig: { type: "ToastConfig", optional: true, description: "Configuration forwarded to the built-in ToastProvider" },
+      onThemeChange: { type: "(theme: UziTheme) => void", optional: true },
       onAccentChange: { type: "(accent: UziAccent) => void", optional: true },
       children: { type: "ReactNode" },
     },
