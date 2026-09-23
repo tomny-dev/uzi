@@ -32,7 +32,7 @@
 .description {
   max-width: 48rem;
   color: var(--uzi-text-secondary, var(--muted-foreground));
-  font-size: var(--uzi-font-body, 0.875rem);
+  font-size: var(--uzi-font-body, 0.9375rem);
   line-height: 1.65;
 }
 

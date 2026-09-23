@@ -21,6 +21,7 @@
   top: var(--uzi-toolbar-sticky-offset, 0);
   z-index: 20;
   background: color-mix(in srgb, var(--uzi-surface-1, var(--panel)) 90%, transparent);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
 

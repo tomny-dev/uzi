@@ -66,7 +66,7 @@ describe("application scaffolding primitives", () => {
     );
 
     expect(screen.getByTestId("surface")).toBeInTheDocument();
-    expect(screen.getByRole("toolbar")).toBe(screen.getByTestId("toolbar"));
+    expect(screen.getByTestId("toolbar")).not.toHaveAttribute("role", "toolbar");
     expect(screen.getByRole("group", { name: "Filters" })).toBeInTheDocument();
     expect(screen.getByText("Filters")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Refresh" })).toBeInTheDocument();

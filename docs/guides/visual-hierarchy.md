@@ -33,6 +33,8 @@ Default cards intentionally have little or no elevation. Use `tone="contrast"` o
 
 Use `Toolbar` for filters and page-level controls instead of placing ordinary controls inside a large card. `ToolbarGroup` provides labels, separators, growth, and narrow-screen stacking.
 
+`Toolbar` is a visual layout primitive and intentionally does not apply the ARIA `toolbar` role by default. That role implies composite keyboard behavior such as arrow-key navigation. Consumers implementing those semantics may pass an explicit `role`; ordinary filter/action rows should retain native control keyboard behavior.
+
 ## Typography rules
 
 - Primary content and values should visually dominate supporting metadata.

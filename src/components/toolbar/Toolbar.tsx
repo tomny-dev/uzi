@@ -12,7 +12,7 @@ export type ToolbarProps = HTMLAttributes<HTMLDivElement> & {
 export function Toolbar({
   density = "compact",
   sticky = false,
-  role = "toolbar",
+  role,
   className,
   children,
   ...rest
