@@ -1,15 +1,16 @@
 /**
- * Lightweight container component used for panels across the app.
+ * Lightweight container for discrete content objects across the app.
  *
  * @remarks
  * Supports tone variants, padding presets, and an optional interactive affordance.
+ * Use Surface for visual grouping that does not represent a discrete object.
  *
  * @param props.as - Semantic element to render (defaults to `div`).
  * @param props.tone - Visual tone variant.
  * @param props.padding - Padding preset.
  * @param props.interactive - Enables hover/focus affordance.
  */
-import type { HTMLAttributes } from "react";
+import type { ComponentPropsWithoutRef, ElementType } from "react";
 import { cx } from "../../utils/cx";
 import styles from "./card.module.css";
 
@@ -18,9 +19,9 @@ export type CardPadding = "none" | "sm" | "md" | "lg";
 
 type CardElement = "div" | "section" | "article";
 
-export type CardProps = HTMLAttributes<HTMLElement> & {
+type CardOwnProps<T extends CardElement> = {
   /** Optional semantic element type. Defaults to `div`. */
-  as?: CardElement;
+  as?: T;
   /** Visual tone; drives background/border CSS vars. */
   tone?: CardTone;
   /** Padding preset; maps to CSS variables so consumers can override globally. */
@@ -29,7 +30,11 @@ export type CardProps = HTMLAttributes<HTMLElement> & {
   interactive?: boolean;
 };
 
-export function Card({
+export type CardProps<T extends CardElement = "div"> =
+  CardOwnProps<T> &
+  Omit<ComponentPropsWithoutRef<T>, keyof CardOwnProps<T>>;
+
+export function Card<T extends CardElement = "div">({
   as,
   tone = "default",
   padding = "md",
@@ -37,8 +42,8 @@ export function Card({
   className,
   children,
   ...rest
-}: CardProps) {
-  const Component: CardElement = as ?? "div";
+}: CardProps<T>) {
+  const Component = (as ?? "div") as ElementType;
   const TONE_CLASS: Record<CardTone, string | null> = { default: null, muted: "tone-muted", contrast: "tone-contrast" };
   const PADDING_CLASS: Record<CardPadding, string> = { none: "padding-none", sm: "padding-sm", md: "padding-md", lg: "padding-lg" };
   const classes = cx(

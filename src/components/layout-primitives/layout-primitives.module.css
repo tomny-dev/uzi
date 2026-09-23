@@ -14,8 +14,8 @@
   flex-wrap: nowrap;
 }
 
-.gap-xs { gap: 0.25rem; }
-.gap-sm { gap: 0.5rem; }
-.gap-md { gap: 1rem; }
-.gap-lg { gap: 1.5rem; }
-.gap-xl { gap: 2rem; }
+.gap-xs { gap: var(--uzi-space-1, 0.25rem); }
+.gap-sm { gap: var(--uzi-space-2, 0.5rem); }
+.gap-md { gap: var(--uzi-space-4, 1rem); }
+.gap-lg { gap: var(--uzi-space-5, 1.5rem); }
+.gap-xl { gap: var(--uzi-space-6, 2rem); }

@@ -2,7 +2,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 1rem;
+  gap: var(--uzi-space-4, 1rem);
 }
 
 .content {
@@ -13,16 +13,16 @@
 
 .title {
   margin: 0;
-  color: var(--foreground);
-  font-size: clamp(1.25rem, 2vw, 1.625rem);
+  color: var(--uzi-text-primary, var(--foreground));
+  font-size: var(--uzi-font-heading, clamp(1.25rem, 2vw, 1.625rem));
   line-height: 1.2;
   letter-spacing: -0.015em;
 }
 
 .description {
   max-width: 44rem;
-  color: var(--muted-foreground);
-  font-size: 0.875rem;
+  color: var(--uzi-text-secondary, var(--muted-foreground));
+  font-size: var(--uzi-font-body, 0.9375rem);
   line-height: 1.6;
 }
 
@@ -32,7 +32,7 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.5rem;
+  gap: var(--uzi-space-2, 0.5rem);
 }
 
 @media (max-width: 40rem) {

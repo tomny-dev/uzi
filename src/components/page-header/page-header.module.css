@@ -2,37 +2,37 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: var(--uzi-space-5, 1.5rem);
 }
 
 .content {
   min-width: 0;
   display: grid;
-  gap: 0.5rem;
+  gap: var(--uzi-space-2, 0.5rem);
 }
 
 .eyebrow {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
-  color: var(--muted-foreground);
-  font-size: 0.8125rem;
+  gap: var(--uzi-space-2, 0.5rem);
+  color: var(--uzi-text-secondary, var(--muted-foreground));
+  font-size: var(--uzi-font-small, 0.8125rem);
   font-weight: 600;
 }
 
 .title {
   margin: 0;
-  color: var(--foreground);
-  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  color: var(--uzi-text-primary, var(--foreground));
+  font-size: var(--uzi-font-display, clamp(1.875rem, 3vw, 2.5rem));
   line-height: 1.12;
   letter-spacing: -0.025em;
 }
 
 .description {
   max-width: 48rem;
-  color: var(--muted-foreground);
-  font-size: 0.95rem;
+  color: var(--uzi-text-secondary, var(--muted-foreground));
+  font-size: var(--uzi-font-body, 0.9375rem);
   line-height: 1.65;
 }
 

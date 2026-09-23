@@ -43,6 +43,28 @@ body {
   --uzi-modal-z-index: 1000;
   --uzi-popover-z-index: 1100;
   --uzi-toast-z-index: 2147483000;
+
+  /* Shared visual hierarchy */
+  --uzi-space-1: 0.25rem;
+  --uzi-space-2: 0.5rem;
+  --uzi-space-3: 0.75rem;
+  --uzi-space-4: 1rem;
+  --uzi-space-5: 1.5rem;
+  --uzi-space-6: 2rem;
+  --uzi-space-7: 3rem;
+  --uzi-radius-sm: 0.375rem;
+  --uzi-radius-md: 0.625rem;
+  --uzi-radius-lg: 0.875rem;
+  --uzi-font-display: clamp(1.875rem, 3vw, 2.5rem);
+  --uzi-font-title: clamp(1.375rem, 2.5vw, 1.875rem);
+  --uzi-font-heading: clamp(1.25rem, 2vw, 1.625rem);
+  --uzi-font-body: 0.9375rem;
+  --uzi-font-small: 0.8125rem;
+  --uzi-font-caption: 0.75rem;
+  --uzi-shadow-none: none;
+  --uzi-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.06);
+  --uzi-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --uzi-shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.18);
 }
 
 :root,
@@ -67,6 +89,21 @@ body {
   --input: hsl(214 32% 88%);
   --panel: var(--card);
   --text: var(--foreground);
+  --uzi-surface-canvas: var(--background);
+  --uzi-surface-1: var(--card);
+  --uzi-surface-2: color-mix(in srgb, var(--secondary) 72%, var(--background));
+  --uzi-surface-raised: var(--card);
+  --uzi-surface-selected: color-mix(in srgb, var(--primary) 9%, var(--card));
+  --uzi-text-primary: var(--foreground);
+  --uzi-text-secondary: color-mix(in srgb, var(--foreground) 72%, var(--muted-foreground));
+  --uzi-text-muted: var(--muted-foreground);
+  --uzi-text-disabled: color-mix(in srgb, var(--muted-foreground) 65%, transparent);
+  --uzi-border-subtle: color-mix(in srgb, var(--border) 68%, transparent);
+  --uzi-border-default: var(--border);
+  --uzi-border-strong: color-mix(in srgb, var(--border) 72%, var(--foreground));
+  --uzi-border-accent: color-mix(in srgb, var(--primary) 55%, var(--border));
+  --surface-elevated: var(--uzi-surface-raised);
+  --surface-topbar: color-mix(in srgb, var(--uzi-surface-canvas) 85%, transparent);
 }
 
 :root[data-uzi-theme="dark"],
@@ -95,9 +132,33 @@ body {
   --border: #1f2937;
   --input: #1f2937;
   --panel: #111827;
+  --text: #e2e8f0;
+  --uzi-surface-canvas: var(--background);
+  --uzi-surface-1: var(--panel);
+  --uzi-surface-2: #152036;
+  --uzi-surface-raised: color-mix(in srgb, var(--panel) 88%, white);
+  --uzi-surface-selected: color-mix(in srgb, var(--primary) 12%, var(--panel));
+  --uzi-text-primary: var(--foreground);
+  --uzi-text-secondary: color-mix(in srgb, var(--foreground) 72%, var(--muted-foreground));
+  --uzi-text-muted: var(--muted-foreground);
+  --uzi-text-disabled: color-mix(in srgb, var(--muted-foreground) 65%, transparent);
+  --uzi-border-subtle: color-mix(in srgb, var(--border) 72%, transparent);
+  --uzi-border-default: var(--border);
+  --uzi-border-strong: color-mix(in srgb, var(--border) 76%, var(--foreground));
+  --uzi-border-accent: color-mix(in srgb, var(--primary) 55%, var(--border));
+  --uzi-shadow-sm:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025),
+    0 1px 2px rgba(0, 0, 0, 0.18),
+    0 4px 12px rgba(0, 0, 0, 0.12);
+  --uzi-shadow-md:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 10px 28px rgba(0, 0, 0, 0.24);
+  --uzi-shadow-lg:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 20px 56px rgba(0, 0, 0, 0.32);
+  /* Preserve the legacy alias value while new components use semantic Uzi tokens. */
   --surface-elevated: #0b1224;
   --surface-topbar: color-mix(in srgb, var(--background, #0b1224) 85%, transparent);
-  --text: #e2e8f0;
 }
 
 :root,

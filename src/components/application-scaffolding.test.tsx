@@ -9,6 +9,9 @@ import {
   Stack,
   Stat,
   StatGroup,
+  Surface,
+  Toolbar,
+  ToolbarGroup,
 } from "../index";
 
 describe("application scaffolding primitives", () => {
@@ -46,6 +49,27 @@ describe("application scaffolding primitives", () => {
     expect(screen.getByRole("button", { name: "Clear filters" })).toBeInTheDocument();
     expect(screen.getByText("Wins")).toBeInTheDocument();
     expect(screen.getByText("12")).toBeInTheDocument();
+  });
+
+  it("renders shared hierarchy primitives without product-specific semantics", () => {
+    render(
+      <Surface data-testid="surface" level="subtle" bordered>
+        <Toolbar data-testid="toolbar">
+          <ToolbarGroup label="Filters" grow>
+            <button type="button">All</button>
+          </ToolbarGroup>
+          <ToolbarGroup>
+            <button type="button">Refresh</button>
+          </ToolbarGroup>
+        </Toolbar>
+      </Surface>,
+    );
+
+    expect(screen.getByTestId("surface")).toBeInTheDocument();
+    expect(screen.getByTestId("toolbar")).not.toHaveAttribute("role", "toolbar");
+    expect(screen.getByRole("group", { name: "Filters" })).toBeInTheDocument();
+    expect(screen.getByText("Filters")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Refresh" })).toBeInTheDocument();
   });
 
   it("renders generic layout composition without requiring domain props", () => {

@@ -1,13 +1,21 @@
 import type { Preview } from "@storybook/react";
 import React from "react";
-import { ThemeProvider, useTheme } from "../src/theme/ThemeProvider";
+import { ThemeProvider, useTheme, type UziTheme } from "../src/theme/ThemeProvider";
 
 import "../src/theme/theme.css";
 
 function ThemeWrapper({ children }: { children: React.ReactNode }) {
   const { resolvedTheme } = useTheme();
   return (
-    <div style={{ minHeight: "400px", padding: "2rem", background: resolvedTheme === "dark" ? "#18181b" : "#ffffff" }}>
+    <div
+      style={{
+        minHeight: "400px",
+        padding: "2rem",
+        background: "var(--uzi-surface-canvas, var(--background))",
+        color: "var(--uzi-text-primary, var(--foreground))",
+      }}
+      data-preview-theme={resolvedTheme}
+    >
       {children}
     </div>
   );
@@ -23,13 +31,17 @@ const preview: Preview = {
     },
   },
   decorators: [
-    (Story) => (
-      <ThemeProvider defaultTheme="light" defaultAccent="blue">
-        <ThemeWrapper>
-          <Story />
-        </ThemeWrapper>
-      </ThemeProvider>
-    ),
+    (Story, context) => {
+      const selectedTheme: UziTheme = context.globals.theme === "dark" ? "dark" : "light";
+
+      return (
+        <ThemeProvider theme={selectedTheme} defaultAccent="blue" disableStorage>
+          <ThemeWrapper>
+            <Story />
+          </ThemeWrapper>
+        </ThemeProvider>
+      );
+    },
   ],
   globalTypes: {
     theme: {

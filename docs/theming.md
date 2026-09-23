@@ -131,23 +131,36 @@ To disable persistence entirely:
 
 ## CSS Custom Property Overrides
 
-Consumers can extend or override uzi's design tokens by setting CSS custom properties on `:root` or any ancestor. The library sets `data-uzi-theme` and `data-uzi-accent` attributes on the document root for targeted overrides:
+Consumers can extend or override Uzi's design tokens by setting CSS custom properties on `:root` or any ancestor. The library sets `data-uzi-theme` and `data-uzi-accent` attributes on the document root for targeted overrides.
+
+Prefer the semantic hierarchy tokens for product-level customization:
+
+- surfaces: `--uzi-surface-canvas`, `--uzi-surface-1`, `--uzi-surface-2`, `--uzi-surface-raised`, `--uzi-surface-selected`
+- text: `--uzi-text-primary`, `--uzi-text-secondary`, `--uzi-text-muted`, `--uzi-text-disabled`
+- borders: `--uzi-border-subtle`, `--uzi-border-default`, `--uzi-border-strong`, `--uzi-border-accent`
+- shadows: `--uzi-shadow-none`, `--uzi-shadow-sm`, `--uzi-shadow-md`, `--uzi-shadow-lg`
+- typography: `--uzi-font-display`, `--uzi-font-title`, `--uzi-font-heading`, `--uzi-font-body`, `--uzi-font-small`, `--uzi-font-caption`
+- spacing: `--uzi-space-1` through `--uzi-space-7`
+
+The existing theme tokens such as `--primary`, `--background`, `--panel`, and `--border` remain supported.
 
 ```css
-/* Override the accent color for all interactive elements */
+/* Product-level hierarchy overrides */
 :root {
-  --uzi-color-accent: #ff6b6b;
+  --uzi-surface-canvas: #0b0d10;
+  --uzi-surface-1: #101318;
+  --uzi-border-subtle: #20252c;
 }
 
-/* Target a specific accent palette */
+/* Override the active accent palette at the source */
 [data-uzi-accent="emerald"] {
-  --uzi-color-accent: #34d399;
+  --primary: #34d399;
 }
 
-/* Dark-mode-specific override */
+/* Dark-mode-specific product override */
 [data-uzi-theme="dark"] .sidebar {
-  background: #1a1a2e;
+  background: var(--uzi-surface-1);
 }
 ```
 
-Check the source file `src/theme/theme.css` for the full list of available tokens.
+See `docs/guides/visual-hierarchy.md` for usage conventions and `src/theme/theme.css` for the full token set.
