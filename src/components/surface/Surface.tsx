@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from "react";
+import type { ComponentPropsWithoutRef, ElementType } from "react";
 import { cx } from "../../utils/cx";
 import styles from "./surface.module.css";
 
@@ -8,15 +8,19 @@ export type SurfaceRadius = "none" | "sm" | "md" | "lg";
 
 type SurfaceElement = "div" | "section" | "article" | "aside";
 
-export type SurfaceProps = HTMLAttributes<HTMLElement> & {
-  as?: SurfaceElement;
+type SurfaceOwnProps<T extends SurfaceElement> = {
+  as?: T;
   level?: SurfaceLevel;
   padding?: SurfacePadding;
   radius?: SurfaceRadius;
   bordered?: boolean;
 };
 
-export function Surface({
+export type SurfaceProps<T extends SurfaceElement = "div"> =
+  SurfaceOwnProps<T> &
+  Omit<ComponentPropsWithoutRef<T>, keyof SurfaceOwnProps<T>>;
+
+export function Surface<T extends SurfaceElement = "div">({
   as,
   level = "base",
   padding = "md",
@@ -25,8 +29,8 @@ export function Surface({
   className,
   children,
   ...rest
-}: SurfaceProps) {
-  const Component: SurfaceElement = as ?? "div";
+}: SurfaceProps<T>) {
+  const Component = (as ?? "div") as ElementType;
 
   return (
     <Component

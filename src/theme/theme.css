@@ -56,9 +56,9 @@ body {
   --uzi-radius-md: 0.625rem;
   --uzi-radius-lg: 0.875rem;
   --uzi-font-display: clamp(1.875rem, 3vw, 2.5rem);
-  --uzi-font-title: clamp(1.5rem, 2.5vw, 2rem);
-  --uzi-font-heading: clamp(1.125rem, 2vw, 1.375rem);
-  --uzi-font-body: 0.875rem;
+  --uzi-font-title: clamp(1.375rem, 2.5vw, 1.875rem);
+  --uzi-font-heading: clamp(1.25rem, 2vw, 1.625rem);
+  --uzi-font-body: 0.9375rem;
   --uzi-font-small: 0.8125rem;
   --uzi-font-caption: 0.75rem;
   --uzi-shadow-none: none;
@@ -156,8 +156,9 @@ body {
   --uzi-shadow-lg:
     inset 0 1px 0 rgba(255, 255, 255, 0.035),
     0 20px 56px rgba(0, 0, 0, 0.32);
-  --surface-elevated: var(--uzi-surface-raised);
-  --surface-topbar: color-mix(in srgb, var(--uzi-surface-canvas) 85%, transparent);
+  /* Preserve the legacy alias value while new components use semantic Uzi tokens. */
+  --surface-elevated: #0b1224;
+  --surface-topbar: color-mix(in srgb, var(--background, #0b1224) 85%, transparent);
 }
 
 :root,

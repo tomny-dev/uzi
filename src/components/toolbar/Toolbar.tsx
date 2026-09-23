@@ -12,12 +12,14 @@ export type ToolbarProps = HTMLAttributes<HTMLDivElement> & {
 export function Toolbar({
   density = "compact",
   sticky = false,
+  role = "toolbar",
   className,
   children,
   ...rest
 }: ToolbarProps) {
   return (
     <div
+      role={role}
       className={cx(styles.toolbar, styles[`density-${density}`], sticky && styles.sticky, className)}
       {...rest}
     >
@@ -34,12 +36,22 @@ export type ToolbarGroupProps = HTMLAttributes<HTMLDivElement> & {
 export function ToolbarGroup({
   label,
   grow = false,
+  role,
+  "aria-label": ariaLabel,
   className,
   children,
   ...rest
 }: ToolbarGroupProps) {
+  const groupLabel = ariaLabel ?? (typeof label === "string" ? label : undefined);
+  const groupRole = role ?? (label != null || groupLabel != null ? "group" : undefined);
+
   return (
-    <div className={cx(styles.group, grow && styles.grow, className)} {...rest}>
+    <div
+      role={groupRole}
+      aria-label={groupLabel}
+      className={cx(styles.group, grow && styles.grow, className)}
+      {...rest}
+    >
       {label != null && <span className={styles.label}>{label}</span>}
       <div className={styles.controls}>{children}</div>
     </div>
