@@ -143,7 +143,7 @@ In practice, `uzi` should spend its complexity budget on reusable app scaffoldin
 | `AppShell` | Responsive layout with collapsible sidebar |
 | `SidebarNav` | Sidebar navigation list |
 | `TopBar` | Composable header shell for brand, nav triggers, and actions |
-| `PageContainer` | Centered responsive page-width container with configurable max width |
+| `PageContainer` | Centered responsive page wrapper with standard horizontal and vertical gutters |
 | `PageHeader` | Page title, eyebrow, description, and action composition |
 | `SectionHeader` | Reusable section title, description, and actions |
 | `EmptyState` | Empty-result/resource state with visual and action slots |

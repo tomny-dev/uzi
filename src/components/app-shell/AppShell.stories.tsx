@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { AppShell } from "./AppShell";
 import type { AppShellProps } from "./AppShell";
 import { SidebarNav } from "../sidebar-nav/SidebarNav";
-import { TopBar } from "../top-bar/TopBar";
+import { PageContainer } from "../page-container/PageContainer";
 
 const sidebarItems = [
   { label: "Dashboard", href: "/", active: true },
@@ -26,10 +26,10 @@ export const Default: Story = {
       brandHref="#"
       sidebar={<SidebarNav items={sidebarItems} />}
     >
-      <div style={{ padding: "2rem" }}>
+      <PageContainer>
         <h1>Dashboard</h1>
         <p>Main content area</p>
-      </div>
+      </PageContainer>
     </AppShell>
   ),
 };
@@ -50,7 +50,7 @@ export const FullDashboardLayout: Story = {
         />
       }
     >
-      <div style={{ padding: "2rem" }}>
+      <PageContainer>
         <h1>Full Dashboard</h1>
         <p>Responsive app shell with sidebar and top bar.</p>
         <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem" }}>
@@ -63,7 +63,7 @@ export const FullDashboardLayout: Story = {
             <p style={{ margin: 0 }}>Content placeholder</p>
           </div>
         </div>
-      </div>
+      </PageContainer>
     </AppShell>
   ),
 };
@@ -72,12 +72,12 @@ export const CustomSidebarWidth: Story = {
   render: () => (
     <AppShell
       brand="MyApp"
-      sidebarWidth="320"
+      sidebarWidth={320}
       sidebar={<SidebarNav items={sidebarItems} />}
     >
-      <div style={{ padding: "2rem" }}>
+      <PageContainer>
         <p>Custom sidebar width: 320px</p>
-      </div>
+      </PageContainer>
     </AppShell>
   ),
 };
@@ -93,10 +93,10 @@ export const ResponsiveSidebar: Story = {
         console.log("Sidebar open:", open);
       }}
     >
-      <div style={{ padding: "2rem" }}>
+      <PageContainer>
         <p>Resize the browser to see responsive behavior.</p>
         <p>On mobile (&lt;960px), the sidebar collapses and a hamburger menu appears.</p>
-      </div>
+      </PageContainer>
     </AppShell>
   ),
 };
@@ -109,9 +109,9 @@ export const WithTopbarContent: Story = {
       topbarEnd={<span style={{ fontSize: "0.875rem" }}>user@example.com</span>}
       sidebar={<SidebarNav items={sidebarItems} />}
     >
-      <div style={{ padding: "2rem" }}>
+      <PageContainer>
         <p>Top bar with custom start/end content</p>
-      </div>
+      </PageContainer>
     </AppShell>
   ),
 };

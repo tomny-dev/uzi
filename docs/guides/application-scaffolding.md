@@ -55,7 +55,9 @@ export function DashboardPage() {
 
 ### `PageContainer`
 
-Provides a centered responsive content width and horizontal gutters. Use `maxWidth="sm" | "md" | "lg" | "xl" | "full"` when the page needs a different content measure, and `bleed` only when the parent already owns horizontal padding.
+Provides a centered responsive content width with standard horizontal and vertical page gutters. Use `maxWidth="sm" | "md" | "lg" | "xl" | "full"` when the page needs a different content measure, and `bleed` only when the parent already owns horizontal padding.
+
+The default block padding keeps page headers and content separated from application chrome. Consumers can customize it with `--uzi-page-padding-block`. Full-height or edge-to-edge workspaces that should touch the shell boundaries should render directly in `AppShell` instead of using `PageContainer`.
 
 ### `PageHeader`
 

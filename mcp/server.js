@@ -320,7 +320,7 @@ toast.success("File uploaded", {
   },
 
   AppShell: {
-    description: "Responsive app layout with collapsible sidebar and sticky topbar. Main area has no default padding — each page manages its own padding and max-width.",
+    description: "Responsive app layout with collapsible sidebar and sticky topbar. Main area is edge-to-edge by default; standard pages should compose it with PageContainer.",
     props: {
       sidebar: { type: "ReactNode" },
       brand: { type: "ReactNode", optional: true, description: "Brand/logo element in the topbar" },
@@ -344,11 +344,30 @@ toast.success("File uploaded", {
   sidebarWidth="18rem"
   closeSidebarOnChangeKey={pathname}
 >
-  <div className="mx-auto w-full max-w-7xl px-4 py-6">
+  <PageContainer>
     {children}
-  </div>
+  </PageContainer>
 </AppShell>`,
     ],
+  },
+
+  PageContainer: {
+    description: "Standard page wrapper with centered responsive width plus horizontal and vertical page gutters. Use inside AppShell for ordinary pages; render directly in AppShell for full-height or edge-to-edge tools.",
+    props: {
+      maxWidth: { type: "PageContainerWidth", default: "lg", options: ["sm", "md", "lg", "xl", "full"] },
+      bleed: { type: "boolean", default: false, description: "Removes responsive horizontal gutters only; vertical page spacing remains." },
+      className: { type: "string", optional: true },
+      children: { type: "ReactNode" },
+    },
+    examples: [
+      `<PageContainer maxWidth="xl">
+  <Stack gap="lg">
+    <PageHeader title="Dashboard" />
+    {children}
+  </Stack>
+</PageContainer>`,
+    ],
+    notes: "Default vertical spacing is controlled by --uzi-page-padding-block. Prefer the default for standard pages so headers are not flush against application chrome.",
   },
 
   SidebarNav: {
@@ -535,6 +554,7 @@ server.tool(
       Dropdown: ["dropdown", "deprecated select", "legacy picker"],
       DropdownMenu: ["menu", "context menu", "action menu", "radix dropdown", "submenu"],
       AppShell: ["layout", "shell", "app layout", "sidebar layout"],
+      PageContainer: ["page", "page container", "page layout", "page padding", "page spacing", "content width", "gutters"],
       SidebarNav: ["sidebar", "navigation", "nav", "side menu"],
       Toolbar: ["toolbar", "filters", "filter bar", "actions", "workspace controls"],
       ToolbarGroup: ["toolbar group", "filter group", "control group"],

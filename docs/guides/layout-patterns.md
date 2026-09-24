@@ -14,6 +14,7 @@ import {
   SidebarNav,
   TopBar,
   Button,
+  PageContainer,
 } from "@tomny-dev/uzi";
 
 const navItems = [
@@ -39,16 +40,16 @@ export function Dashboard() {
         </Button>
       }
     >
-      <main style={{ padding: 24 }}>
+      <PageContainer>
         <h1>Dashboard</h1>
         <p>Your content goes here.</p>
-      </main>
+      </PageContainer>
     </AppShell>
   );
 }
 ```
 
-The sidebar is **open by default on desktop** and **collapsed on mobile**, where it slides in as an overlay with a backdrop.
+The sidebar is **open by default on desktop** and **collapsed on mobile**, where it slides in as an overlay with a backdrop. Standard pages should use `PageContainer` so width, horizontal gutters, and vertical separation from the top bar stay consistent across applications. Full-height tools can render directly in the shell main area.
 
 ## Full-Width Top Bar Without Sidebar
 
