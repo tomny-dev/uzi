@@ -4,8 +4,8 @@ import styles from "./page-container.module.css";
 
 export type PageContainerWidth = "sm" | "md" | "lg" | "xl" | "full";
 
+/** Standard page container with responsive horizontal and vertical gutters. */
 export type PageContainerProps = HTMLAttributes<HTMLDivElement> & {
-  /** Standard page container with responsive horizontal and vertical gutters. */
   /** Maximum content width. Defaults to `lg`. */
   maxWidth?: PageContainerWidth;
   /** Removes only the responsive horizontal gutters; standard vertical page spacing remains. */
