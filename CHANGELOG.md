@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/tomny-dev/uzi/compare/uzi-v0.6.0...uzi-v0.6.1) (2026-09-24)
+
+
+### Bug Fixes
+
+* **page-container:** add default vertical page spacing ([#60](https://github.com/tomny-dev/uzi/issues/60)) ([61273e7](https://github.com/tomny-dev/uzi/commit/61273e752bd07851ec43cc98b81ca39f59f68a4f))
+
 ## [0.6.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.5.0...uzi-v0.6.0) (2026-09-23)
 
 
