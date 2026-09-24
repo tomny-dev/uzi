@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { AppShell } from "./AppShell";
 import type { AppShellProps } from "./AppShell";
 import { SidebarNav } from "../sidebar-nav/SidebarNav";
-import { TopBar } from "../top-bar/TopBar";
 import { PageContainer } from "../page-container/PageContainer";
 
 const sidebarItems = [
@@ -73,7 +72,7 @@ export const CustomSidebarWidth: Story = {
   render: () => (
     <AppShell
       brand="MyApp"
-      sidebarWidth="320"
+      sidebarWidth={320}
       sidebar={<SidebarNav items={sidebarItems} />}
     >
       <PageContainer>
