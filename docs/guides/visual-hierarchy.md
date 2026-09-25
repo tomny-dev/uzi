@@ -29,6 +29,22 @@ Use `Surface` to group related content without implying that the group is a stan
 
 Default cards intentionally have little or no elevation. Use `tone="contrast"` or an interactive state only when the object should visually rise above the workspace.
 
+### Nested cards
+
+Do not alternate arbitrary card colors based on nesting depth. Surface changes should communicate semantics rather than DOM depth.
+
+When a discrete object must be nested inside another `Card`, keep the parent on the default tone and use `tone="inset"` for the nested card. The inset tone uses the secondary semantic surface with no added elevation.
+
+```tsx
+<Card>
+  <Card tone="inset">
+    Nested discrete content
+  </Card>
+</Card>
+```
+
+Avoid deep card nesting. For a third visual level, prefer `Surface`, whitespace, a divider, or a purpose-built layout primitive instead of another card.
+
 ## Toolbars
 
 Use `Toolbar` for filters and page-level controls instead of placing ordinary controls inside a large card. `ToolbarGroup` provides labels, separators, growth, and narrow-screen stacking.
