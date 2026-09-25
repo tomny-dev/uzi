@@ -20,12 +20,7 @@
   --ts-card-shadow: var(--uzi-shadow-none, none);
 }
 
-.tone-inset {
-  --ts-card-bg: var(--uzi-surface-2, var(--muted));
-  --ts-card-border: var(--uzi-border-subtle, var(--border));
-  --ts-card-shadow: var(--uzi-shadow-none, none);
-}
-
+.tone-inset,
 .tone-muted {
   --ts-card-bg: var(--uzi-surface-2, var(--muted));
   --ts-card-border: var(--uzi-border-subtle, var(--border));
