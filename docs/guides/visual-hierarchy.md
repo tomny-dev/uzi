@@ -29,6 +29,23 @@ Use `Surface` to group related content without implying that the group is a stan
 
 Default cards intentionally have little or no elevation. Use `tone="contrast"` or an interactive state only when the object should visually rise above the workspace.
 
+### Card and Surface composition
+
+Use `Surface` for section-level or visual grouping. Use `Card` for a discrete object or entity.
+
+Do not alternate card colors simply because cards are nested. Surface contrast should communicate hierarchy or state, not DOM depth.
+
+If a parent exists only to group child cards, prefer `Surface` or whitespace over another `Card`.
+
+```tsx
+<Surface level="subtle" padding="lg" radius="lg">
+  <Card as="article">First item</Card>
+  <Card as="article">Second item</Card>
+</Surface>
+```
+
+Avoid deep card nesting. Use spacing, dividers, `Surface`, or a purpose-built layout primitive for additional hierarchy.
+
 ## Toolbars
 
 Use `Toolbar` for filters and page-level controls instead of placing ordinary controls inside a large card. `ToolbarGroup` provides labels, separators, growth, and narrow-screen stacking.

@@ -53,7 +53,7 @@ const COMPONENTS = {
       '<Card tone="muted" padding="lg"><p>Content here</p></Card>',
       '<Card as="section" interactive onClick={handleClick}>Clickable card</Card>',
     ],
-    notes: "Use Card for discrete objects. Use Surface for visual grouping that is not itself an object.",
+    notes: "Use Card for discrete objects or entities. If a parent exists only to group child cards, prefer Surface or whitespace instead of another Card. Do not alternate card colors based on nesting depth; use spacing, dividers, or Surface for additional hierarchy.",
   },
 
   Surface: {
@@ -70,7 +70,7 @@ const COMPONENTS = {
       '<Surface level="subtle" padding="lg"><p>Grouped content</p></Surface>',
       '<Surface level="selected" bordered><p>Selected region</p></Surface>',
     ],
-    notes: "Use Surface for visual grouping. Use Card when the content represents a discrete object.",
+    notes: "Use Surface for section-level or visual grouping. Use Card when the content represents a discrete object. Surface contrast should communicate hierarchy or state, not DOM depth; prefer Surface or whitespace when grouping multiple Cards.",
   },
 
   Pill: {
