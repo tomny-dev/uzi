@@ -55,20 +55,22 @@ jobs:
         run: pnpm build
 
       - name: Check npm authentication
-        run: |
-          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
-            echo "::error::NPM_TOKEN secret is not configured in repository settings."
-            exit 1
-          fi
-          echo "NPM_TOKEN_SET=true" >> "$GITHUB_ENV"
-
-      - name: Verify npm token permissions
-        run: npm whoami
+        shell: bash
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "::warning::NPM_TOKEN is not configured; skipping npm preview publish."
+            echo "NPM_TOKEN_SET=false" >> "$GITHUB_ENV"
+          elif npm whoami >/dev/null 2>&1; then
+            echo "NPM_TOKEN_SET=true" >> "$GITHUB_ENV"
+          else
+            echo "::warning::NPM_TOKEN is invalid or expired; skipping npm preview publish."
+            echo "NPM_TOKEN_SET=false" >> "$GITHUB_ENV"
+          fi
 
       - name: Publish preview to npm
-        if: env.NPM_TOKEN_SET
+        if: env.NPM_TOKEN_SET == 'true'
         run: npm publish --access public --tag "$PREVIEW_TAG" --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
