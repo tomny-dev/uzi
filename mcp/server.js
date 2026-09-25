@@ -42,7 +42,7 @@ const COMPONENTS = {
   Card: {
     description: "Discrete object container with tone and padding control. Can render as div, section, or article.",
     props: {
-      tone: { type: "CardTone", default: "default", options: ["default", "muted", "contrast"] },
+      tone: { type: "CardTone", default: "default", options: ["default", "inset", "muted", "contrast"] },
       padding: { type: "CardPadding", default: "md", options: ["none", "sm", "md", "lg"] },
       as: { type: '"div" | "section" | "article"', default: '"div"' },
       interactive: { type: "boolean", default: false, description: "Adds hover/focus lift and outline affordance" },
@@ -51,9 +51,10 @@ const COMPONENTS = {
     },
     examples: [
       '<Card tone="muted" padding="lg"><p>Content here</p></Card>',
+      '<Card><Card tone="inset">Nested discrete content</Card></Card>',
       '<Card as="section" interactive onClick={handleClick}>Clickable card</Card>',
     ],
-    notes: "Use Card for discrete objects. Use Surface for visual grouping that is not itself an object.",
+    notes: "Use Card for discrete objects. Use tone=\"inset\" when a discrete object must be nested inside another Card; do not alternate arbitrary colors by depth. Prefer Surface for non-object grouping and avoid deep card nesting.",
   },
 
   Surface: {
