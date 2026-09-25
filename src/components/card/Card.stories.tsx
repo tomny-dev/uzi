@@ -11,7 +11,7 @@ const meta = {
   argTypes: {
     tone: {
       control: "select",
-      options: ["default", "muted", "contrast"],
+      options: ["default", "inset", "muted", "contrast"],
     },
     padding: {
       control: "select",
@@ -39,13 +39,30 @@ export const Tones: Story = {
   args: { padding: "md" },
   render: (args) => (
     <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-      {(["default", "muted", "contrast"] as CardProps["tone"][]).map((tone) => (
+      {(["default", "inset", "muted", "contrast"] as CardProps["tone"][]).map((tone) => (
         <Card key={tone} {...args} tone={tone} style={{ width: "200px" }}>
           <h4 style={{ margin: "0 0 0.5rem 0" }}>{tone}</h4>
           <p style={{ margin: 0, fontSize: "0.875rem" }}>Card tone: {tone}</p>
         </Card>
       ))}
     </div>
+  ),
+};
+
+export const NestedCards: Story = {
+  render: () => (
+    <Card padding="lg" style={{ maxWidth: "420px" }}>
+      <h3 style={{ margin: "0 0 0.5rem 0" }}>Account</h3>
+      <p style={{ margin: "0 0 1rem 0" }}>
+        Keep the parent card on the default surface and use the inset tone for nested discrete content.
+      </p>
+      <Card tone="inset" padding="md">
+        <h4 style={{ margin: "0 0 0.5rem 0" }}>Billing details</h4>
+        <p style={{ margin: 0, fontSize: "0.875rem" }}>
+          Nested cards use semantic surface contrast instead of alternating arbitrary colors.
+        </p>
+      </Card>
+    </Card>
   ),
 };
 
@@ -104,7 +121,7 @@ export const CardWithPill: Story = {
 
 export const AllTonesAndPadding: Story = {
   render: () => {
-    const tones: CardProps["tone"][] = ["default", "muted", "contrast"];
+    const tones: CardProps["tone"][] = ["default", "inset", "muted", "contrast"];
     const paddings: CardProps["padding"][] = ["none", "sm", "md", "lg"];
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
