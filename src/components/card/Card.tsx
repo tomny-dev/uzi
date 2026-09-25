@@ -14,7 +14,7 @@ import type { ComponentPropsWithoutRef, ElementType } from "react";
 import { cx } from "../../utils/cx";
 import styles from "./card.module.css";
 
-export type CardTone = "default" | "muted" | "contrast";
+export type CardTone = "default" | "inset" | "muted" | "contrast";
 export type CardPadding = "none" | "sm" | "md" | "lg";
 
 type CardElement = "div" | "section" | "article";
@@ -44,7 +44,7 @@ export function Card<T extends CardElement = "div">({
   ...rest
 }: CardProps<T>) {
   const Component = (as ?? "div") as ElementType;
-  const TONE_CLASS: Record<CardTone, string | null> = { default: null, muted: "tone-muted", contrast: "tone-contrast" };
+  const TONE_CLASS: Record<CardTone, string | null> = { default: null, inset: "tone-inset", muted: "tone-muted", contrast: "tone-contrast" };
   const PADDING_CLASS: Record<CardPadding, string> = { none: "padding-none", sm: "padding-sm", md: "padding-md", lg: "padding-lg" };
   const classes = cx(
     styles.card,
