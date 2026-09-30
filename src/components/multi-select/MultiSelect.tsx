@@ -18,6 +18,7 @@ export type MultiSelectProps = {
   placeholder?: string;
   fullWidth?: boolean;
   maxVisibleValues?: number;
+  formatValue?: (selected: MultiSelectOption[]) => React.ReactNode;
   className?: string;
   disabled?: boolean;
   name?: string;
@@ -34,6 +35,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
       placeholder = "Select options",
       fullWidth = true,
       maxVisibleValues = 2,
+      formatValue,
       className,
       disabled = false,
       name,
@@ -88,6 +90,8 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
               <span className={styles.value}>
                 {selectedOptions.length === 0 ? (
                   <span className={styles.placeholder}>{placeholder}</span>
+                ) : formatValue ? (
+                  <span className={styles.summary}>{formatValue(selectedOptions)}</span>
                 ) : (
                   <>
                     {visibleOptions.map((option) => (
@@ -96,12 +100,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                       </span>
                     ))}
                     {overflowCount > 0 ? (
-                      <span
-                        className={cx(
-                          styles.chip,
-                          styles.chipSummary,
-                        )}
-                      >
+                      <span className={cx(styles.chip, styles.chipSummary)}>
                         +{overflowCount}
                       </span>
                     ) : null}
