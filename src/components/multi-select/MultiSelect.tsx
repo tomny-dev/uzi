@@ -19,6 +19,9 @@ export type MultiSelectProps = {
   fullWidth?: boolean;
   maxVisibleValues?: number;
   formatValue?: (selected: MultiSelectOption[]) => string;
+  bulkActions?: boolean;
+  selectAllLabel?: string;
+  clearAllLabel?: string;
   className?: string;
   disabled?: boolean;
   name?: string;
@@ -36,6 +39,9 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
       fullWidth = true,
       maxVisibleValues = 2,
       formatValue,
+      bulkActions = false,
+      selectAllLabel = "Select all",
+      clearAllLabel = "Clear all",
       className,
       disabled = false,
       name,
@@ -49,6 +55,13 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
       () => options.filter((opt) => selectedSet.has(opt.value)),
       [options, selectedSet],
     );
+
+    const enabledValues = React.useMemo(
+      () => options.filter((option) => !option.disabled).map((option) => option.value),
+      [options],
+    );
+    const allEnabledSelected =
+      enabledValues.length > 0 && enabledValues.every((entry) => selectedSet.has(entry));
 
     const formattedValue = React.useMemo(
       () => formatValue?.(selectedOptions),
@@ -144,6 +157,31 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
               sideOffset={4}
               align="start"
             >
+              {bulkActions && enabledValues.length > 0 ? (
+                <>
+                  <DropdownMenuPrimitive.Item
+                    className={styles.bulkAction}
+                    disabled={allEnabledSelected}
+                    onSelect={(event) => {
+                      event.preventDefault();
+                      onChange(Array.from(new Set([...value, ...enabledValues])));
+                    }}
+                  >
+                    {selectAllLabel}
+                  </DropdownMenuPrimitive.Item>
+                  <DropdownMenuPrimitive.Item
+                    className={styles.bulkAction}
+                    disabled={value.length === 0}
+                    onSelect={(event) => {
+                      event.preventDefault();
+                      onChange([]);
+                    }}
+                  >
+                    {clearAllLabel}
+                  </DropdownMenuPrimitive.Item>
+                  <DropdownMenuPrimitive.Separator className={styles.separator} />
+                </>
+              ) : null}
               {options.map((option) => {
                 const selected = selectedSet.has(option.value);
 
