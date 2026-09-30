@@ -121,7 +121,6 @@ export const WithDisabledOptions: Story = {
   },
 };
 
-
 export const ConciseSummary: Story = {
   render: () => {
     const [value, setValue] = useState(["js", "ts", "py"]);
@@ -132,9 +131,11 @@ export const ConciseSummary: Story = {
           value={value}
           onChange={setValue}
           placeholder="All languages"
-          formatValue={(selected) =>
-            selected.length === 1 ? selected[0]?.label : `${selected.length} languages`
-          }
+          formatValue={(selected) => {
+            if (selected.length === 0) return "All languages";
+            if (selected.length === 1) return selected[0]?.label ?? "1 language";
+            return `${selected.length} languages`;
+          }}
         />
       </div>
     );
