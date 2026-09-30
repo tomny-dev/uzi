@@ -18,9 +18,12 @@ export type MultiSelectProps = {
   placeholder?: string;
   fullWidth?: boolean;
   maxVisibleValues?: number;
+  /** Formats the closed trigger text from the selected options, including an empty selection. */
   formatValue?: (selected: MultiSelectOption[]) => string;
+  /** Shows Select all and Clear all actions. Bulk actions modify enabled options only. */
   bulkActions?: boolean;
   selectAllLabel?: string;
+  /** Label for clearing all enabled selections. Disabled selected options remain selected. */
   clearAllLabel?: string;
   className?: string;
   disabled?: boolean;
@@ -180,8 +183,10 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                   >
                     {clearAllLabel}
                   </DropdownMenuPrimitive.Item>
-                  <DropdownMenuPrimitive.Separator className={styles.separator} />
                 </>
+              ) : null}
+              {bulkActions && enabledValues.length > 0 && options.length > 0 ? (
+                <DropdownMenuPrimitive.Separator className={styles.separator} />
               ) : null}
               {options.map((option) => {
                 const selected = selectedSet.has(option.value);
