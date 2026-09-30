@@ -27,7 +27,7 @@
 }
 
 .tone-contrast {
-  --ts-card-bg: var(--ts-card-contrast-bg, color-mix(in srgb, var(--background) 60%, black));
+  --ts-card-bg: var(--ts-card-contrast-bg, var(--uzi-surface-raised, var(--panel)));
   --ts-card-border: var(--uzi-border-default, var(--border));
   --ts-card-shadow: var(--uzi-shadow-lg, 0 18px 50px rgba(0, 0, 0, 0.32));
 }
