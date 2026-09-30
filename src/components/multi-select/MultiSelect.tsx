@@ -171,10 +171,11 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                   </DropdownMenuPrimitive.Item>
                   <DropdownMenuPrimitive.Item
                     className={styles.bulkAction}
-                    disabled={value.length === 0}
+                    disabled={!enabledValues.some((entry) => selectedSet.has(entry))}
                     onSelect={(event) => {
                       event.preventDefault();
-                      onChange([]);
+                      const enabledSet = new Set(enabledValues);
+                      onChange(value.filter((entry) => !enabledSet.has(entry)));
                     }}
                   >
                     {clearAllLabel}
