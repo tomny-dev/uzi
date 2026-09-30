@@ -141,3 +141,26 @@ export const ConciseSummary: Story = {
     );
   },
 };
+
+
+export const WithBulkActions: Story = {
+  render: () => {
+    const [value, setValue] = useState<string[]>([]);
+    return (
+      <div style={{ width: "280px" }}>
+        <MultiSelect
+          options={options}
+          value={value}
+          onChange={setValue}
+          bulkActions
+          formatValue={(selected) => {
+            if (selected.length === 0) return "None selected";
+            if (selected.length === options.length) return "All languages";
+            if (selected.length === 1) return selected[0]?.label ?? "1 selected";
+            return `${selected.length} languages`;
+          }}
+        />
+      </div>
+    );
+  },
+};
