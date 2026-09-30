@@ -5,6 +5,12 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      publish_current_version:
+        description: "Publish the version currently in package.json without creating a new GitHub release"
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -27,37 +33,37 @@ jobs:
           manifest-file: .release-please-manifest.json
 
       - uses: actions/checkout@v4
-        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' }}
+        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' || (github.event_name == 'workflow_dispatch' && inputs.publish_current_version) }}
 
       - uses: pnpm/action-setup@v4
-        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' }}
+        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' || (github.event_name == 'workflow_dispatch' && inputs.publish_current_version) }}
 
       - uses: actions/setup-node@v4
-        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' }}
+        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' || (github.event_name == 'workflow_dispatch' && inputs.publish_current_version) }}
         with:
           node-version: "24.x"
           registry-url: "https://registry.npmjs.org"
 
       - name: Use current npm
-        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' }}
+        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' || (github.event_name == 'workflow_dispatch' && inputs.publish_current_version) }}
         run: npm install -g npm@latest
 
       - name: Install dependencies
-        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' }}
+        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' || (github.event_name == 'workflow_dispatch' && inputs.publish_current_version) }}
         run: pnpm install --frozen-lockfile
 
       - name: Type check
-        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' }}
+        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' || (github.event_name == 'workflow_dispatch' && inputs.publish_current_version) }}
         run: pnpm lint
 
       - name: Test
-        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' }}
+        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' || (github.event_name == 'workflow_dispatch' && inputs.publish_current_version) }}
         run: pnpm test
 
       - name: Build
-        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' }}
+        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' || (github.event_name == 'workflow_dispatch' && inputs.publish_current_version) }}
         run: pnpm build
 
       - name: Publish to npm
-        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' }}
+        if: ${{ steps.release.outputs.releases_created == 'true' || steps.release.outputs.release_created == 'true' || (github.event_name == 'workflow_dispatch' && inputs.publish_current_version) }}
         run: npm publish --access public
