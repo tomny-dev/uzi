@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.2](https://github.com/tomny-dev/uzi/compare/uzi-v0.6.1...uzi-v0.6.2) (2026-09-30)
+
+
+### Bug Fixes
+
+* **theme:** prevent light flash before dark theme resolves ([#65](https://github.com/tomny-dev/uzi/issues/65)) ([3c6218e](https://github.com/tomny-dev/uzi/commit/3c6218ea9c73d5546186713c6d408b1927124675))
+
 ## [0.6.1](https://github.com/tomny-dev/uzi/compare/uzi-v0.6.0...uzi-v0.6.1) (2026-09-24)
 
 
