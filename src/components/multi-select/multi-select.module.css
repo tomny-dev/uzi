@@ -71,6 +71,14 @@
   color: var(--muted-foreground);
 }
 
+.summary {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
 .chip {
   display: inline-flex;
   align-items: center;
