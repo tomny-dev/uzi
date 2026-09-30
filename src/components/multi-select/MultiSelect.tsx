@@ -44,7 +44,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
       formatValue,
       bulkActions = false,
       selectAllLabel = "Select all",
-      clearAllLabel = "Clear all",
+      clearAllLabel,
       className,
       disabled = false,
       name,
@@ -65,6 +65,9 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
     );
     const allEnabledSelected =
       enabledValues.length > 0 && enabledValues.every((entry) => selectedSet.has(entry));
+    const hasDisabledOptions = options.some((option) => option.disabled);
+    const resolvedClearAllLabel =
+      clearAllLabel ?? (hasDisabledOptions ? "Clear enabled" : "Clear all");
 
     const formattedValue = React.useMemo(
       () => formatValue?.(selectedOptions),
@@ -181,7 +184,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                       onChange(value.filter((entry) => !enabledSet.has(entry)));
                     }}
                   >
-                    {clearAllLabel}
+                    {resolvedClearAllLabel}
                   </DropdownMenuPrimitive.Item>
                 </>
               ) : null}
