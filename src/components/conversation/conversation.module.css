@@ -63,7 +63,7 @@
   padding: var(--uzi-space-3, 0.75rem) var(--uzi-space-3, 0.75rem);
   font-size: var(--uzi-font-body, 0.875rem);
   line-height: 1.55;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .assistant .bubble,
