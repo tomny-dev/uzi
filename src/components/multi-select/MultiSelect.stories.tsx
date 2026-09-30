@@ -163,3 +163,25 @@ export const WithBulkActions: Story = {
     );
   },
 };
+
+
+export const BulkActionsWithDisabledSelection: Story = {
+  render: () => {
+    const mixedOptions = [
+      ...options.slice(0, 3),
+      { label: "Required language", value: "required", disabled: true },
+    ];
+    const [value, setValue] = useState<string[]>(["required", "js"]);
+    return (
+      <div style={{ width: "280px" }}>
+        <MultiSelect
+          options={mixedOptions}
+          value={value}
+          onChange={setValue}
+          bulkActions
+          formatValue={(selected) => `${selected.length} selected`}
+        />
+      </div>
+    );
+  },
+};
