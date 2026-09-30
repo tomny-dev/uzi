@@ -173,7 +173,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                     disabled={allEnabledSelected}
                     onSelect={(event) => {
                       event.preventDefault();
-                      onChange(Array.from(new Set([...value, ...enabledValues])));
+                      onChange([...value, ...enabledValues.filter((entry) => !selectedSet.has(entry))]);
                     }}
                   >
                     {selectAllLabel}
