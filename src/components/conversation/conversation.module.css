@@ -1,0 +1,94 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--uzi-surface-base, var(--background));
+  color: var(--uzi-text-primary, var(--foreground));
+}
+
+.header,
+.attachments,
+.composer {
+  flex-shrink: 0;
+  background: var(--uzi-surface-subtle, var(--muted));
+}
+
+.header {
+  border-bottom: 1px solid var(--uzi-border-default, var(--border));
+}
+
+.attachments,
+.composer {
+  border-top: 1px solid var(--uzi-border-default, var(--border));
+}
+
+.messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--uzi-space-4, 1rem);
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 100%;
+  margin-bottom: var(--uzi-space-4, 1rem);
+}
+
+.assistant,
+.system {
+  align-items: flex-start;
+}
+
+.user {
+  align-items: flex-end;
+}
+
+.label {
+  margin-bottom: var(--uzi-space-1, 0.25rem);
+  color: var(--uzi-text-secondary, var(--muted-foreground));
+  font-size: var(--uzi-font-xs, 0.6875rem);
+  font-weight: 600;
+}
+
+.bubble {
+  min-width: 0;
+  max-width: min(100%, 52rem);
+  border-radius: var(--uzi-radius-lg, 0.875rem);
+  padding: var(--uzi-space-3, 0.75rem) var(--uzi-space-3, 0.75rem);
+  font-size: var(--uzi-font-body, 0.875rem);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.assistant .bubble,
+.system .bubble {
+  border: 1px solid var(--uzi-border-default, var(--border));
+  background: var(--uzi-surface-subtle, var(--muted));
+}
+
+.user .bubble {
+  max-width: min(82%, 44rem);
+  background: var(--uzi-accent-primary, var(--primary));
+  color: var(--uzi-text-on-accent, var(--primary-foreground));
+}
+
+.status {
+  color: var(--uzi-text-secondary, var(--muted-foreground));
+  font-size: var(--uzi-font-small, 0.75rem);
+}
+
+@media (max-width: 720px) {
+  .messages {
+    padding: var(--uzi-space-3, 0.75rem);
+  }
+
+  .user .bubble {
+    max-width: 92%;
+  }
+}
