@@ -38,6 +38,14 @@ describe("MultiSelect", () => {
     expect(onChange).toHaveBeenCalledWith(["alpha", "beta"]);
   });
 
+  it("preserves existing selection order when selecting all", () => {
+    const onChange = vi.fn();
+    render(<MultiSelect options={options} value={["beta"]} onChange={onChange} bulkActions />);
+    openMenu();
+    fireEvent.click(screen.getByText("Select all"));
+    expect(onChange).toHaveBeenCalledWith(["beta", "alpha"]);
+  });
+
   it("clears enabled selections while preserving disabled selected values", () => {
     const onChange = vi.fn();
     render(
