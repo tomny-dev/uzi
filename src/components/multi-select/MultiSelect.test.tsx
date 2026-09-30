@@ -1,5 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
+
+function openMenu() {
+  const trigger = screen.getByRole("button");
+  fireEvent.pointerDown(trigger, { button: 0, ctrlKey: false });
+}
 import { MultiSelect } from "./MultiSelect";
 
 vi.mock("./multi-select.module.css", () => ({
@@ -28,7 +33,7 @@ describe("MultiSelect", () => {
   it("selects all enabled options without adding disabled options", () => {
     const onChange = vi.fn();
     render(<MultiSelect options={options} value={[]} onChange={onChange} bulkActions />);
-    fireEvent.click(screen.getByRole("button"));
+    openMenu();
     fireEvent.click(screen.getByText("Select all"));
     expect(onChange).toHaveBeenCalledWith(["alpha", "beta"]);
   });
@@ -43,7 +48,7 @@ describe("MultiSelect", () => {
         bulkActions
       />,
     );
-    fireEvent.click(screen.getByRole("button"));
+    openMenu();
     expect(screen.getByText("Clear enabled")).toBeTruthy();
     fireEvent.click(screen.getByText("Clear enabled"));
     expect(onChange).toHaveBeenCalledWith(["required"]);
