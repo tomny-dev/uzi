@@ -109,6 +109,21 @@ export type {
 } from "./components/layout-primitives/LayoutPrimitives";
 export { Inline, Stack } from "./components/layout-primitives/LayoutPrimitives";
 
+export type {
+  ConversationMessageProps,
+  ConversationProps,
+  ConversationRole,
+} from "./components/conversation/Conversation";
+export {
+  Conversation,
+  ConversationAttachments,
+  ConversationComposer,
+  ConversationHeader,
+  ConversationMessage,
+  ConversationMessages,
+  ConversationStatus,
+} from "./components/conversation/Conversation";
+
 export type { StatGroupProps, StatProps } from "./components/stat/Stat";
 export { Stat, StatGroup } from "./components/stat/Stat";
 
