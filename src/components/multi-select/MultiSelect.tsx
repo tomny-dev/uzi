@@ -10,7 +10,7 @@ export type MultiSelectOption = {
   value: string;
   disabled?: boolean;
   /** Optional decorative leading visual. The label remains the accessible option name. */
-  icon?: React.ReactNode;
+  icon?: React.ReactElement;
 };
 
 export type MultiSelectProps = {
@@ -191,7 +191,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                   </DropdownMenuPrimitive.Item>
                 </>
               ) : null}
-              {bulkActions && enabledValues.length > 0 && options.length > 0 ? (
+              {bulkActions && enabledValues.length > 0 ? (
                 <DropdownMenuPrimitive.Separator className={styles.separator} />
               ) : null}
               {options.map((option) => {
