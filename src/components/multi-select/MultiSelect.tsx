@@ -9,6 +9,8 @@ export type MultiSelectOption = {
   label: string;
   value: string;
   disabled?: boolean;
+  /** Optional decorative leading visual. The label remains the accessible option name. */
+  icon?: React.ReactNode;
 };
 
 export type MultiSelectProps = {
@@ -120,6 +122,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                   <>
                     {visibleOptions.map((option) => (
                       <span key={option.value} className={styles.chip}>
+                        {option.icon ? <span className={styles.optionIcon} aria-hidden="true">{option.icon}</span> : null}
                         {option.label}
                       </span>
                     ))}
@@ -233,7 +236,10 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                         </svg>
                       </DropdownMenuPrimitive.ItemIndicator>
                     </span>
-                    <span className={styles.optionLabel}>{option.label}</span>
+                    <span className={styles.optionLabel}>
+                          {option.icon ? <span className={styles.optionIcon} aria-hidden="true">{option.icon}</span> : null}
+                          {option.label}
+                        </span>
                   </DropdownMenuPrimitive.CheckboxItem>
                 );
               })}
