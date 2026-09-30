@@ -32,6 +32,8 @@ Prefer whitespace and surface contrast before adding a border. Prefer a border b
 
 Existing theme variables such as `--background`, `--panel`, `--muted`, and `--border` remain supported.
 
+The semantic surface ladder should remain perceptually ordered in every theme: canvas → surface-1 → surface-2 → raised. Components such as default Cards and Toolbars use surface-1; contained/inset sections use surface-2; genuinely elevated content uses raised. Tune theme tokens at this semantic level instead of introducing component-specific background colors.
+
 ## Surface vs Card
 
 Use `Surface` to group related content without implying that the group is a standalone object. Use `Card` when the content itself is a discrete object.
