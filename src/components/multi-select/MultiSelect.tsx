@@ -18,7 +18,7 @@ export type MultiSelectProps = {
   placeholder?: string;
   fullWidth?: boolean;
   maxVisibleValues?: number;
-  formatValue?: (selected: MultiSelectOption[]) => React.ReactNode;
+  formatValue?: (selected: MultiSelectOption[]) => string;
   className?: string;
   disabled?: boolean;
   name?: string;
@@ -48,6 +48,11 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
     const selectedOptions = React.useMemo(
       () => options.filter((opt) => selectedSet.has(opt.value)),
       [options, selectedSet],
+    );
+
+    const formattedValue = React.useMemo(
+      () => formatValue?.(selectedOptions),
+      [formatValue, selectedOptions],
     );
 
     const toggleValue = React.useCallback(
@@ -88,10 +93,10 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
               disabled={disabled}
             >
               <span className={styles.value}>
-                {selectedOptions.length === 0 ? (
+                {formatValue ? (
+                  <span className={styles.summary}>{formattedValue}</span>
+                ) : selectedOptions.length === 0 ? (
                   <span className={styles.placeholder}>{placeholder}</span>
-                ) : formatValue ? (
-                  <span className={styles.summary}>{formatValue(selectedOptions)}</span>
                 ) : (
                   <>
                     {visibleOptions.map((option) => (
