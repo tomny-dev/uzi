@@ -18,8 +18,8 @@ export function ConversationHeader({ children, className, ...props }: Conversati
   return <header className={cx(styles.header, className)} {...props}>{children}</header>;
 }
 
-export function ConversationMessages({ children, className, role = "log", ...props }: ConversationProps) {
-  return <div className={cx(styles.messages, className)} role={role} aria-live="polite" {...props}>{children}</div>;
+export function ConversationMessages({ children, className, ...props }: ConversationProps) {
+  return <div className={cx(styles.messages, className)} {...props}>{children}</div>;
 }
 
 export interface ConversationMessageProps extends HTMLAttributes<HTMLDivElement> {
