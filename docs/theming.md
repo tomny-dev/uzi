@@ -144,6 +144,12 @@ Prefer the semantic hierarchy tokens for product-level customization:
 
 The existing theme tokens such as `--primary`, `--background`, `--panel`, and `--border` remain supported.
 
+### Initial paint and unresolved theme fallback
+
+Uzi uses the dark palette as its bare `:root` fallback. This prevents a bright light-theme flash while the application theme is unresolved. Explicit `data-uzi-theme="light"` and `data-uzi-theme="dark"` values still select their corresponding palettes.
+
+For SSR applications, inline `getThemeScript()` in `<head>` so persisted, configured, or system theme selection is applied before first paint. The dark bare-root palette is a safety fallback, not a replacement for pre-paint theme resolution.
+
 ```css
 /* Product-level hierarchy overrides */
 :root {

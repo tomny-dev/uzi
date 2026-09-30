@@ -67,7 +67,6 @@ body {
   --uzi-shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.18);
 }
 
-:root,
 :root[data-uzi-theme="light"],
 [data-uzi-theme="light"] {
   color-scheme: light;
@@ -106,6 +105,7 @@ body {
   --surface-topbar: color-mix(in srgb, var(--uzi-surface-canvas) 85%, transparent);
 }
 
+:root,
 :root[data-uzi-theme="dark"],
 [data-uzi-theme="dark"] {
   color-scheme: dark;

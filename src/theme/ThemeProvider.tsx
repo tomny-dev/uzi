@@ -56,7 +56,6 @@ function isAccent(value: string | null): value is UziAccent {
 }
 
 function getSystemTheme(): UziResolvedTheme {
-  if (typeof window === "undefined") return "light";
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
@@ -75,7 +74,7 @@ export function ThemeProvider({
 }: ThemeProviderProps) {
   const [internalTheme, setInternalTheme] = useState<UziTheme>(defaultTheme);
   const [internalAccent, setInternalAccent] = useState<UziAccent>(defaultAccent);
-  const [systemTheme, setSystemTheme] = useState<UziResolvedTheme>("light");
+  const [systemTheme, setSystemTheme] = useState<UziResolvedTheme>("dark");
 
   useEffect(() => {
     setSystemTheme(getSystemTheme());
