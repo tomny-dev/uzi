@@ -120,3 +120,23 @@ export const WithDisabledOptions: Story = {
     );
   },
 };
+
+
+export const ConciseSummary: Story = {
+  render: () => {
+    const [value, setValue] = useState(["js", "ts", "py"]);
+    return (
+      <div style={{ width: "280px" }}>
+        <MultiSelect
+          options={options}
+          value={value}
+          onChange={setValue}
+          placeholder="All languages"
+          formatValue={(selected) =>
+            selected.length === 1 ? selected[0]?.label : `${selected.length} languages`
+          }
+        />
+      </div>
+    );
+  },
+};
