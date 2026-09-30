@@ -12,6 +12,15 @@ Uzi owns the reusable visual grammar of an application. Consumer apps should pro
 
 Prefer whitespace and surface contrast before adding a border. Prefer a border before adding a shadow. Shadows communicate elevation, not grouping.
 
+### Choosing a Surface level
+
+- `level="base"` — ordinary grouping when the surrounding canvas already provides enough separation.
+- `level="subtle"` — low-emphasis nested context, wells, or secondary grouping inside a stronger parent.
+- `level="raised"` — a section that must read distinctly from the page/workspace background. Use this deliberately for major content regions when `base` has insufficient contrast.
+- `level="selected"` — selected/focused state, not general section elevation.
+- Add `bordered` when the surface edge still needs definition across supported themes. A common major-section treatment is `<Surface level="raised" bordered ...>`.
+- Do not use `raised` merely because a surface is nested. Depth should express hierarchy, prominence, or interaction—not DOM structure.
+
 ## Semantic tokens
 
 - Surfaces: `--uzi-surface-canvas`, `--uzi-surface-1`, `--uzi-surface-2`, `--uzi-surface-raised`, `--uzi-surface-selected`
