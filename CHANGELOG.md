@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.6.3...uzi-v0.7.0) (2026-09-30)
+
+
+### Features
+
+* support concise MultiSelect summaries ([#74](https://github.com/tomny-dev/uzi/issues/74)) ([681dc96](https://github.com/tomny-dev/uzi/commit/681dc96889efc05827cc9ee23510e8a2336d2c7e))
+
 ## [0.6.3](https://github.com/tomny-dev/uzi/compare/uzi-v0.6.2...uzi-v0.6.3) (2026-09-30)
 
 
