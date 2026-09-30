@@ -15,10 +15,10 @@ Prefer whitespace and surface contrast before adding a border. Prefer a border b
 ### Choosing a Surface level
 
 - `level="base"` — ordinary grouping when the surrounding canvas already provides enough separation.
-- `level="subtle"` — low-emphasis nested context, wells, or secondary grouping inside a stronger parent.
-- `level="raised"` — a section that must read distinctly from the page/workspace background. Use this deliberately for major content regions when `base` has insufficient contrast.
+- `level="subtle"` — contained/inset workspace regions, section grouping, wells, or secondary context. Prefer this for ordinary page sections that need contrast from the canvas without appearing elevated.
+- `level="raised"` — content that should visually sit above the workspace, such as genuinely elevated, prominent, or interactive regions. Do not use it as the default section wrapper.
 - `level="selected"` — selected/focused state, not general section elevation.
-- Add `bordered` when the surface edge still needs definition across supported themes. A common major-section treatment is `<Surface level="raised" bordered ...>`.
+- Add `bordered` when the surface edge still needs definition across supported themes. A common contained-section treatment is `<Surface level="subtle" bordered ...>`.
 - Do not use `raised` merely because a surface is nested. Depth should express hierarchy, prominence, or interaction—not DOM structure.
 
 ## Semantic tokens
