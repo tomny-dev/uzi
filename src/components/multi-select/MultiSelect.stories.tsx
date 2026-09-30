@@ -142,7 +142,6 @@ export const ConciseSummary: Story = {
   },
 };
 
-
 export const WithBulkActions: Story = {
   render: () => {
     const [value, setValue] = useState<string[]>([]);
