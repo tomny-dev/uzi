@@ -57,6 +57,22 @@ jobs:
       - name: Publish preview to npm
         run: npm publish --access public --tag "$PREVIEW_TAG"
 
+      - name: Verify preview is available
+        shell: bash
+        run: |
+          for attempt in {1..12}; do
+            if PUBLISHED_VERSION=$(npm view "@tomny-dev/uzi@$PREVIEW_TAG" version 2>/dev/null) \
+              && [ "$PUBLISHED_VERSION" = "$PREVIEW_VERSION" ] \
+              && npm view "@tomny-dev/uzi@$PREVIEW_VERSION" dist.tarball >/dev/null 2>&1; then
+              echo "Verified @tomny-dev/uzi@$PREVIEW_VERSION on npm."
+              exit 0
+            fi
+            echo "Waiting for npm registry propagation (attempt $attempt/12)..."
+            sleep 10
+          done
+          echo "::error::Published preview $PREVIEW_VERSION is not available from npm after 2 minutes."
+          exit 1
+
       - name: Comment install instructions on PR
         uses: actions/github-script@v7
         with:
