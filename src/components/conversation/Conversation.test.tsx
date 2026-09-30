@@ -24,6 +24,7 @@ describe("Conversation", () => {
     expect(screen.getByText("Hello")).toBeInTheDocument();
     expect(screen.getByText("Hi")).toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent("Thinking");
+    expect(screen.getByText("Hello").closest("[role]")).toBeNull();
   });
 
   it("exposes message roles as data attributes without imposing chat behavior", () => {
