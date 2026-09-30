@@ -71,6 +71,14 @@
   color: var(--muted-foreground);
 }
 
+.summary {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
 .chip {
   display: inline-flex;
   align-items: center;
@@ -125,6 +133,37 @@
   padding: var(--uzi-menu-padding);
   box-shadow: var(--uzi-menu-shadow);
   animation: menuFadeIn 140ms ease;
+}
+
+.bulkAction {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border: none;
+  border-radius: var(--uzi-menu-item-radius);
+  background: transparent;
+  color: inherit;
+  padding: var(--uzi-menu-item-padding-y) var(--uzi-menu-item-padding-x);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
+
+.bulkAction[data-highlighted] {
+  background: var(--ts-menu-hover-bg, var(--accent));
+  color: var(--ts-menu-hover-fg, var(--accent-foreground));
+}
+
+.bulkAction[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.separator {
+  height: 1px;
+  margin: var(--uzi-menu-padding) 0;
+  background: var(--ts-menu-border, var(--border));
 }
 
 .option {
@@ -188,6 +227,23 @@
 .optionLabel {
   min-width: 0;
   flex: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--uzi-menu-item-gap);
+}
+
+.optionIcon {
+  width: 1rem;
+  height: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.optionIcon > * {
+  max-width: 100%;
+  max-height: 100%;
 }
 
 @keyframes menuFadeIn {

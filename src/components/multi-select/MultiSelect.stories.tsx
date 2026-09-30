@@ -120,3 +120,68 @@ export const WithDisabledOptions: Story = {
     );
   },
 };
+
+export const ConciseSummary: Story = {
+  render: () => {
+    const [value, setValue] = useState(["js", "ts", "py"]);
+    return (
+      <div style={{ width: "280px" }}>
+        <MultiSelect
+          options={options}
+          value={value}
+          onChange={setValue}
+          placeholder="All languages"
+          formatValue={(selected) => {
+            if (selected.length === 0) return "All languages";
+            if (selected.length === 1) return selected[0]?.label ?? "1 language";
+            return `${selected.length} languages`;
+          }}
+        />
+      </div>
+    );
+  },
+};
+
+export const WithBulkActions: Story = {
+  render: () => {
+    const [value, setValue] = useState<string[]>([]);
+    return (
+      <div style={{ width: "280px" }}>
+        <MultiSelect
+          options={options}
+          value={value}
+          onChange={setValue}
+          bulkActions
+          formatValue={(selected) => {
+            if (selected.length === 0) return "None selected";
+            if (selected.length === options.length) return "All languages";
+            if (selected.length === 1) return selected[0]?.label ?? "1 selected";
+            return `${selected.length} languages`;
+          }}
+        />
+      </div>
+    );
+  },
+};
+
+
+export const BulkActionsWithDisabledSelection: Story = {
+  render: () => {
+    const mixedOptions = [
+      ...options.slice(0, 3),
+      { label: "Required language", value: "required", disabled: true },
+    ];
+    const [value, setValue] = useState<string[]>(["required", "js"]);
+    return (
+      <div style={{ width: "280px" }}>
+        <MultiSelect
+          options={mixedOptions}
+          value={value}
+          onChange={setValue}
+          bulkActions
+          formatValue={(selected) => `${selected.length} selected`}
+        />
+      </div>
+    );
+  },
+};

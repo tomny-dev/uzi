@@ -9,6 +9,8 @@ export type MultiSelectOption = {
   label: string;
   value: string;
   disabled?: boolean;
+  /** Optional decorative leading visual. The label remains the accessible option name. */
+  icon?: React.ReactElement;
 };
 
 export type MultiSelectProps = {
@@ -18,6 +20,13 @@ export type MultiSelectProps = {
   placeholder?: string;
   fullWidth?: boolean;
   maxVisibleValues?: number;
+  /** Formats the closed trigger text from the selected options, including an empty selection. */
+  formatValue?: (selected: MultiSelectOption[]) => string;
+  /** Shows Select all and Clear all actions. Bulk actions modify enabled options only. */
+  bulkActions?: boolean;
+  selectAllLabel?: string;
+  /** Label for clearing all enabled selections. Disabled selected options remain selected. */
+  clearAllLabel?: string;
   className?: string;
   disabled?: boolean;
   name?: string;
@@ -34,6 +43,10 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
       placeholder = "Select options",
       fullWidth = true,
       maxVisibleValues = 2,
+      formatValue,
+      bulkActions = false,
+      selectAllLabel = "Select all",
+      clearAllLabel,
       className,
       disabled = false,
       name,
@@ -46,6 +59,21 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
     const selectedOptions = React.useMemo(
       () => options.filter((opt) => selectedSet.has(opt.value)),
       [options, selectedSet],
+    );
+
+    const enabledValues = React.useMemo(
+      () => options.filter((option) => !option.disabled).map((option) => option.value),
+      [options],
+    );
+    const allEnabledSelected =
+      enabledValues.length > 0 && enabledValues.every((entry) => selectedSet.has(entry));
+    const hasDisabledOptions = options.some((option) => option.disabled);
+    const resolvedClearAllLabel =
+      clearAllLabel ?? (hasDisabledOptions ? "Clear enabled" : "Clear all");
+
+    const formattedValue = React.useMemo(
+      () => formatValue?.(selectedOptions),
+      [formatValue, selectedOptions],
     );
 
     const toggleValue = React.useCallback(
@@ -86,22 +114,20 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
               disabled={disabled}
             >
               <span className={styles.value}>
-                {selectedOptions.length === 0 ? (
+                {formatValue ? (
+                  <span className={styles.summary}>{formattedValue}</span>
+                ) : selectedOptions.length === 0 ? (
                   <span className={styles.placeholder}>{placeholder}</span>
                 ) : (
                   <>
                     {visibleOptions.map((option) => (
                       <span key={option.value} className={styles.chip}>
+                        {option.icon ? <span className={styles.optionIcon} aria-hidden="true">{option.icon}</span> : null}
                         {option.label}
                       </span>
                     ))}
                     {overflowCount > 0 ? (
-                      <span
-                        className={cx(
-                          styles.chip,
-                          styles.chipSummary,
-                        )}
-                      >
+                      <span className={cx(styles.chip, styles.chipSummary)}>
                         +{overflowCount}
                       </span>
                     ) : null}
@@ -140,6 +166,34 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
               sideOffset={4}
               align="start"
             >
+              {bulkActions && enabledValues.length > 0 ? (
+                <>
+                  <DropdownMenuPrimitive.Item
+                    className={styles.bulkAction}
+                    disabled={allEnabledSelected}
+                    onSelect={(event) => {
+                      event.preventDefault();
+                      onChange([...value, ...enabledValues.filter((entry) => !selectedSet.has(entry))]);
+                    }}
+                  >
+                    {selectAllLabel}
+                  </DropdownMenuPrimitive.Item>
+                  <DropdownMenuPrimitive.Item
+                    className={styles.bulkAction}
+                    disabled={!enabledValues.some((entry) => selectedSet.has(entry))}
+                    onSelect={(event) => {
+                      event.preventDefault();
+                      const enabledSet = new Set(enabledValues);
+                      onChange(value.filter((entry) => !enabledSet.has(entry)));
+                    }}
+                  >
+                    {resolvedClearAllLabel}
+                  </DropdownMenuPrimitive.Item>
+                </>
+              ) : null}
+              {bulkActions && enabledValues.length > 0 ? (
+                <DropdownMenuPrimitive.Separator className={styles.separator} />
+              ) : null}
               {options.map((option) => {
                 const selected = selectedSet.has(option.value);
 
@@ -182,7 +236,10 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                         </svg>
                       </DropdownMenuPrimitive.ItemIndicator>
                     </span>
-                    <span className={styles.optionLabel}>{option.label}</span>
+                    <span className={styles.optionLabel}>
+                          {option.icon ? <span className={styles.optionIcon} aria-hidden="true">{option.icon}</span> : null}
+                          {option.label}
+                        </span>
                   </DropdownMenuPrimitive.CheckboxItem>
                 );
               })}
