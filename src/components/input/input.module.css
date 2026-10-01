@@ -4,7 +4,7 @@
   min-height: 2.25rem;
   border-radius: 0.5rem;
   border: 1px solid var(--ts-input-border, var(--input));
-  background: var(--ts-input-bg, var(--background));
+  background: var(--ts-input-bg, var(--uzi-surface-2, var(--secondary)));
   color: var(--ts-input-fg, var(--foreground));
   padding: 0.25rem 0.75rem;
   font-size: 0.875rem;
