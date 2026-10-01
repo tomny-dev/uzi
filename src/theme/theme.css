@@ -93,6 +93,10 @@ body {
   --uzi-surface-2: color-mix(in srgb, var(--secondary) 72%, var(--background));
   --uzi-surface-raised: var(--card);
   --uzi-surface-selected: color-mix(in srgb, var(--primary) 9%, var(--card));
+  --uzi-surface-base: var(--uzi-surface-1);
+  --uzi-surface-subtle: var(--uzi-surface-2);
+  --uzi-accent-primary: var(--primary);
+  --uzi-text-on-accent: var(--primary-foreground);
   --uzi-text-primary: var(--foreground);
   --uzi-text-secondary: color-mix(in srgb, var(--foreground) 72%, var(--muted-foreground));
   --uzi-text-muted: var(--muted-foreground);
@@ -138,6 +142,10 @@ body {
   --uzi-surface-2: color-mix(in srgb, var(--secondary) 88%, white);
   --uzi-surface-raised: color-mix(in srgb, var(--panel) 78%, white);
   --uzi-surface-selected: color-mix(in srgb, var(--primary) 12%, var(--panel));
+  --uzi-surface-base: var(--uzi-surface-1);
+  --uzi-surface-subtle: var(--uzi-surface-2);
+  --uzi-accent-primary: var(--primary);
+  --uzi-text-on-accent: var(--primary-foreground);
   --uzi-text-primary: var(--foreground);
   --uzi-text-secondary: color-mix(in srgb, var(--foreground) 72%, var(--muted-foreground));
   --uzi-text-muted: var(--muted-foreground);
