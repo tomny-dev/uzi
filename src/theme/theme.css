@@ -130,7 +130,7 @@ body {
   --destructive: hsl(0 72% 51%);
   --destructive-foreground: hsl(0 0% 98%);
   --border: #334155;
-  --input: #475569;
+  --input: #334155;
   --panel: #1e293b;
   --text: #e2e8f0;
   --uzi-surface-canvas: var(--background);
