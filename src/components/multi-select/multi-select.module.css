@@ -19,7 +19,7 @@
   gap: 0.625rem;
   border-radius: var(--uzi-control-radius);
   border: 1px solid var(--ts-dropdown-border, var(--border));
-  background: var(--ts-dropdown-bg, var(--panel));
+  background: var(--ts-dropdown-bg, var(--uzi-surface-2, var(--secondary)));
   color: var(--ts-dropdown-text, var(--foreground));
   padding:
     var(--uzi-control-padding-y)
