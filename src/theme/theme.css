@@ -111,13 +111,13 @@ body {
   color-scheme: dark;
   --background: #0f172a;
   --foreground: #e2e8f0;
-  --card: #111827;
+  --card: #1e293b;
   --card-foreground: #e2e8f0;
-  --popover: #111827;
+  --popover: #2a374d;
   --popover-foreground: #e2e8f0;
-  --secondary: #152036;
+  --secondary: #243047;
   --secondary-foreground: #e2e8f0;
-  --muted: #152036;
+  --muted: #243047;
   --muted-foreground: #94a3b8;
   --accent: color-mix(in srgb, var(--primary) 12%, transparent);
   --uzi-control-shadow:
@@ -129,14 +129,14 @@ body {
   --accent-foreground: #e2e8f0;
   --destructive: hsl(0 72% 51%);
   --destructive-foreground: hsl(0 0% 98%);
-  --border: #1f2937;
-  --input: #1f2937;
-  --panel: #111827;
+  --border: #334155;
+  --input: #475569;
+  --panel: #1e293b;
   --text: #e2e8f0;
   --uzi-surface-canvas: var(--background);
   --uzi-surface-1: var(--panel);
   --uzi-surface-2: var(--secondary);
-  --uzi-surface-raised: color-mix(in srgb, var(--panel) 94%, var(--foreground));
+  --uzi-surface-raised: #2a374d;
   --uzi-surface-selected: color-mix(in srgb, var(--primary) 12%, var(--panel));
   --uzi-text-primary: var(--foreground);
   --uzi-text-secondary: color-mix(in srgb, var(--foreground) 72%, var(--muted-foreground));
@@ -186,7 +186,7 @@ body {
 :root[data-uzi-accent="emerald"],
 [data-uzi-accent="emerald"] {
   --primary: hsl(160 84% 39%);
-  --primary-foreground: hsl(210 40% 98%);
+  --primary-foreground: #0f172a;
   --ring: hsl(160 84% 39%);
 }
 
