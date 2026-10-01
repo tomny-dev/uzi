@@ -80,7 +80,7 @@
 }
 
 .variantOutline {
-  background: var(--ts-btn-outline-bg, var(--background));
+  background: var(--ts-btn-outline-bg, transparent);
   color: var(--ts-btn-outline-text, var(--foreground));
   border-color: var(--ts-btn-outline-border, var(--border));
 }
