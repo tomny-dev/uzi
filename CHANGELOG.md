@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/tomny-dev/uzi/compare/uzi-v0.7.0...uzi-v0.7.1) (2026-10-01)
+
+
+### Bug Fixes
+
+* **theme:** refine dark surface hierarchy ([#80](https://github.com/tomny-dev/uzi/issues/80)) ([d2c2d5f](https://github.com/tomny-dev/uzi/commit/d2c2d5f5ea13f0379e735950a6caed29da1c4945))
+
 ## [0.7.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.6.3...uzi-v0.7.0) (2026-09-30)
 
 
