@@ -134,9 +134,9 @@ body {
   --panel: #111827;
   --text: #e2e8f0;
   --uzi-surface-canvas: var(--background);
-  --uzi-surface-1: color-mix(in srgb, var(--panel) 88%, white);
-  --uzi-surface-2: color-mix(in srgb, var(--secondary) 88%, white);
-  --uzi-surface-raised: color-mix(in srgb, var(--panel) 78%, white);
+  --uzi-surface-1: var(--panel);
+  --uzi-surface-2: var(--secondary);
+  --uzi-surface-raised: color-mix(in srgb, var(--panel) 94%, var(--foreground));
   --uzi-surface-selected: color-mix(in srgb, var(--primary) 12%, var(--panel));
   --uzi-text-primary: var(--foreground);
   --uzi-text-secondary: color-mix(in srgb, var(--foreground) 72%, var(--muted-foreground));
