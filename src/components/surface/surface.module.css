@@ -3,8 +3,8 @@
   color: var(--uzi-text-primary, var(--foreground));
 }
 
-.level-base { background: var(--uzi-surface-1, var(--panel)); }
-.level-subtle { background: var(--uzi-surface-2, var(--muted)); }
+.level-base { background: var(--uzi-surface-base, var(--uzi-surface-1, var(--panel))); }
+.level-subtle { background: var(--uzi-surface-subtle, var(--uzi-surface-2, var(--muted))); }
 
 .level-raised {
   background: var(--uzi-surface-raised, var(--panel));
