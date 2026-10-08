@@ -121,8 +121,8 @@ describe('AIChat', () => {
     const input = screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement;
     fireEvent.change(input, { target: { value: 'Unsent draft' } });
     rerender(<AIChat api="/api/chat" fetch={nextFetch} />);
-    expect(screen.getByRole('textbox', { name: 'Message' }).value).toBe('Unsent draft');
-    expect(stubs.transportOptions.at(-1)).toEqual({ api: '/api/chat', fetch: nextFetch });
+    expect((screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement).value).toBe('Unsent draft');
+    expect(stubs.transportOptions[stubs.transportOptions.length - 1]).toEqual({ api: '/api/chat', fetch: nextFetch });
   });
 
   it('resets the composer when sessionKey changes between authenticated users', () => {
