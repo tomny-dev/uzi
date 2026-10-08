@@ -188,3 +188,31 @@ No real provider, wager execution or sensitive local storage is needed for the
 
 `AIChat` remains the ready-to-use alternative for basic streaming chat; the
 two components share renderers, theme styles and keyboard behavior.
+
+## Standard capabilities shared across applications
+
+The ready-to-use `AIChat` accepts the following **opt-in** capabilities:
+
+- `attachments={{ accept: 'image/png,image/jpeg,image/webp', maxFiles: 3, maxBytesPerFile: 5_000_000 }}` enables a file picker, client validation, staged attachment names, removal and AI SDK `FileList` submissions. Provider and API support for image/text input varies; servers MUST independently validate media types, file sizes and permissions. Unsupported file types must not be enabled merely because the picker can select them.
+- `history={{ load, save, clear }}` delegates storage to the application. Keys and access controls must include the authenticated principal and chat scope. The component loads before accepting input, saves complete turns, and clears storage before a new conversation. Avoid saving unsanitized tool outputs or sensitive data in browser storage.
+- `sendAutomaticallyWhen` forwards the AI SDK's native continuation predicate to the runtime. When your backend uses approval-required tools, configure an approval-complete predicate (for example `lastAssistantMessageIsCompleteWithApprovalResponses` from `ai`), so continuation is performed by the SDK rather than by injecting JSON text.
+
+For both the default `AIChat` and externally controlled `AIChatView`, tool parts with
+`state: 'approval-requested'` and `approval.id` show **Approve/Deny** controls
+when `onToolApproval` is available. The default `AIChat` calls the SDK's native
+`addToolApprovalResponse({ id, approved })`. The controlled view delegates
+to the application's supplied callback, which must invoke the corresponding
+native SDK method with its own approval locking and authorization.
+Applications can customize the UI using `components.ToolRenderer`, while
+keeping the exact tool call and approval IDs intact.
+
+`AIChatView` also supports `attachments`, `onSelectAttachments`,
+`onRemoveAttachment`, `attachmentAccept` and `attachmentError` for
+application-owned upload adapters.
+
+**Responsibility boundaries:** Uzi provides presentation and forwards SDK
+events, but never decides whether an application tool is authorized. Backend
+authorization, trusted scoped context, transport persistence, model selection,
+approval requirements and tool side effects remain entirely with each app.
+Betforge must keep its existing screenshot adapter and bet-approval locking
+until matching real-endpoint regression tests prove a migration safe.
