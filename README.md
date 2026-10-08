@@ -41,6 +41,8 @@ pnpm build-storybook
 
 The static output is written to `storybook-static/`. Story files live beside their components under `src/components/**` using the `*.stories.tsx` naming convention.
 
+The **Components / AIChat** stories demonstrate interactive streaming, custom renderers, scoped requests, message limits and error recovery with mock responses; no external AI credentials are needed.
+
 CI builds Storybook on every pull request and push to `main`. After changes land on `main`, the Storybook deployment workflow publishes `storybook-static/` to the `uzi-storybook` Cloudflare Pages project. The deployment workflow requires these repository secrets:
 
 - `CLOUDFLARE_API_TOKEN` — API token with Pages Write permission.
@@ -128,6 +130,7 @@ In practice, `uzi` should spend its complexity budget on reusable app scaffoldin
 | Component | Description |
 |---|---|
 | `Avatar` | Profile image with fallback states |
+| `AIChat` | Streaming AI SDK chat surface with scoped context and customizable message renderers |
 | `Button` | Primary, secondary, outline, ghost variants |
 | `Card` | Discrete object container with tone/padding control |
 | `Surface` | Semantic visual grouping with base/subtle/raised/selected hierarchy |
@@ -169,6 +172,7 @@ In practice, `uzi` should spend its complexity budget on reusable app scaffoldin
 - [Application Scaffolding](docs/guides/application-scaffolding.md) — Page containers, headers, empty states, stats, and layout composition
 - [Visual Hierarchy](docs/guides/visual-hierarchy.md) — Surface levels, typography, borders, shadows, and toolbar conventions
 - [Form Patterns](docs/guides/form-patterns.md) — Input, Select, MultiSelect, SegmentedToggle patterns
+- [AI Chat](docs/guides/ai-chat.md) — Streaming endpoint contract, authentication, scope authorization, renderers and local Storybook demos
 
 ## SSR Notes
 
