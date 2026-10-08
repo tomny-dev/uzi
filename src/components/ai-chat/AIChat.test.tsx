@@ -331,9 +331,9 @@ describe('AIChat shared opt-in capabilities', () => {
     expect(screen.getByRole('alert').textContent).toContain('Unsupported attachment type');
     expect(stubs.sendMessage).not.toHaveBeenCalled();
     fireEvent.change(picker, { target: { files: [new File(['sample'], 'screen.png', { type: 'image/png' })] } });
-    expect(screen.getByText('screen.png')).toBeTruthy();
+    expect(screen.getByRole('img', { name: 'screen.png' })).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Remove screen.png' }));
-    expect(screen.queryByText('screen.png')).toBeNull();
+    expect(screen.queryByRole('img', { name: 'screen.png' })).toBeNull();
   });
 
   it('renders BetForge-style image thumbnails and an accessible remove control', () => {
