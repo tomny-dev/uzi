@@ -336,6 +336,24 @@ describe('AIChat shared opt-in capabilities', () => {
     expect(screen.queryByText('screen.png')).toBeNull();
   });
 
+  it('renders BetForge-style image thumbnails and an accessible remove control', () => {
+    const remove = vi.fn();
+    render(<AIChatView
+      messages={[]}
+      attachments={[{ name: 'sportsbook.png', size: 128, previewUrl: 'blob:preview-image' }]}
+      onSelectAttachments={vi.fn()}
+      onRemoveAttachment={remove}
+      attachmentAccept="image/png"
+      draft=""
+      onDraftChange={vi.fn()}
+      onSend={vi.fn()}
+    />);
+    expect(screen.getByRole('img', { name: 'sportsbook.png' }).getAttribute('src')).toBe('blob:preview-image');
+    fireEvent.click(screen.getByRole('button', { name: 'Remove sportsbook.png' }));
+    expect(remove).toHaveBeenCalledWith(0);
+    expect(screen.getByRole('button', { name: 'Attach file' })).toBeTruthy();
+  });
+
   it('does not render upload controls unless file attachments are opted into', () => {
     render(<AIChat api="/api/chat" />);
     expect(screen.queryByLabelText('Add attachments')).toBeNull();
