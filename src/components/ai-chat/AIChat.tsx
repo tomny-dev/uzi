@@ -19,6 +19,8 @@ export interface AIChatProps {
   readonly fetch?: typeof globalThis.fetch;
   readonly headers?: Record<string, string>;
   readonly credentials?: RequestCredentials;
+  /** Change this when the authenticated identity changes to reset the transcript. */
+  readonly sessionKey?: string | number;
   /** Maximum number of user turns (default: 8). */
   readonly messageLimit?: number;
   readonly inputPlaceholder?: string;
@@ -217,6 +219,7 @@ export function AIChat({
   fetch: requestFetch,
   headers,
   credentials,
+  sessionKey,
   messageLimit = DEFAULT_MESSAGE_LIMIT,
   inputPlaceholder = 'Ask a question...',
   inputMaxLength = 2000,
@@ -257,7 +260,7 @@ export function AIChat({
           &#x2715;
         </button>
       )}
-      <AuiProvider key={`${api}:${scope ?? ''}:${session}:${JSON.stringify({ fetch: !!requestFetch, headers: !!headers, credentials })}`} config={config}>
+      <AuiProvider key={JSON.stringify([api, scope, sessionKey, session])} config={config}>
         <ThreadPrimitive.Root className={styles.thread}>
           <ChatViewport
             messageLimit={Number.isFinite(messageLimit) ? Math.max(1, Math.floor(messageLimit)) : DEFAULT_MESSAGE_LIMIT}
