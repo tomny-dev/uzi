@@ -43,6 +43,7 @@ The client posts AI SDK UI messages to `api` and expects a **UI-message stream**
 | `fetch` | `typeof fetch` | browser fetch | Optional custom request implementation; useful for auth or demos |
 | `headers` | `Record<string, string>` | — | Additional request headers |
 | `credentials` | `RequestCredentials` | browser default | Fetch credentials mode |
+| `sessionKey` | `string \| number` | — | Reset the chat when the signed-in user or security principal changes |
 | `messageLimit` | `number` | `8` | Maximum user turns before starting a new chat |
 | `inputPlaceholder` | `string` | `Ask a question...` | Message input prompt |
 | `inputMaxLength` | `number` | `2000` | HTML textarea maximum length |
@@ -76,7 +77,7 @@ For cookie-authenticated same-origin routes, no custom fetch is normally needed.
 import { useCallback } from "react";
 import { AIChat } from "@tomny-dev/uzi";
 
-export function AuthenticatedChat({ token }: { token: string }) {
+export function AuthenticatedChat({ token, userId }: { token: string; userId: string }) {
   const authenticatedFetch = useCallback<typeof fetch>(
     (input, init) => {
       const headers = new Headers(init?.headers);
@@ -88,13 +89,13 @@ export function AuthenticatedChat({ token }: { token: string }) {
 
   return (
     <div style={{ height: 500 }}>
-      <AIChat api="/api/chat" fetch={authenticatedFetch} />
+      <AIChat api="/api/chat" fetch={authenticatedFetch} sessionKey={userId} />
     </div>
   );
 }
 ```
 
-Keep authentication on the server regardless of the client configuration. If the auth token changes, recreate the callback so the new value is used.
+Keep authentication on the server regardless of the client configuration. If the auth token changes, recreate the callback so the new value is used. Updating fetch/headers/credentials updates the live transport configuration without discarding the conversation. **When the signed-in identity changes**, change `sessionKey` (or remount `AIChat` from the parent) to discard the prior user's transcript. Do not use a request token or the entire headers object as the session key, because routine token refreshes should not reset the conversation.
 
 ## Renderers and UX
 
