@@ -45,6 +45,7 @@ The client posts AI SDK UI messages to `api` and expects a **UI-message stream**
 | `credentials` | `RequestCredentials` | browser default | Fetch credentials mode |
 | `sessionKey` | `string \| number` | — | Reset the chat when the signed-in user or security principal changes |
 | `messageLimit` | `number` | `8` | Maximum user turns before starting a new chat |
+| `inputAriaLabel` | `string` | `Message` | Accessible name for the textarea |
 | `inputPlaceholder` | `string` | `Ask a question...` | Message input prompt |
 | `inputMaxLength` | `number` | `2000` | HTML textarea maximum length |
 | `components` | `AIChatComponents` | built-in renderers | Override message, reasoning, source, data and error presentation |
