@@ -197,3 +197,6 @@ export { AIChat, AIChatView, AIChatMessageBubble } from "./components/ai-chat/AI
 export type { AIChatMessageBubbleProps } from "./components/ai-chat/AIChat";
 export { AIChatDock } from "./components/ai-chat/AIChatDock";
 export type { AIChatDockProps } from "./components/ai-chat/AIChatDock";
+
+export { FloatingActionStack, FloatingActionButton } from "./components/floating-action-stack/FloatingActionStack";
+export type { FloatingActionStackProps, FloatingActionButtonProps } from "./components/floating-action-stack/FloatingActionStack";

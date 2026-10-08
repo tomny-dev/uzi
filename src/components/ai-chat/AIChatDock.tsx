@@ -10,6 +10,12 @@ export interface AIChatDockProps {
   readonly description?: string;
   /** Accessible name for the floating action button. Defaults to "Open {title}". */
   readonly launcherLabel?: string;
+  /** Turn off the built-in FAB when a parent FloatingActionStack owns the launcher. */
+  readonly showLauncher?: boolean;
+  /** Optional stable panel ID for an external button's aria-controls. */
+  readonly panelId?: string;
+  /** ID of the external launch button to restore keyboard focus after close. */
+  readonly externalLauncherId?: string;
   readonly children: ReactNode;
   /** Controlled visibility; when omitted, the dock manages its own state. */
   readonly open?: boolean;
@@ -33,6 +39,9 @@ export function AIChatDock({
   title,
   description,
   launcherLabel,
+  showLauncher = true,
+  panelId: controlledPanelId,
+  externalLauncherId,
   children,
   open,
   defaultOpen = false,
@@ -43,7 +52,7 @@ export function AIChatDock({
   className,
 }: AIChatDockProps) {
   const autoId = useId();
-  const panelId = `uzi-ai-dock-${autoId}`;
+  const panelId = controlledPanelId ?? `uzi-ai-dock-${autoId}`;
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
   const [internalExpanded, setInternalExpanded] = useState(defaultExpanded);
   const isOpen = open ?? internalOpen;
@@ -81,10 +90,11 @@ export function AIChatDock({
     } else if (!isOpen && wasOpen.current) {
       const previous = openerRef.current;
       if (previous?.isConnected && previous !== panelRef.current) previous.focus();
+      else if (externalLauncherId) document.getElementById(externalLauncherId)?.focus();
       else launcherRef.current?.focus();
     }
     wasOpen.current = isOpen;
-  }, [isOpen]);
+  }, [isOpen, externalLauncherId]);
 
   useEffect(() => {
     if (!isOpen || !mobile) return;
@@ -122,7 +132,7 @@ export function AIChatDock({
 
   return (
     <div className={[styles.dock, className].filter(Boolean).join(' ')}>
-      {!isOpen && (
+      {showLauncher && !isOpen && (
         <button
           ref={launcherRef}
           type="button"

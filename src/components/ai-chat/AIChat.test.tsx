@@ -432,3 +432,15 @@ describe('AIChat history errors', () => {
     expect(screen.getByRole('textbox', { name: 'Message' })).toBeTruthy();
   });
 });
+
+describe('External AIChatDock launcher', () => {
+  it('does not duplicate a launcher when a shared stack owns the action', () => {
+    render(
+      <AIChatDock title="Betty" showLauncher={false} open={false} panelId="betty-panel">
+        <div>Conversation</div>
+      </AIChatDock>,
+    );
+    expect(screen.queryByRole('button', { name: 'Open Betty' })).toBeNull();
+    expect(document.getElementById('betty-panel')).toBeTruthy();
+  });
+});

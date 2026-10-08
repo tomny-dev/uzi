@@ -250,3 +250,32 @@ load/save/clear failures so the app can surface a toast or telemetry without
 logging private message payloads. If omitted, Uzi emits a generic console
 warning. Failed saves do not stop later saves; a failed clear aborts the
 conversation reset to avoid making an old transcript appear deleted.
+
+## Multiple floating actions
+
+Use `FloatingActionStack` to keep unrelated actions at the same bottom-right
+anchor instead of independently fixed buttons. Stack children are displayed
+top to bottom; put the persistent primary assistant action **last**. The stack
+controls responsive spacing, mobile icon-only presentation and screen safe areas,
+but it neither coordinates panel state nor knows about product domain objects.
+`FloatingActionButton` accepts an accessible `label`, an `icon` and
+`variant="primary" | "secondary"`.
+
+```tsx
+<FloatingActionStack label="Quick actions">
+  <FloatingActionButton label="Bet Slip (3)" icon={<TicketIcon />}
+    variant="secondary" onClick={openSlip}/>
+  <FloatingActionButton id="betty-launcher" label="Open Betty"
+    icon={<ChatIcon />} onClick={openBetty}/>
+</FloatingActionStack>
+
+<AIChatDock title="Betty" open={bettyOpen} onOpenChange={setBettyOpen}
+  showLauncher={false} panelId="betty-panel" externalLauncherId="betty-launcher">
+  <YourExistingBettyRuntime />
+</AIChatDock>
+```
+
+Apps must show only appropriate launchers while a panel is open, and must
+coordinate competing overlays themselves. `AIChatDock` retains its default
+built-in launcher for single-action sites such as Tultr. The externally
+owned launcher doesn't create a second chat runtime.

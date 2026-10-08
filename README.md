@@ -207,3 +207,5 @@ calls made directly from Server Components.
 - No Tailwind — components use CSS modules internally
 - `"use client"` is handled by the bundle — no need to wrap imports
 - `react` and `react-dom` are peer dependencies, provided by your app
+
+- `FloatingActionStack` and `FloatingActionButton` provide a single, accessible floating-action rail with mobile safe-area spacing. An `AIChatDock` can opt out of its built-in FAB via `showLauncher={false}`.

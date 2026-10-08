@@ -3,6 +3,7 @@ import { useState } from 'react';
 import type { AIChatComponents, AIChatMessage } from './AIChat';
 import { AIChat, AIChatView } from './AIChat';
 import { AIChatDock } from './AIChatDock';
+import { FloatingActionButton, FloatingActionStack } from '../floating-action-stack/FloatingActionStack';
 
 /**
  * Storybook-only AI SDK UI-message stream. No real AI provider, credentials,
@@ -201,5 +202,53 @@ export const FloatingAssistant: Story = {
   ),
   parameters: {
     docs: { description: { story: 'Reusable desktop floating panel and full-screen mobile chat. The AI SDK conversation stays mounted when closed.' } },
+  },
+};
+
+export const SharedFloatingActions: Story = {
+  render: () => {
+    const SharedActionsExample = () => {
+      const [open, setOpen] = useState(false);
+      const [slipOpen, setSlipOpen] = useState(false);
+      return (
+        <div style={{ minHeight: '70vh', padding: '1rem' }}>
+          <p>The betting slip action is above Betty. Either panel closes the other without deleting chat state.</p>
+          {!slipOpen && !open && (
+            <FloatingActionStack>
+              <FloatingActionButton
+                variant="secondary"
+                label="Bet Slip (3)"
+                icon={<span>3</span>}
+                onClick={() => setSlipOpen(true)}
+              />
+              <FloatingActionButton
+                label="Open Betty"
+                icon={<span>B</span>}
+                onClick={() => setOpen(true)}
+              />
+            </FloatingActionStack>
+          )}
+          {slipOpen && (
+            <div role="dialog" aria-label="Demo Bet Slip">
+              <p>Three selections</p>
+              <button type="button" onClick={() => setSlipOpen(false)}>Close Bet Slip</button>
+            </div>
+          )}
+          <AIChatDock
+            title="Betty"
+            panelId="demo-betty-panel"
+            showLauncher={false}
+            open={open}
+            onOpenChange={setOpen}
+          >
+            <AIChat api="/__uzi-storybook__/chat" fetch={demoFetch}/>
+          </AIChatDock>
+        </div>
+      );
+    };
+    return <SharedActionsExample />;
+  },
+  parameters: {
+    docs: { description: { story: 'Generic action stack with optional external AIChatDock launcher. The stack has no knowledge of betting state.' } },
   },
 };
