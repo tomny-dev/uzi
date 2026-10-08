@@ -59,6 +59,8 @@ export interface AIChatAttachmentOptions {
 export interface AIChatSelectedAttachment {
   readonly name: string;
   readonly size: number;
+  /** Local thumbnail URL for supported image files. */
+  readonly previewUrl?: string;
 }
 
 export interface AIChatHistoryAdapter {
@@ -446,10 +448,16 @@ function ChatViewport({
   const [draft, setDraft] = useState('');
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [attachmentError, setAttachmentError] = useState<string | null>(null);
+  const [attachmentPreviews, setAttachmentPreviews] = useState<string[]>([]);
   const [hydrated, setHydrated] = useState(!history);
   const expectedRestoredId = useRef<string | null>(null);
   const saveQueue = useRef<Promise<void>>(Promise.resolve());
   const [approvalBusy, setApprovalBusy] = useState(false);
+  useEffect(() => {
+    const urls = selectedFiles.map((file) => file.type.startsWith('image/') ? URL.createObjectURL(file) : '');
+    setAttachmentPreviews(urls);
+    return () => urls.forEach((url) => { if (url) URL.revokeObjectURL(url); });
+  }, [selectedFiles]);
   const messages = chat?.messages ?? [];
   const status = chat?.status ?? 'ready';
   const isBusy = status === 'submitted' || status === 'streaming';
@@ -587,7 +595,7 @@ function ChatViewport({
       onRetry={handleRetry}
       onNewChat={handleNewChat}
       messageLimit={messageLimit}
-      attachments={selectedFiles.map((file) => ({ name: file.name, size: file.size }))}
+      attachments={selectedFiles.map((file, index) => ({ name: file.name, size: file.size, ...(attachmentPreviews[index] ? { previewUrl: attachmentPreviews[index] } : {}) }))}
       onSelectAttachments={attachmentOptions ? handleSelectedFiles : undefined}
       onRemoveAttachment={attachmentOptions ? (index) => setSelectedFiles((files) => files.filter((_, i) => i !== index)) : undefined}
       attachmentAccept={attachmentOptions?.accept}
@@ -764,10 +772,10 @@ export function AIChatView({
                     <ul className={styles.attachmentList}>
                       {attachments.map((attachment, index) => (
                         <li key={index}>
-                          <span>{attachment.name}</span>
+                          {attachment.previewUrl ? <img className={styles.attachmentThumbnail} src={attachment.previewUrl} alt={attachment.name} /> : <span className={styles.attachmentFilename}>{attachment.name}</span>}
                           {onRemoveAttachment && (
                             <button type="button" onClick={() => onRemoveAttachment(index)}
-                              aria-label={`Remove ${attachment.name}`}>Remove</button>
+                              aria-label={`Remove ${attachment.name}`} title={`Remove ${attachment.name}`}>×</button>
                           )}
                         </li>
                       ))}
