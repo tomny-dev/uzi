@@ -489,11 +489,18 @@ function ChatViewport({
     selectedFiles.forEach((file) => files?.items.add(file));
     // AI SDK serializes FileList to FileUIParts and sends them through the
     // app-owned transport. The server MUST validate types and sizes again.
-    void chat.sendMessage({ text, ...(files ? { files: files.files } : {}) }).then(() => {
-      setDraft('');
-      setSelectedFiles([]);
-      setAttachmentError(null);
-    }).catch(() => { /* Runtime error display offers retry. Preserve draft/files. */ });
+    // Clear the composer promptly; restore the draft and files if submission
+    // fails, so users do not lose attachments or typed content.
+    const previousDraft = draft;
+    const previousFiles = selectedFiles;
+    setDraft('');
+    setSelectedFiles([]);
+    setAttachmentError(null);
+    void Promise.resolve(chat.sendMessage({ text, ...(files ? { files: files.files } : {}) }))
+      .catch(() => {
+        setDraft((current) => current || previousDraft);
+        setSelectedFiles((current) => current.length ? current : previousFiles);
+      });
   };
 
   const handleNewChat = () => {
