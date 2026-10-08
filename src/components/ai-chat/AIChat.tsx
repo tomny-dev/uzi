@@ -358,13 +358,13 @@ function ChatViewport({
         {chat?.error && (
           <ErrorRenderer error={chat.error} onRetry={handleRetry} onClear={handleNewChat} />
         )}
-        {historyFull && !chat?.error && (
+        {historyFull && !chat?.error && !isBusy && (
           <div className={styles.historyLimit}>
             <span>This chat has reached its {messageLimit}-question limit.</span>
             <button type="button" onClick={handleNewChat}>Start new chat</button>
           </div>
         )}
-        {!historyFull && !chat?.error && (
+        {(!historyFull || isBusy) && !chat?.error && (
           <form className={styles.composerForm} onSubmit={handleFormSubmit}>
             <textarea
               className={styles.input}
