@@ -13,6 +13,7 @@ const COMPONENTS = {
       fetch: { type: "typeof fetch", optional: true, description: "Optional custom fetch implementation for authentication, interceptors or demos" },
       headers: { type: "Record<string, string>", optional: true },
       credentials: { type: "RequestCredentials", optional: true },
+      sessionKey: { type: "string | number", optional: true, description: "Remount chat when the authenticated user/identity changes; not for routine token refreshes" },
       messageLimit: { type: "number", default: 8, description: "Maximum user prompts per session" },
       inputPlaceholder: { type: "string", default: "Ask a question..." },
       inputMaxLength: { type: "number", default: 2000 },
