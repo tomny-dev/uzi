@@ -8,6 +8,8 @@ import { AISDKChat, AssistantChatTransport, useAISDKChat } from '@assistant-ui/a
 
 import styles from './ai-chat.module.css';
 
+type AIChatTransportOptions = ConstructorParameters<typeof AssistantChatTransport>[0];
+
 export interface AIChatProps {
   /** AI SDK UI-message stream endpoint. */
   readonly api: string;
@@ -19,6 +21,8 @@ export interface AIChatProps {
   readonly fetch?: typeof globalThis.fetch;
   readonly headers?: Record<string, string>;
   readonly credentials?: RequestCredentials;
+  /** Customize serialized requests for APIs with a strict request schema. */
+  readonly prepareSendMessagesRequest?: AIChatTransportOptions['prepareSendMessagesRequest'];
   /** Change this when the authenticated identity changes to reset the transcript. */
   readonly sessionKey?: string | number;
   /** Maximum number of user turns (default: 8). */
@@ -221,6 +225,7 @@ export function AIChat({
   fetch: requestFetch,
   headers,
   credentials,
+  prepareSendMessagesRequest,
   sessionKey,
   messageLimit = DEFAULT_MESSAGE_LIMIT,
   inputPlaceholder = 'Ask a question...',
@@ -242,8 +247,9 @@ export function AIChat({
       ...(requestFetch ? { fetch: requestFetch } : {}),
       ...(headers ? { headers } : {}),
       ...(credentials ? { credentials } : {}),
+      ...(prepareSendMessagesRequest ? { prepareSendMessagesRequest } : {}),
     }),
-    [api, scope, requestFetch, headers, credentials],
+    [api, scope, requestFetch, headers, credentials, prepareSendMessagesRequest],
   );
   const config = useMemo(
     () => AuiConfig({ threads: AISDKChat({ transport }) }),
