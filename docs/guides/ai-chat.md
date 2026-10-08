@@ -43,6 +43,7 @@ The client posts AI SDK UI messages to `api` and expects a **UI-message stream**
 | `fetch` | `typeof fetch` | browser fetch | Optional custom request implementation; useful for auth or demos |
 | `headers` | `Record<string, string>` | — | Additional request headers |
 | `credentials` | `RequestCredentials` | browser default | Fetch credentials mode |
+| `prepareSendMessagesRequest` | AI SDK transport callback | — | Customize body serialization for APIs requiring a strict shape |
 | `sessionKey` | `string \| number` | — | Reset the chat when the signed-in user or security principal changes |
 | `messageLimit` | `number` | `8` | Maximum user turns before starting a new chat |
 | `inputAriaLabel` | `string` | `Message` | Accessible name for the textarea |
@@ -52,7 +53,7 @@ The client posts AI SDK UI messages to `api` and expects a **UI-message stream**
 | `onClose` | `() => void` | — | Optional close action |
 | `className`, `style` | React props | — | Custom outer container styling |
 
-The transport also includes the AI SDK chat ID, messages and assistant-ui context fields. Don't overwrite those fields when implementing middleware. If `scope` is set, requests include that identifier in the body. Labels are never sent as scope IDs.
+By default, the transport includes AI SDK chat ID, messages and runtime context fields. When an API requires *only* `{ messages }` in the body, supply `prepareSendMessagesRequest={({ messages }) => ({ body: { messages } })}`. This callback replaces the default serializer: ensure any required scope or other authorized fields are explicitly included. Don't overwrite those fields when implementing middleware. If `scope` is set, requests include that identifier in the body. Labels are never sent as scope IDs.
 
 ### Server responsibilities
 
