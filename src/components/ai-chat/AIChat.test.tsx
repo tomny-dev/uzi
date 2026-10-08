@@ -96,8 +96,29 @@ describe('AIChat', () => {
   });
 
   it('passes the scope through transport body without replacing AI SDK fields', () => {
-    render(<AIChat api="/api/chat" scopeLabel="Sports" />);
-    expect(stubs.transportOptions).toEqual([{ api: '/api/chat', body: { scope: 'Sports' } }]);
+    render(<AIChat api="/api/chat" scope="sports-123" scopeLabel="Sports" />);
+    expect(stubs.transportOptions).toEqual([{ api: '/api/chat', body: { scope: 'sports-123' } }]);
+  });
+
+  it('does not send the human-readable scope label as an authorization scope', () => {
+    render(<AIChat api="/api/chat" scopeLabel="My private workspace" />);
+    expect(stubs.transportOptions).toEqual([{ api: '/api/chat' }]);
+    expect(screen.getByText('My private workspace')).toBeTruthy();
+  });
+
+  it('accepts a custom fetch adapter and request headers for consumer APIs', () => {
+    const requestFetch: typeof fetch = async () => new Response();
+    render(<AIChat api="/api/chat" fetch={requestFetch} credentials="include" headers={{ 'X-Test': 'uzi' }} />);
+    expect(stubs.transportOptions).toEqual([{
+      api: '/api/chat', fetch: requestFetch, credentials: 'include', headers: { 'X-Test': 'uzi' },
+    }]);
+  });
+
+  it('allows starting a new session before reaching the question limit', () => {
+    stubs.messages = [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'hello' }] }];
+    render(<AIChat api="/api/chat" />);
+    fireEvent.click(screen.getByRole('button', { name: 'New chat' }));
+    expect(stubs.stop).toHaveBeenCalledTimes(1);
   });
 
   it('renders reasoning, source links and data using optional renderers', () => {
