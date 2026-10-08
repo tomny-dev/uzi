@@ -114,6 +114,24 @@ describe('AIChat', () => {
     }]);
   });
 
+  it('preserves the composer during transport option updates', () => {
+    const firstFetch: typeof fetch = async () => new Response();
+    const nextFetch: typeof fetch = async () => new Response();
+    const { rerender } = render(<AIChat api="/api/chat" fetch={firstFetch} />);
+    const input = screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement;
+    fireEvent.change(input, { target: { value: 'Unsent draft' } });
+    rerender(<AIChat api="/api/chat" fetch={nextFetch} />);
+    expect(screen.getByRole('textbox', { name: 'Message' }).value).toBe('Unsent draft');
+    expect(stubs.transportOptions.at(-1)).toEqual({ api: '/api/chat', fetch: nextFetch });
+  });
+
+  it('resets the composer when sessionKey changes between authenticated users', () => {
+    const { rerender } = render(<AIChat api="/api/chat" sessionKey="user-one" />);
+    fireEvent.change(screen.getByRole('textbox', { name: 'Message' }), { target: { value: 'Private draft' } });
+    rerender(<AIChat api="/api/chat" sessionKey="user-two" />);
+    expect((screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement).value).toBe('');
+  });
+
   it('allows starting a new session before reaching the question limit', () => {
     stubs.messages = [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'hello' }] }];
     render(<AIChat api="/api/chat" />);
