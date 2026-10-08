@@ -346,9 +346,6 @@ function ChatViewport({
   const status = chat?.status ?? 'ready';
   const isBusy = status === 'submitted' || status === 'streaming';
   const historyFull = messages.filter((message) => message.role === 'user').length >= messageLimit;
-  const MessageRenderer = components?.MessageRenderer ?? DefaultMessageRenderer;
-  const ErrorRenderer = components?.ErrorRenderer ?? DefaultErrorRenderer;
-
   const handleSubmit = () => {
     const text = draft.trim();
     if (!chat || !text || isBusy || historyFull || chat.error) return;
@@ -365,18 +362,6 @@ function ChatViewport({
     if (!chat || isBusy) return;
     chat.clearError();
     void chat.regenerate();
-  };
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
-      event.preventDefault();
-      handleSubmit();
-    }
-  };
-
-  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    handleSubmit();
   };
 
   return (
@@ -500,7 +485,15 @@ export function AIChatView({
           onRetry && onNewChat ? (
             <ErrorRenderer error={error} onRetry={onRetry} onClear={onNewChat} />
           ) : (
-            <div className={styles.error} role="alert"><p>{error.message}</p></div>
+            <div className={styles.error} role="alert">
+              <p>{error.message}</p>
+              {(onRetry || onNewChat) && (
+                <div className={styles.errorActions}>
+                  {onRetry && <button type="button" onClick={onRetry}>Retry response</button>}
+                  {onNewChat && <button type="button" onClick={onNewChat}>Start new chat</button>}
+                </div>
+              )}
+            </div>
           )
         )}
         {historyFull && !error && !isBusy && onNewChat && (
