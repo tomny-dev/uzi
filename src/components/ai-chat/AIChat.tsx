@@ -427,6 +427,8 @@ function ChatViewport({
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [attachmentError, setAttachmentError] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(!history);
+  const expectedRestoredId = useRef<string | null>(null);
+  const saveQueue = useRef<Promise<void>>(Promise.resolve());
   const [approvalBusy, setApprovalBusy] = useState(false);
   const messages = chat?.messages ?? [];
   const status = chat?.status ?? 'ready';
@@ -440,10 +442,12 @@ function ChatViewport({
     void Promise.resolve().then(() => history.load()).then((restored) => {
       if (!active) return;
       if (Array.isArray(restored)) {
-        chat?.setMessages(restored.filter((message) =>
+        const valid = restored.filter((message) =>
           typeof message?.id === 'string' &&
           (message.role === 'user' || message.role === 'assistant') &&
-          Array.isArray(message.parts)) as Parameters<NonNullable<typeof chat>['setMessages']>[0]);
+          Array.isArray(message.parts));
+        expectedRestoredId.current = valid.length ? valid[0].id : null;
+        if (valid.length) chat?.setMessages(valid as Parameters<NonNullable<typeof chat>['setMessages']>[0]);
       }
       setHydrated(true);
     }).catch(() => { if (active) setHydrated(true); });
@@ -456,8 +460,17 @@ function ChatViewport({
       id: message.id, role: message.role as 'user' | 'assistant', parts: message.parts,
       ...(isRecord(message.metadata) ? { metadata: message.metadata } : {}),
     }));
-    // Async stores must serialize their writes to avoid out-of-order snapshots.
-    void Promise.resolve().then(() => history.save(snapshot)).catch(() => {});
+    // Guard against the transient empty SDK state between history.load and
+    // setMessages propagation; otherwise an old transcript could be erased.
+    if (expectedRestoredId.current) {
+      if (!snapshot.some((message) => message.id === expectedRestoredId.current)) return;
+      expectedRestoredId.current = null;
+    }
+    // Serialize writes. New Chat waits for in-flight writes before clearing.
+    saveQueue.current = saveQueue.current.catch(() => {}).then(async () => {
+      await history.save(snapshot);
+    });
+    void saveQueue.current.catch(() => {});
   }, [history, hydrated, isBusy, messages]);
 
   const handleSelectedFiles = (files: FileList) => {
@@ -507,7 +520,10 @@ function ChatViewport({
     void (async () => {
       await chat?.stop();
       if (history) {
-        try { await history.clear(); } catch { return; }
+        try {
+          await saveQueue.current.catch(() => {});
+          await history.clear();
+        } catch { return; }
       }
       onNewChat();
     })();
