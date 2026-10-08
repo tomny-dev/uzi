@@ -143,6 +143,7 @@ function renderPart(
   components: AIChatComponents | undefined,
 ): ReactNode {
   const type = asString(part.type) ?? '';
+  if (type === 'step-start') return null;
   if (type === 'text') {
     return <span className={styles.textPart}>{asString(part.text) ?? ''}</span>;
   }
@@ -316,7 +317,7 @@ function ChatViewport({
   };
 
   return (
-    <ThreadPrimitive.Viewport className={styles.viewport}>
+    <ThreadPrimitive.Viewport autoScroll className={styles.viewport}>
       <div className={styles.messageList} role="log" aria-label="Chat history" aria-live="polite">
         {messages.length === 0 && (
           <div className={styles.emptyState}>
@@ -335,7 +336,7 @@ function ChatViewport({
             renderMessagePart={(part, index) => renderPart(part, index, components)}
           />
         ))}
-        {isBusy && <p className={styles.status} role="status">Thinking...</p>}
+        {isBusy && <p className={styles.status}>Thinking...</p>}
       </div>
       <ThreadPrimitive.ViewportFooter className={styles.footer}>
         {!chat && <p className={styles.error} role="alert">Chat runtime is unavailable.</p>}
