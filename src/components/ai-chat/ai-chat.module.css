@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-height: 18rem;
   max-height: 48rem;
   overflow: hidden;
   position: relative;
@@ -11,7 +12,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 3rem 0.75rem 1rem;
   background: var(--uzi-surface-1, var(--muted));
   border-bottom: 1px solid var(--border);
 }
@@ -29,6 +30,7 @@
 }
 
 .scopeHelp {
+  margin: 0;
   font-size: 0.75rem;
   color: var(--muted-foreground);
   line-height: 1.5;
@@ -43,13 +45,12 @@
   place-items: center;
   width: 2rem;
   height: 2rem;
-  border: none;
+  border: 0;
   border-radius: 50%;
   background: transparent;
   color: var(--muted-foreground);
   cursor: pointer;
   font-size: 0.875rem;
-  line-height: 1;
 }
 
 .closeBtn:hover {
@@ -57,10 +58,19 @@
   color: var(--foreground);
 }
 
+.closeBtn:focus-visible,
+.sendButton:focus-visible,
+.errorActions button:focus-visible,
+.historyLimit button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 .thread {
   display: flex;
-  flex-direction: column;
   flex: 1;
+  flex-direction: column;
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -68,28 +78,38 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 0;
   overflow-y: auto;
-  padding: 1rem;
+  overflow-x: hidden;
   gap: 0.75rem;
 }
 
-.userMessage {
-  margin: 0;
-  padding: 0.75rem 1rem;
-  background: color-mix(in srgb, var(--primary) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
-  border-radius: 0.75rem;
-  color: var(--foreground);
-  white-space: pre-wrap;
-  line-height: 1.6;
+.messageList {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 0;
+  padding: 1rem;
 }
 
+.userMessage,
 .assistantMessage {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
+  color: var(--foreground);
+  overflow-wrap: anywhere;
+}
+
+.userMessage {
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+.assistantMessage {
   background: var(--muted);
   border: 1px solid var(--border);
 }
@@ -99,19 +119,20 @@
   line-height: 1.6;
 }
 
-.reasoning {
+.reasoning,
+.toolPart {
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   padding: 0.5rem 0.75rem;
   background: var(--uzi-surface-1, transparent);
 }
 
-.reasoningSummary {
+.reasoningSummary,
+.toolPart summary {
+  cursor: pointer;
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--muted-foreground);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 }
 
 .reasoningText {
@@ -119,6 +140,7 @@
   font-size: 0.8125rem;
   line-height: 1.6;
   color: var(--muted-foreground);
+  white-space: pre-wrap;
 }
 
 .sources {
@@ -130,23 +152,21 @@
   display: block;
   font-size: 0.6875rem;
   font-weight: 650;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
   color: var(--muted-foreground);
   margin-bottom: 0.25rem;
 }
 
 .sources ul {
-  margin: 0;
-  padding-left: 1.25rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  margin: 0;
+  padding-left: 1.25rem;
 }
 
 .sources li {
   font-size: 0.75rem;
-  word-break: break-all;
+  overflow-wrap: anywhere;
 }
 
 .data {
@@ -156,13 +176,32 @@
   overflow-x: auto;
 }
 
+.structuredData {
+  margin: 0;
+  padding: 0.5rem 0;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  flex-shrink: 0;
+  background: var(--background);
+  border-top: 1px solid var(--border);
+}
+
 .composerForm {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
   gap: 0.75rem;
-  padding: 1rem;
-  border-top: 1px solid var(--border);
-  background: var(--uzi-surface-1, transparent);
+  padding: 0.75rem 1rem;
 }
 
 .input {
@@ -173,9 +212,10 @@
   border-radius: 0.5rem;
   background: var(--background);
   color: var(--foreground);
+  font: inherit;
   font-size: 0.875rem;
   line-height: 1.5;
-  resize: none;
+  resize: vertical;
 }
 
 .input:focus {
@@ -188,9 +228,27 @@
   color: var(--muted-foreground);
 }
 
-.input:disabled {
+.input:disabled,
+.sendButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.sendButton {
+  min-height: 2.5rem;
+  padding: 0.5rem 0.875rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sendButton:not(:disabled):hover {
+  filter: brightness(0.95);
 }
 
 .status {
@@ -207,15 +265,15 @@
   flex-direction: column;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: var(--destructive-bg, var(--destructive)/10%);
-  border: 1px solid var(--destructive, var(--destructive));
+  border: 1px solid var(--destructive);
   border-radius: 0.5rem;
-  margin: 0 1rem;
+  margin: 0.75rem 1rem;
+  background: color-mix(in srgb, var(--destructive) 10%, transparent);
 }
 
 .error p {
   margin: 0;
-  color: var(--destructive-foreground, var(--destructive));
+  color: var(--destructive);
   font-size: 0.8125rem;
 }
 
@@ -224,20 +282,21 @@
   gap: 0.5rem;
 }
 
-.errorActions button {
+.errorActions button,
+.historyLimit button {
   padding: 0.375rem 0.75rem;
-  border: 1px solid var(--destructive, var(--destructive));
+  border: 1px solid var(--border);
   border-radius: 0.375rem;
   background: transparent;
-  color: var(--destructive-foreground, var(--destructive));
+  color: var(--foreground);
+  font: inherit;
   font-size: 0.75rem;
-  font-weight: 500;
   cursor: pointer;
 }
 
-.errorActions button:hover {
-  background: var(--destructive, var(--destructive));
-  color: var(--destructive-foreground, var(--destructive));
+.errorActions button:hover,
+.historyLimit button:hover {
+  background: var(--uzi-surface-2, var(--muted));
 }
 
 .historyLimit {
@@ -246,29 +305,15 @@
   gap: 0.5rem;
   align-items: center;
   padding: 0.75rem 1rem;
+  margin: 0.75rem 1rem;
   background: var(--uzi-surface-1, var(--muted));
   border: 1px solid var(--border);
   border-radius: 0.5rem;
-  margin: 0 1rem;
 }
 
 .historyLimit span {
   font-size: 0.75rem;
   color: var(--muted-foreground);
-}
-
-.historyLimit button {
-  padding: 0.375rem 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: 0.375rem;
-  background: transparent;
-  color: var(--foreground);
-  font-size: 0.75rem;
-  cursor: pointer;
-}
-
-.historyLimit button:hover {
-  background: var(--uzi-surface-2, var(--muted));
 }
 
 .emptyState {
@@ -287,10 +332,10 @@
 
 @media (max-width: 640px) {
   .composerForm {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .errorActions {
-    flex-direction: column;
+    flex-wrap: wrap;
   }
 }
