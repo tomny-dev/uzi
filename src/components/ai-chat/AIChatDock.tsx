@@ -64,6 +64,7 @@ export function AIChatDock({
   };
 
   useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return;
     const media = window.matchMedia('(max-width: 640px)');
     const update = () => setMobile(media.matches);
     update();
