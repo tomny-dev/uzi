@@ -216,3 +216,29 @@ authorization, trusted scoped context, transport persistence, model selection,
 approval requirements and tool side effects remain entirely with each app.
 Betforge must keep its existing screenshot adapter and bet-approval locking
 until matching real-endpoint regression tests prove a migration safe.
+
+## Floating assistant dock
+
+Wrap either `AIChat` or `AIChatView` with `AIChatDock` to provide a shared
+floating action button, desktop conversation panel and full-screen mobile sheet:
+
+```tsx
+import { AIChat, AIChatDock } from "@tomny-dev/uzi";
+
+<AIChatDock title="Ask Tultr" description="Game guide">
+  <AIChat api="/api/ask/example" />
+</AIChatDock>;
+```
+
+For external app state, pass `open`, `onOpenChange`, `expanded` and
+`onExpandedChange`. The dock does **not** recreate the chat runtime when closed:
+children stay mounted (but hidden), so queued requests, native tool approvals,
+screenshots and user-scoped history are preserved. `defaultOpen` and
+`defaultExpanded` provide uncontrolled alternatives.
+
+Desktop: fixed bottom-right launcher and 420px panel, optionally expanded
+to a larger reading surface. Mobile: full-screen sheet with safe-area spacing,
+focus handling, Escape and keyboard-accessible dismissal. The dock works
+with scoped server endpoints but **never** authorizes application data.
+Do not simultaneously mount a second chat instance on a legacy `/ask` page;
+instead route the same dock to its expanded state so the transcript is retained.

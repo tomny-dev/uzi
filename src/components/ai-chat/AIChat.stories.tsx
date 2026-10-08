@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import type { AIChatComponents, AIChatMessage } from './AIChat';
 import { AIChat, AIChatView } from './AIChat';
+import { AIChatDock } from './AIChatDock';
 
 /**
  * Storybook-only AI SDK UI-message stream. No real AI provider, credentials,
@@ -185,5 +186,20 @@ export const FileAttachments: Story = {
   },
   parameters: {
     docs: { description: { story: 'Opt-in image attachments with client limits and removal. Application server must independently enforce media limits.' } },
+  },
+};
+
+/** Two independent assistants use the same Uzi floating dock and transcript chrome. */
+export const FloatingAssistant: Story = {
+  render: () => (
+    <div style={{ minHeight: '70vh', padding: '1rem' }}>
+      <p>Click the bottom-right assistant button; expand, collapse and close to test the shared dock.</p>
+      <AIChatDock title="Ask Tultr" description="Game knowledge assistant">
+        <AIChat api="/__uzi-storybook__/chat" fetch={demoFetch} />
+      </AIChatDock>
+    </div>
+  ),
+  parameters: {
+    docs: { description: { story: 'Reusable desktop floating panel and full-screen mobile chat. The AI SDK conversation stays mounted when closed.' } },
   },
 };

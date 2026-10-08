@@ -368,3 +368,38 @@ describe('AIChat shared opt-in capabilities', () => {
     expect(stubs.addToolApprovalResponse).not.toHaveBeenCalled();
   });
 });
+
+import { AIChatDock } from './AIChatDock';
+
+describe('AIChatDock', () => {
+  it('opens the shared floating panel and preserves children while closed', () => {
+    const message = <div data-testid="persistent-chat">Chat stays mounted</div>;
+    render(<AIChatDock title="Ask Tultr">{message}</AIChatDock>);
+    const transcript = screen.getByTestId('persistent-chat');
+    expect(transcript.closest('[hidden]')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Open Ask Tultr' }));
+    expect(screen.getByRole('dialog', { name: 'Ask Tultr' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Close Ask Tultr' }));
+    expect(screen.getByTestId('persistent-chat')).toBe(transcript);
+    expect(transcript.closest('[hidden]')).toBeTruthy();
+  });
+
+  it('supports controlled open and expansion without replacing chat state', () => {
+    const onOpenChange = vi.fn();
+    const onExpandedChange = vi.fn();
+    const { rerender } = render(<AIChatDock title="Betty" open onOpenChange={onOpenChange} expanded={false} onExpandedChange={onExpandedChange}><span>Betty tools</span></AIChatDock>);
+    const transcript = screen.getByText('Betty tools');
+    fireEvent.click(screen.getByRole('button', { name: 'Expand Betty' }));
+    expect(onExpandedChange).toHaveBeenCalledWith(true);
+    rerender(<AIChatDock title="Betty" open expanded onOpenChange={onOpenChange} onExpandedChange={onExpandedChange}><span>Betty tools</span></AIChatDock>);
+    expect(screen.getByText('Betty tools')).toBe(transcript);
+    fireEvent.click(screen.getByRole('button', { name: 'Close Betty' }));
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it('closes with Escape and restores the launcher', () => {
+    render(<AIChatDock title="Ask Tultr" defaultOpen><span>Conversation</span></AIChatDock>);
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(screen.getByRole('button', { name: 'Open Ask Tultr' })).toBeTruthy();
+  });
+});

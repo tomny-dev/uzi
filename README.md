@@ -132,6 +132,7 @@ In practice, `uzi` should spend its complexity budget on reusable app scaffoldin
 | `Avatar` | Profile image with fallback states |
 | `AIChat` | Plug-and-play AI SDK streaming chat with scoped context and customizable renderers |
 | `AIChatView` | Controlled chat presentation for external runtimes, tool approvals, attachment adapters and persisted history |
+| `AIChatDock` | Shared floating chat launcher, responsive panel and expand/close controls |
 | `Button` | Primary, secondary, outline, ghost variants |
 | `Card` | Discrete object container with tone/padding control |
 | `Surface` | Semantic visual grouping with base/subtle/raised/selected hierarchy |
