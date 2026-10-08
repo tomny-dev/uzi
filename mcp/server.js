@@ -4,6 +4,67 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 
 const COMPONENTS = {
+  AIChat: {
+    description: "Streaming client-side AI SDK chat surface. Consumes an application-owned UI-message stream endpoint and supports custom reasoning, sources, data and errors.",
+    props: {
+      api: { type: "string", description: "Required AI SDK UI-message stream endpoint URL" },
+      scope: { type: "string", optional: true, description: "Opaque resource ID forwarded to server; API must authorize it" },
+      scopeLabel: { type: "string", optional: true, description: "Display-only human-readable scope label; never an authorization value" },
+      fetch: { type: "typeof fetch", optional: true, description: "Optional custom fetch implementation for authentication, interceptors or demos" },
+      headers: { type: "Record<string, string>", optional: true },
+      credentials: { type: "RequestCredentials", optional: true },
+      prepareSendMessagesRequest: { type: "AI SDK prepareSendMessagesRequest callback", optional: true, description: "Customize request serialization for strict API contracts" },
+      sessionKey: { type: "string | number", optional: true, description: "Remount chat when the authenticated user/identity changes; not for routine token refreshes" },
+      messageLimit: { type: "number", default: 8, description: "Maximum user prompts per session" },
+      inputPlaceholder: { type: "string", default: "Ask a question..." },
+      inputAriaLabel: { type: "string", default: "Message" },
+      inputMaxLength: { type: "number", default: 2000 },
+      components: { type: "AIChatComponents", optional: true, description: "Custom Message, Reasoning, Source, Data, Tool and Error renderers" },
+      attachments: { type: "AIChatAttachmentOptions", optional: true, description: "Opt-in validated file submissions" },
+      history: { type: "AIChatHistoryAdapter", optional: true, description: "App-owned persistence scoped by principal and resource" },
+      sendAutomaticallyWhen: { type: "AI SDK continuation predicate", optional: true, description: "Native approval/tool continuation policy" },
+      onClose: { type: "() => void", optional: true },
+      className: { type: "string", optional: true },
+      style: { type: "CSSProperties", optional: true },
+    },
+    examples: [
+      '<div style={{ height: 520 }}><AIChat api="/api/chat" scope="project-id" scopeLabel="My project" /></div>',
+      '<div style={{ height: 520 }}><AIChat api="/api/chat" messageLimit={5} inputPlaceholder="Ask the assistant..." /></div>',
+    ],
+    notes: "Client-only: parent must provide a bounded height. Endpoint must authenticate and authorize scope, enforce request limits and return an AI SDK UI-message stream (not JSON). Enter sends, Shift+Enter adds a line, Stop cancels, Retry regenerates, New chat resets. Docs: docs/guides/ai-chat.md. Storybook: Components/AIChat.",
+  },
+
+  AIChatView: {
+    description: "Controlled AI chat presentation for app-owned runtimes, conversation persistence, file attachments and tool approvals. Does not create its own AI SDK provider, transport, history or tool state.",
+    props: {
+      messages: { type: "readonly AIChatMessage[]", description: "Required app-owned chat messages with original IDs and parts" },
+      status: { type: "string", optional: true },
+      error: { type: "Error | null", optional: true },
+      draft: { type: "string", optional: true, description: "Controlled composer text" },
+      onDraftChange: { type: "(draft: string) => void", optional: true },
+      onSend: { type: "() => void", optional: true },
+      onStop: { type: "() => void", optional: true },
+      onRetry: { type: "() => void", optional: true },
+      onNewChat: { type: "() => void", optional: true },
+      messageLimit: { type: "number", optional: true, description: "Optional; unlike AIChat, no default limit" },
+      components: { type: "AIChatComponents", optional: true },
+      onToolApproval: { type: "(id, approved) => Promise<void> | void", optional: true, description: "Native app-owned approval handler" },
+      attachments: { type: "AIChatSelectedAttachment[]", optional: true },
+      onSelectAttachments: { type: "(files: FileList) => void", optional: true },
+      onRemoveAttachment: { type: "(index: number) => void", optional: true },
+      header: { type: "ReactNode", optional: true },
+      toolbarActions: { type: "ReactNode", optional: true },
+      composerLeading: { type: "ReactNode", optional: true },
+      composerTrailing: { type: "ReactNode", optional: true },
+      composer: { type: "ReactNode", optional: true, description: "Replace the built-in composer without changing app runtime" },
+      emptyState: { type: "ReactNode", optional: true },
+    },
+    examples: [
+      '<AIChatView messages={chat.messages} status={chat.status} draft={draft} onDraftChange={setDraft} onSend={() => chat.sendMessage({ text: draft })} onStop={() => chat.stop()} />',
+    ],
+    notes: "Use when adopting Uzi chrome without replacing Betty-style native approvals, attachments or persistence. See docs/guides/ai-chat.md.",
+  },
+
   Button: {
     description: "Polymorphic button. Renders as <button> by default or <a> with as='a'. Supports asChild for custom element composition.",
     props: {

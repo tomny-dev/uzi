@@ -66,7 +66,13 @@ jobs:
               if [ "$PUBLISHED_VERSION" != "$PREVIEW_VERSION" ]; then
                 echo "::warning::$PREVIEW_TAG has not propagated yet (currently: ${PUBLISHED_VERSION:-unavailable}), but the exact preview version is installable."
               fi
-              echo "Verified @tomny-dev/uzi@$PREVIEW_VERSION on npm."
+              INTEGRITY=$(npm view "@tomny-dev/uzi@$PREVIEW_VERSION" dist.integrity)
+              if [ -z "$INTEGRITY" ]; then
+                echo "::error::No dist.integrity metadata for $PREVIEW_VERSION."
+                exit 1
+              fi
+              echo "PREVIEW_INTEGRITY=$INTEGRITY" >> "$GITHUB_ENV"
+              echo "Verified @tomny-dev/uzi@$PREVIEW_VERSION with integrity metadata on npm."
               exit 0
             fi
             echo "Waiting for npm registry propagation (attempt $attempt/30)..."
@@ -96,6 +102,8 @@ jobs:
             \`\`\`
 
             Published version: \`${process.env.PREVIEW_VERSION}\`
+
+            SHA-512 integrity for lockfile verification: \`${process.env.PREVIEW_INTEGRITY}\`
 
             Use the PR tag to track the latest preview build for this PR. Use the exact version to pin a specific build.`;
 
@@ -129,3 +137,4 @@ jobs:
         env:
           PREVIEW_TAG: ${{ env.PREVIEW_TAG }}
           PREVIEW_VERSION: ${{ env.PREVIEW_VERSION }}
+          PREVIEW_INTEGRITY: ${{ env.PREVIEW_INTEGRITY }}

@@ -174,3 +174,29 @@ export { ErrorPage, NotFoundPage, MaintenancePage } from "./components/error-pag
 // EmptyStatePage — card-based empty state template with variants (noData, noConnection, noPermissions)
 export type { EmptyStatePageProps, EmptyStatePageVariant } from "./components/empty-state-page/EmptyStatePage";
 export { EmptyStatePage } from "./components/empty-state-page/EmptyStatePage";
+
+// AIChat — unified AI chat component using @assistant-ui/react + @assistant-ui/ai-sdk
+export type {
+  AIChatProps,
+  AIChatMessage,
+  AIChatViewProps,
+  AIChatAttachmentOptions,
+  AIChatSelectedAttachment,
+  AIChatHistoryAdapter,
+  AIChatToolApprovalHandler,
+  AIChatToolRendererProps,
+  AIChatComponents,
+  AIChatMessageRendererProps,
+  AIChatReasoningRendererProps,
+  AIChatSource,
+  AIChatSourceRendererProps,
+  AIChatDataRendererProps,
+  AIChatErrorRendererProps,
+} from "./components/ai-chat/AIChat";
+export { AIChat, AIChatView, AIChatMessageBubble } from "./components/ai-chat/AIChat";
+export type { AIChatMessageBubbleProps } from "./components/ai-chat/AIChat";
+export { AIChatDock } from "./components/ai-chat/AIChatDock";
+export type { AIChatDockProps } from "./components/ai-chat/AIChatDock";
+
+export { FloatingActionStack, FloatingActionButton } from "./components/floating-action-stack/FloatingActionStack";
+export type { FloatingActionStackProps, FloatingActionButtonProps } from "./components/floating-action-stack/FloatingActionStack";
