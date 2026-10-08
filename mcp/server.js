@@ -16,6 +16,7 @@ const COMPONENTS = {
       sessionKey: { type: "string | number", optional: true, description: "Remount chat when the authenticated user/identity changes; not for routine token refreshes" },
       messageLimit: { type: "number", default: 8, description: "Maximum user prompts per session" },
       inputPlaceholder: { type: "string", default: "Ask a question..." },
+      inputAriaLabel: { type: "string", default: "Message" },
       inputMaxLength: { type: "number", default: 2000 },
       components: { type: "AIChatComponents", optional: true, description: "Custom Message, Reasoning, Source, Data and Error renderers" },
       onClose: { type: "() => void", optional: true },
