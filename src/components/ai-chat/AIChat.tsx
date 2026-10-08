@@ -24,6 +24,8 @@ export interface AIChatProps {
   /** Maximum number of user turns (default: 8). */
   readonly messageLimit?: number;
   readonly inputPlaceholder?: string;
+  /** Accessible name for the message textarea. */
+  readonly inputAriaLabel?: string;
   readonly inputMaxLength?: number;
   readonly components?: AIChatComponents;
   readonly onClose?: () => void;
@@ -222,6 +224,7 @@ export function AIChat({
   sessionKey,
   messageLimit = DEFAULT_MESSAGE_LIMIT,
   inputPlaceholder = 'Ask a question...',
+  inputAriaLabel = 'Message',
   inputMaxLength = 2000,
   components,
   onClose,
@@ -265,6 +268,7 @@ export function AIChat({
           <ChatViewport
             messageLimit={Number.isFinite(messageLimit) ? Math.max(1, Math.floor(messageLimit)) : DEFAULT_MESSAGE_LIMIT}
             inputPlaceholder={inputPlaceholder}
+            inputAriaLabel={inputAriaLabel}
             inputMaxLength={inputMaxLength}
             components={components}
             onNewChat={() => setSession((previous) => previous + 1)}
@@ -278,6 +282,7 @@ export function AIChat({
 interface ChatViewportProps {
   readonly messageLimit: number;
   readonly inputPlaceholder: string;
+  readonly inputAriaLabel: string;
   readonly inputMaxLength: number;
   readonly components?: AIChatComponents;
   readonly onNewChat: () => void;
@@ -286,6 +291,7 @@ interface ChatViewportProps {
 function ChatViewport({
   messageLimit,
   inputPlaceholder,
+  inputAriaLabel,
   inputMaxLength,
   components,
   onNewChat,
@@ -371,7 +377,7 @@ function ChatViewport({
           <form className={styles.composerForm} onSubmit={handleFormSubmit}>
             <textarea
               className={styles.input}
-              aria-label="Message"
+              aria-label={inputAriaLabel}
               rows={2}
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
