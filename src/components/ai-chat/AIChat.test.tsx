@@ -58,7 +58,7 @@ describe('AIChat', () => {
     render(<AIChat api="/api/chat" />);
     const input = screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement;
     fireEvent.change(input, { target: { value: '  Hello  ' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
     expect(stubs.sendMessage).toHaveBeenCalledWith({ text: 'Hello' });
     expect(input.value).toBe('');
   });
@@ -86,7 +86,7 @@ describe('AIChat', () => {
     ];
     render(<AIChat api="/api/chat" messageLimit={2} />);
     expect(screen.getByText(/2-question limit/)).toBeTruthy();
-    expect(screen.queryByRole('button', { name: 'Send' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Send message' })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Start new chat' }));
     expect(stubs.stop).toHaveBeenCalledTimes(1);
   });
@@ -189,9 +189,9 @@ describe('AIChat', () => {
     ];
     stubs.status = 'streaming';
     render(<AIChat api="/api/chat" messageLimit={1} />);
-    expect(screen.getByRole('button', { name: 'Stop' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Stop response' })).toBeTruthy();
     expect(screen.queryByText(/1-question limit/)).toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: 'Stop' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Stop response' }));
     expect(stubs.stop).toHaveBeenCalledTimes(1);
   });
 
@@ -199,7 +199,7 @@ describe('AIChat', () => {
     stubs.status = 'streaming';
     render(<AIChat api="/api/chat" />);
     expect((screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement).disabled).toBe(true);
-    fireEvent.click(screen.getByRole('button', { name: 'Stop' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Stop response' }));
     expect(stubs.stop).toHaveBeenCalledTimes(1);
   });
 });
@@ -259,13 +259,13 @@ describe('AIChatView (external runtime)', () => {
     expect(screen.getByText('Betty')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Attach screenshot' }));
     fireEvent.change(screen.getByRole('textbox', { name: 'Message' }), { target: { value: 'new draft' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
     expect(attach).toHaveBeenCalledOnce();
     expect(changeDraft).toHaveBeenCalledWith('new draft');
     expect(submit).toHaveBeenCalledOnce();
 
     rerender(<AIChatView messages={[]} draft="Place a bet" status="streaming" onDraftChange={changeDraft} onSend={submit} onStop={stop} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Stop' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Stop response' }));
     expect(stop).toHaveBeenCalledOnce();
   });
 
@@ -288,7 +288,7 @@ describe('AIChatView (external runtime)', () => {
     expect(send).not.toHaveBeenCalled();
     rerender(<AIChatView {...props} status="error" error={new Error('Network issue')} />);
     expect(screen.getByRole('alert').textContent).toContain('Network issue');
-    expect(screen.queryByRole('button', { name: 'Send' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Send message' })).toBeNull();
     expect(send).not.toHaveBeenCalled();
   });
 });
