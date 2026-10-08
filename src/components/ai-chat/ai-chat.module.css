@@ -370,3 +370,15 @@
     flex-wrap: wrap;
   }
 }
+
+/* Optional integration controls use the same Uzi surface and layout tokens. */
+.composerExtras {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.composerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

@@ -31,6 +31,33 @@ const COMPONENTS = {
     notes: "Client-only: parent must provide a bounded height. Endpoint must authenticate and authorize scope, enforce request limits and return an AI SDK UI-message stream (not JSON). Enter sends, Shift+Enter adds a line, Stop cancels, Retry regenerates, New chat resets. Docs: docs/guides/ai-chat.md. Storybook: Components/AIChat.",
   },
 
+  AIChatView: {
+    description: "Controlled AI chat presentation for app-owned runtimes, conversation persistence, file attachments and tool approvals. Does not create its own AI SDK provider, transport, history or tool state.",
+    props: {
+      messages: { type: "readonly AIChatMessage[]", description: "Required app-owned chat messages with original IDs and parts" },
+      status: { type: "string", optional: true },
+      error: { type: "Error | null", optional: true },
+      draft: { type: "string", optional: true, description: "Controlled composer text" },
+      onDraftChange: { type: "(draft: string) => void", optional: true },
+      onSend: { type: "() => void", optional: true },
+      onStop: { type: "() => void", optional: true },
+      onRetry: { type: "() => void", optional: true },
+      onNewChat: { type: "() => void", optional: true },
+      messageLimit: { type: "number", optional: true, description: "Optional; unlike AIChat, no default limit" },
+      components: { type: "AIChatComponents", optional: true },
+      header: { type: "ReactNode", optional: true },
+      toolbarActions: { type: "ReactNode", optional: true },
+      composerLeading: { type: "ReactNode", optional: true },
+      composerTrailing: { type: "ReactNode", optional: true },
+      composer: { type: "ReactNode", optional: true, description: "Replace the built-in composer without changing app runtime" },
+      emptyState: { type: "ReactNode", optional: true },
+    },
+    examples: [
+      '<AIChatView messages={chat.messages} status={chat.status} draft={draft} onDraftChange={setDraft} onSend={() => chat.sendMessage({ text: draft })} onStop={() => chat.stop()} />',
+    ],
+    notes: "Use when adopting Uzi chrome without replacing Betty-style native approvals, attachments or persistence. See docs/guides/ai-chat.md.",
+  },
+
   Button: {
     description: "Polymorphic button. Renders as <button> by default or <a> with as='a'. Supports asChild for custom element composition.",
     props: {

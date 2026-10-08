@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, ComponentType, FormEvent, KeyboardEvent, ReactNode } from 'react';
 
 import { AuiConfig, AuiProvider, ThreadPrimitive } from '@assistant-ui/react';
@@ -33,6 +33,44 @@ export interface AIChatProps {
   readonly inputMaxLength?: number;
   readonly components?: AIChatComponents;
   readonly onClose?: () => void;
+  readonly className?: string;
+  readonly style?: CSSProperties;
+}
+
+/**
+ * Framework-independent presentation contract. The parent owns the runtime,
+ * message identities, approvals, uploads, history and security boundaries.
+ * Uzi does not serialize, persist or reinterpret any messages supplied here.
+ */
+export type AIChatMessage = AIChatMessageRendererProps['message'];
+
+export interface AIChatViewProps {
+  readonly messages: readonly AIChatMessage[];
+  readonly status?: string;
+  readonly error?: Error | null;
+  readonly draft?: string;
+  readonly onDraftChange?: (draft: string) => void;
+  readonly onSend?: () => void;
+  readonly onStop?: () => void;
+  readonly onRetry?: () => void;
+  readonly onNewChat?: () => void;
+  /** No limit by default: specialized apps decide their own session policy. */
+  readonly messageLimit?: number;
+  readonly inputPlaceholder?: string;
+  readonly inputAriaLabel?: string;
+  readonly inputMaxLength?: number;
+  readonly components?: AIChatComponents;
+  /** Custom message toolbar controls, e.g. a conversation selector. */
+  readonly toolbarActions?: ReactNode;
+  /** Context labels or other app-owned notices above the transcript. */
+  readonly header?: ReactNode;
+  /** Upload actions, attachment previews or context chips before the input. */
+  readonly composerLeading?: ReactNode;
+  /** Additional buttons beside the Send/Stop control. */
+  readonly composerTrailing?: ReactNode;
+  /** Completely replace the composer while retaining shared transcript chrome. */
+  readonly composer?: ReactNode;
+  readonly emptyState?: ReactNode;
   readonly className?: string;
   readonly style?: CSSProperties;
 }
@@ -342,68 +380,165 @@ function ChatViewport({
   };
 
   return (
-    <ThreadPrimitive.Viewport autoScroll className={styles.viewport}>
-      {messages.length > 0 && (
-        <div className={styles.chatToolbar}>
-          <button type="button" onClick={handleNewChat}>New chat</button>
-        </div>
-      )}
-      <div className={styles.messageList} role="log" aria-label="Chat history" aria-live="polite">
-        {messages.length === 0 && (
-          <div className={styles.emptyState}>
-            <p>Start a conversation</p>
-          </div>
-        )}
-        {messages.filter((message) => message.role === 'user' || message.role === 'assistant').map((message) => (
-          <MessageRenderer
-            key={message.id}
-            message={{
-              id: message.id,
-              role: message.role as 'user' | 'assistant',
-              parts: message.parts,
-              ...(isRecord(message.metadata) ? { metadata: message.metadata } : {}),
-            }}
-            renderMessagePart={(part, index) => renderPart(part, index, components)}
-          />
-        ))}
-        {isBusy && <p className={styles.status}>Thinking...</p>}
-      </div>
-      <ThreadPrimitive.ViewportFooter className={styles.footer}>
-        {!chat && <p className={styles.error} role="alert">Chat runtime is unavailable.</p>}
-        {chat?.error && (
-          <ErrorRenderer error={chat.error} onRetry={handleRetry} onClear={handleNewChat} />
-        )}
-        {historyFull && !chat?.error && !isBusy && (
-          <div className={styles.historyLimit}>
-            <span>This chat has reached its {messageLimit}-question limit.</span>
-            <button type="button" onClick={handleNewChat}>Start new chat</button>
-          </div>
-        )}
-        {(!historyFull || isBusy) && !chat?.error && (
-          <form className={styles.composerForm} onSubmit={handleFormSubmit}>
-            <textarea
-              className={styles.input}
-              aria-label={inputAriaLabel}
-              rows={2}
-              value={draft}
-              onChange={(event) => setDraft(event.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={inputPlaceholder}
-              maxLength={inputMaxLength}
-              disabled={isBusy || !chat}
-            />
-            {isBusy ? (
-              <button type="button" className={styles.sendButton} onClick={() => void chat?.stop()}>
-                Stop
-              </button>
-            ) : (
-              <button type="submit" className={styles.sendButton} disabled={!chat || !draft.trim()}>
-                Send
-              </button>
+    <AIChatView
+      messages={messages.filter((message) => message.role === 'user' || message.role === 'assistant').map((message) => ({
+        id: message.id,
+        role: message.role as 'user' | 'assistant',
+        parts: message.parts,
+        ...(isRecord(message.metadata) ? { metadata: message.metadata } : {}),
+      }))}
+      status={status}
+      error={chat?.error}
+      draft={draft}
+      onDraftChange={setDraft}
+      onSend={handleSubmit}
+      onStop={() => { void chat?.stop(); }}
+      onRetry={handleRetry}
+      onNewChat={handleNewChat}
+      messageLimit={messageLimit}
+      inputPlaceholder={inputPlaceholder}
+      inputAriaLabel={inputAriaLabel}
+      inputMaxLength={inputMaxLength}
+      components={components}
+    />
+  );
+}
+
+/**
+ * Controlled chat presentation for apps with their own AI SDK/assistant-ui
+ * runtime. It does not create providers, transports or chat state. Callbacks
+ * are the only way messages/actions leave the view.
+ */
+export function AIChatView({
+  messages,
+  status = 'ready',
+  error,
+  draft = '',
+  onDraftChange,
+  onSend,
+  onStop,
+  onRetry,
+  onNewChat,
+  messageLimit,
+  inputPlaceholder = 'Ask a question...',
+  inputAriaLabel = 'Message',
+  inputMaxLength = 2000,
+  components,
+  toolbarActions,
+  header,
+  composerLeading,
+  composerTrailing,
+  composer,
+  emptyState,
+  className,
+  style,
+}: AIChatViewProps) {
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const pinnedToBottom = useRef(true);
+  const isBusy = status === 'submitted' || status === 'streaming';
+  const limit = messageLimit != null && Number.isFinite(messageLimit)
+    ? Math.max(1, Math.floor(messageLimit)) : null;
+  const historyFull = limit !== null && messages.filter((message) => message.role === 'user').length >= limit;
+  const MessageRenderer = components?.MessageRenderer ?? DefaultMessageRenderer;
+  const ErrorRenderer = components?.ErrorRenderer ?? DefaultErrorRenderer;
+
+  // Follow streaming text only if the user is already near the bottom.
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (viewport && pinnedToBottom.current) viewport.scrollTop = viewport.scrollHeight;
+  });
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
+      event.preventDefault();
+      if (!isBusy && !historyFull && !error && draft.trim()) onSend?.();
+    }
+  };
+
+  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!isBusy && !historyFull && !error && draft.trim()) onSend?.();
+  };
+
+  return (
+    <div className={[styles.thread, className].filter(Boolean).join(' ')} style={style}>
+      {header}
+      <div
+        ref={viewportRef}
+        className={styles.viewport}
+        onScroll={(event) => {
+          const viewport = event.currentTarget;
+          pinnedToBottom.current = viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight < 80;
+        }}
+      >
+        {(messages.length > 0 || toolbarActions) && (onNewChat || toolbarActions) && (
+          <div className={styles.chatToolbar}>
+            {toolbarActions}
+            {onNewChat && messages.length > 0 && (
+              <button type="button" onClick={onNewChat}>New chat</button>
             )}
-          </form>
+          </div>
         )}
-      </ThreadPrimitive.ViewportFooter>
-    </ThreadPrimitive.Viewport>
+        <div className={styles.messageList} role="log" aria-label="Chat history" aria-live="polite">
+          {messages.length === 0 && (
+            <div className={styles.emptyState}>
+              {emptyState ?? <p>Start a conversation</p>}
+            </div>
+          )}
+          {messages.map((message) => (
+            <MessageRenderer
+              key={message.id}
+              message={message}
+              renderMessagePart={(part, index) => renderPart(part, index, components)}
+            />
+          ))}
+          {isBusy && <p className={styles.status}>Thinking...</p>}
+        </div>
+      </div>
+      <div className={styles.footer}>
+        {error && (
+          onRetry && onNewChat ? (
+            <ErrorRenderer error={error} onRetry={onRetry} onClear={onNewChat} />
+          ) : (
+            <div className={styles.error} role="alert"><p>{error.message}</p></div>
+          )
+        )}
+        {historyFull && !error && !isBusy && onNewChat && (
+          <div className={styles.historyLimit}>
+            <span>This chat has reached its {limit}-question limit.</span>
+            <button type="button" onClick={onNewChat}>Start new chat</button>
+          </div>
+        )}
+        {(!historyFull || isBusy) && !error && (
+          composer !== undefined ? composer : (
+            <form className={styles.composerForm} onSubmit={handleFormSubmit}>
+              {composerLeading && <div className={styles.composerExtras}>{composerLeading}</div>}
+              <textarea
+                className={styles.input}
+                aria-label={inputAriaLabel}
+                rows={2}
+                value={draft}
+                onChange={(event) => onDraftChange?.(event.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={inputPlaceholder}
+                maxLength={inputMaxLength}
+                disabled={isBusy || !onSend || !onDraftChange}
+                readOnly={!onDraftChange}
+              />
+              <div className={styles.composerActions}>
+                {composerTrailing}
+                {isBusy ? (
+                  onStop && <button type="button" className={styles.sendButton} onClick={onStop}>Stop</button>
+                ) : (
+                  <button type="submit" className={styles.sendButton} disabled={!onSend || !draft.trim()}>
+                    Send
+                  </button>
+                )}
+              </div>
+            </form>
+          )
+        )}
+      </div>
+    </div>
   );
 }

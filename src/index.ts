@@ -178,6 +178,8 @@ export { EmptyStatePage } from "./components/empty-state-page/EmptyStatePage";
 // AIChat — unified AI chat component using @assistant-ui/react + @assistant-ui/ai-sdk
 export type {
   AIChatProps,
+  AIChatMessage,
+  AIChatViewProps,
   AIChatComponents,
   AIChatMessageRendererProps,
   AIChatReasoningRendererProps,
@@ -186,4 +188,4 @@ export type {
   AIChatDataRendererProps,
   AIChatErrorRendererProps,
 } from "./components/ai-chat/AIChat";
-export { AIChat } from "./components/ai-chat/AIChat";
+export { AIChat, AIChatView } from "./components/ai-chat/AIChat";

@@ -41,7 +41,7 @@ pnpm build-storybook
 
 The static output is written to `storybook-static/`. Story files live beside their components under `src/components/**` using the `*.stories.tsx` naming convention.
 
-The **Components / AIChat** stories demonstrate interactive streaming, custom renderers, scoped requests, message limits and error recovery with mock responses; no external AI credentials are needed.
+The **Components / AIChat** stories demonstrate streaming, custom renderers, scoped requests, message limits, error recovery, and an externally controlled runtime with mock approvals; no external AI credentials are needed.
 
 CI builds Storybook on every pull request and push to `main`. After changes land on `main`, the Storybook deployment workflow publishes `storybook-static/` to the `uzi-storybook` Cloudflare Pages project. The deployment workflow requires these repository secrets:
 
@@ -130,7 +130,8 @@ In practice, `uzi` should spend its complexity budget on reusable app scaffoldin
 | Component | Description |
 |---|---|
 | `Avatar` | Profile image with fallback states |
-| `AIChat` | Streaming AI SDK chat surface with scoped context and customizable message renderers |
+| `AIChat` | Plug-and-play AI SDK streaming chat with scoped context and customizable renderers |
+| `AIChatView` | Controlled chat presentation for external runtimes, tool approvals, attachment adapters and persisted history |
 | `Button` | Primary, secondary, outline, ghost variants |
 | `Card` | Discrete object container with tone/padding control |
 | `Surface` | Semantic visual grouping with base/subtle/raised/selected hierarchy |

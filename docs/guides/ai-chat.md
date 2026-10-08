@@ -116,3 +116,71 @@ Supported built-in parts include plain text, collapsible reasoning, linked sourc
 Open **Components / AIChat** in `pnpm storybook`. The `Default`, `ScopedChat`, `ShortSession`, `CustomRenderers` and `ErrorAndRetry` stories use a dedicated injected mock fetch implementation. You can submit prompts and inspect UI states without providing a real API key or setting up a backend.
 
 Before adopting the component in production, test at least one consumer app against its real streaming endpoint (including auth, multi-part responses, cancellation and error recovery). Storybook mocks and component unit tests do not replace that integration test.
+
+## Existing / specialized runtimes: `AIChatView`
+
+Use the exported **controlled** `AIChatView` when your application already
+owns an AI SDK runtime, tool approvals, attachment adapters, persisted history,
+or server-derived context. `AIChatView` is presentation-only: it does not
+create `AuiProvider`, replace `useChat`, create a transport, reset history,
+send messages or invoke tools. The application supplies messages, the draft,
+status, actions and custom renderers.
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import { useChat } from "@ai-sdk/react";
+import { AIChatView } from "@tomny-dev/uzi";
+
+export function ExistingChat() {
+  const chat = useChat({ /* keep your existing transport and adapters */ });
+  const [draft, setDraft] = useState("");
+  return (
+    <div style={{ height: 520 }}>
+      <AIChatView
+        messages={chat.messages.filter((message) =>
+          message.role === "user" || message.role === "assistant"
+        )}
+        draft={draft}
+        onDraftChange={setDraft}
+        status={chat.status}
+        error={chat.error}
+        onSend={() => {
+          if (!draft.trim()) return;
+          void chat.sendMessage({ text: draft.trim() });
+          setDraft("");
+        }}
+        onStop={() => void chat.stop()}
+        onRetry={() => { chat.clearError(); void chat.regenerate(); }}
+        onNewChat={() => { void chat.stop(); chat.setMessages([]); }}
+      />
+    </div>
+  );
+}
+```
+
+`AIChatView` defaults to **no question limit**. To opt in, pass
+`messageLimit`; the simple `AIChat` wrapper still defaults to eight questions.
+External consumers can also provide `components.MessageRenderer` for native
+tool/approval displays, `composerLeading` for screenshot/attachment controls,
+`composerTrailing` for extra actions, `header` for context indicators,
+`toolbarActions` for application commands, or `composer` to render an
+application-managed composer entirely. These are **render slots**, not
+Uzi-owned state machines. No consumer callback is called automatically on
+history hydration, identity changes or approval decisions.
+
+For Betty-style workflows, keep `useChat` + `useAISDKRuntime`, the screenshot
+attachment adapter, user-scoped storage, contextual prompt preparation,
+`addToolApprovalResponse` and approval locks **in the application**. Pass the
+existing message parts to `AIChatView` and implement
+`components.MessageRenderer` using domain-specific tool/quote identities.
+Never transform approvals into plain text or move authorization into Uzi.
+
+The controlled view receives only the supplied messages, so resetting the
+authenticated identity and loading history remain the app's responsibility.
+No real provider, wager execution or sensitive local storage is needed for the
+`ExternallyManagedRuntime` Storybook example.
+
+`AIChat` remains the ready-to-use alternative for basic streaming chat; the
+two components share renderers, theme styles and keyboard behavior.

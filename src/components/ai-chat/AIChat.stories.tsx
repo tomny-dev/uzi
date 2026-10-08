@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import type { AIChatComponents } from './AIChat';
-import { AIChat } from './AIChat';
+import { useState } from 'react';
+import type { AIChatComponents, AIChatMessage } from './AIChat';
+import { AIChat, AIChatView } from './AIChat';
 
 /**
  * Storybook-only AI SDK UI-message stream. No real AI provider, credentials,
@@ -116,5 +117,63 @@ export const ErrorAndRetry: Story = {
   args: { api: '/__uzi-storybook__/chat/error' },
   parameters: {
     docs: { description: { story: 'Send a prompt to exercise the error, Retry response and Start new chat controls.' } },
+  },
+};
+
+/** Demonstrates how a complex consumer supplies its own history, approvals and composer actions. */
+function ExternalRuntimeExample() {
+  const [draft, setDraft] = useState('');
+  const [messages, setMessages] = useState<AIChatMessage[]>([
+    { id: 'assistant-1', role: 'assistant', parts: [
+      { type: 'text', text: 'I prepared a sample ticket. Confirm before recording it.' },
+      { type: 'tool-log_bet', state: 'approval-requested', approval: { id: 'example-1' } },
+    ] },
+  ]);
+  const [decision, setDecision] = useState('Waiting for approval');
+  const [attachment, setAttachment] = useState(false);
+  const approve = (answer: string) => setDecision(answer);
+  return (
+    <div style={{ height: '30rem', width: 'min(36rem, 100%)' }}>
+      <AIChatView
+        messages={messages}
+        draft={draft}
+        onDraftChange={setDraft}
+        onSend={() => {
+          if (!draft.trim()) return;
+          setMessages((current) => [...current, { id: `user-${current.length}`, role: 'user', parts: [{ type: 'text', text: draft }] }]);
+          setDraft('');
+        }}
+        header={<div style={{ padding: 12 }}>App-owned context: upcoming event</div>}
+        composerLeading={<div>
+          <button type="button" onClick={() => setAttachment((value) => !value)}>Toggle screenshot</button>
+          {attachment && <span> screenshot.png attached</span>}
+        </div>}
+        toolbarActions={<span>Betty-style controlled runtime</span>}
+        components={{
+          MessageRenderer: ({ message, renderMessagePart }) => (
+            <div style={{ padding: 12 }}>
+              {message.parts.map((part, index) => (
+                <div key={index}>
+                  {(part as { type?: string }).type === 'tool-log_bet' ? (
+                    <div>
+                      <p>{decision}</p>
+                      <button type="button" onClick={() => approve('Approved by user')}>Approve</button>
+                      <button type="button" onClick={() => approve('Denied by user')}>Deny</button>
+                    </div>
+                  ) : renderMessagePart(part as Record<string, unknown>, index)}
+                </div>
+              ))}
+            </div>
+          ),
+        }}
+      />
+    </div>
+  );
+}
+
+export const ExternallyManagedRuntime: Story = {
+  render: () => <ExternalRuntimeExample />,
+  parameters: {
+    docs: { description: { story: 'The host controls chat history, attachments, approval actions and composer state. This demo makes no network requests or wagers.' } },
   },
 };

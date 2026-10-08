@@ -39,7 +39,7 @@ vi.mock('@assistant-ui/react', () => ({
   },
 }));
 
-import { AIChat } from './AIChat';
+import { AIChat, AIChatView } from './AIChat';
 
 beforeEach(() => {
   stubs.messages = [];
@@ -199,5 +199,94 @@ describe('AIChat', () => {
     expect((screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement).disabled).toBe(true);
     fireEvent.click(screen.getByRole('button', { name: 'Stop' }));
     expect(stubs.stop).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('AIChatView (external runtime)', () => {
+  const message = {
+    id: 'persisted-assistant-1',
+    role: 'assistant' as const,
+    parts: [{ type: 'tool-log_bet', state: 'approval-requested', approval: { id: 'approval-1' } }],
+  };
+
+  it('renders app-owned history and specialized approval UI without creating an SDK transport', () => {
+    const approve = vi.fn();
+    const deny = vi.fn();
+    render(
+      <AIChatView
+        messages={[message]}
+        draft=""
+        onDraftChange={vi.fn()}
+        onSend={vi.fn()}
+        components={{
+          MessageRenderer: ({ message: entry }) => (
+            <div>
+              <span>{entry.id}</span>
+              <button onClick={approve}>Approve bet</button>
+              <button onClick={deny}>Deny bet</button>
+            </div>
+          ),
+        }}
+      />,
+    );
+    expect(screen.getByText('persisted-assistant-1')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Approve bet' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Deny bet' }));
+    expect(approve).toHaveBeenCalledOnce();
+    expect(deny).toHaveBeenCalledOnce();
+    expect(stubs.transportOptions).toEqual([]);
+    expect(stubs.sendMessage).not.toHaveBeenCalled();
+  });
+
+  it('delegates controlled input, attachments, retry and stop to the host', () => {
+    const changeDraft = vi.fn();
+    const submit = vi.fn();
+    const stop = vi.fn();
+    const attach = vi.fn();
+    const { rerender } = render(
+      <AIChatView
+        messages={[]}
+        status="ready"
+        draft="Place a bet"
+        onDraftChange={changeDraft}
+        onSend={submit}
+        composerLeading={<button type="button" onClick={attach}>Attach screenshot</button>}
+        toolbarActions={<span>Betty</span>}
+      />,
+    );
+    expect(screen.getByText('Betty')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Attach screenshot' }));
+    fireEvent.change(screen.getByRole('textbox', { name: 'Message' }), { target: { value: 'new draft' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+    expect(attach).toHaveBeenCalledOnce();
+    expect(changeDraft).toHaveBeenCalledWith('new draft');
+    expect(submit).toHaveBeenCalledOnce();
+
+    rerender(<AIChatView messages={[]} draft="Place a bet" status="streaming" onDraftChange={changeDraft} onSend={submit} onStop={stop} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Stop' }));
+    expect(stop).toHaveBeenCalledOnce();
+  });
+
+  it('supports a custom composer and no default user-turn cap', () => {
+    const messages = Array.from({ length: 12 }, (_, index) => ({
+      id: `user-${index}`, role: 'user' as const,
+      parts: [{ type: 'text', text: `Question ${index}` }],
+    }));
+    render(<AIChatView messages={messages} composer={<button type="button">Betty composer</button>} />);
+    expect(screen.getByRole('button', { name: 'Betty composer' })).toBeTruthy();
+    expect(screen.queryByText(/question limit/)).toBeNull();
+    expect(screen.queryByRole('textbox')).toBeNull();
+  });
+
+  it('cannot send when an error is present or during streaming', () => {
+    const send = vi.fn();
+    const props = { messages: [], draft: 'Should not send', onDraftChange: vi.fn(), onSend: send };
+    const { rerender } = render(<AIChatView {...props} status="streaming" />);
+    fireEvent.keyDown(screen.getByRole('textbox', { name: 'Message' }), { key: 'Enter' });
+    expect(send).not.toHaveBeenCalled();
+    rerender(<AIChatView {...props} status="error" error={new Error('Network issue')} />);
+    expect(screen.getByRole('alert').textContent).toContain('Network issue');
+    expect(screen.queryByRole('button', { name: 'Send' })).toBeNull();
+    expect(send).not.toHaveBeenCalled();
   });
 });
