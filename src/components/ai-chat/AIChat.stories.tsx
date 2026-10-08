@@ -6,6 +6,8 @@ import { AIChat } from './AIChat';
  * Storybook-only AI SDK UI-message stream. No real AI provider, credentials,
  * global fetch monkey-patching, or external service is required.
  */
+let demoResponseSequence = 0;
+
 const demoFetch: typeof fetch = async (input, init) => {
   const target = new URL(
     typeof input === 'string' ? input : input instanceof URL ? input.href : input.url,
@@ -25,15 +27,16 @@ const demoFetch: typeof fetch = async (input, init) => {
   const prompt = lastUser?.parts?.filter((part) => part.type === 'text')
     .map((part) => part.text ?? '').join(' ') || 'Hello';
 
+  const responseId = ++demoResponseSequence;
   const events: Array<Record<string, unknown>> = [
-    { type: 'start', messageId: 'storybook-assistant' },
-    { type: 'reasoning-start', id: 'reasoning-1' },
-    { type: 'reasoning-delta', id: 'reasoning-1', delta: 'This is simulated reasoning from Storybook.' },
-    { type: 'reasoning-end', id: 'reasoning-1' },
-    { type: 'text-start', id: 'text-1' },
-    { type: 'text-delta', id: 'text-1', delta: `You asked: "${prompt}". ` },
-    { type: 'text-delta', id: 'text-1', delta: 'This answer is a local Storybook mock, not a live AI response.' },
-    { type: 'text-end', id: 'text-1' },
+    { type: 'start', messageId: `storybook-assistant-${responseId}` },
+    { type: 'reasoning-start', id: `reasoning-${responseId}` },
+    { type: 'reasoning-delta', id: `reasoning-${responseId}`, delta: 'This is simulated reasoning from Storybook.' },
+    { type: 'reasoning-end', id: `reasoning-${responseId}` },
+    { type: 'text-start', id: `text-${responseId}` },
+    { type: 'text-delta', id: `text-${responseId}`, delta: `You asked: "${prompt}". ` },
+    { type: 'text-delta', id: `text-${responseId}`, delta: 'This answer is a local Storybook mock, not a live AI response.' },
+    { type: 'text-end', id: `text-${responseId}` },
     { type: 'source-url', sourceId: 'docs', title: 'Uzi documentation', url: 'https://github.com/tomny-dev/uzi' },
     { type: 'data-preview', data: { example: true, source: 'storybook' } },
     { type: 'finish' },
