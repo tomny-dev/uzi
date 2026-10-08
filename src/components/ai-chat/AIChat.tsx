@@ -454,9 +454,9 @@ function ChatViewport({
   const saveQueue = useRef<Promise<void>>(Promise.resolve());
   const [approvalBusy, setApprovalBusy] = useState(false);
   useEffect(() => {
-    const urls = selectedFiles.map((file) => file.type.startsWith('image/') ? URL.createObjectURL(file) : '');
+    const urls = selectedFiles.map((file) => file.type.startsWith('image/') && typeof URL.createObjectURL === 'function' ? URL.createObjectURL(file) : '');
     setAttachmentPreviews(urls);
-    return () => urls.forEach((url) => { if (url) URL.revokeObjectURL(url); });
+    return () => urls.forEach((url) => { if (url && typeof URL.revokeObjectURL === 'function') URL.revokeObjectURL(url); });
   }, [selectedFiles]);
   const messages = chat?.messages ?? [];
   const status = chat?.status ?? 'ready';
