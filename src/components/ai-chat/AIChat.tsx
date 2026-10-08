@@ -11,8 +11,14 @@ import styles from './ai-chat.module.css';
 export interface AIChatProps {
   /** AI SDK UI-message stream endpoint. */
   readonly api: string;
-  /** Optional scope forwarded as a request field; the API must validate and enforce it. */
+  /** Opaque scope identifier sent to the API. Server must authorize it. */
+  readonly scope?: string;
+  /** Human-readable display text; never used as an access-control identifier. */
   readonly scopeLabel?: string;
+  /** Fetch adapter for authentication, request instrumentation and local demos. */
+  readonly fetch?: typeof globalThis.fetch;
+  readonly headers?: Record<string, string>;
+  readonly credentials?: RequestCredentials;
   /** Maximum number of user turns (default: 8). */
   readonly messageLimit?: number;
   readonly inputPlaceholder?: string;
@@ -206,7 +212,11 @@ const DEFAULT_MESSAGE_LIMIT = 8;
 
 export function AIChat({
   api,
+  scope,
   scopeLabel,
+  fetch: requestFetch,
+  headers,
+  credentials,
   messageLimit = DEFAULT_MESSAGE_LIMIT,
   inputPlaceholder = 'Ask a question...',
   inputMaxLength = 2000,
@@ -222,9 +232,12 @@ export function AIChat({
       api,
       // The transport merges this with the AI SDK messages, id, model context and tools.
       // The endpoint, not the presentation component, must enforce the scope.
-      ...(scopeLabel ? { body: { scope: scopeLabel } } : {}),
+      ...(scope ? { body: { scope } } : {}),
+      ...(requestFetch ? { fetch: requestFetch } : {}),
+      ...(headers ? { headers } : {}),
+      ...(credentials ? { credentials } : {}),
     }),
-    [api, scopeLabel],
+    [api, scope, requestFetch, headers, credentials],
   );
   const config = useMemo(
     () => AuiConfig({ threads: AISDKChat({ transport }) }),
@@ -237,9 +250,6 @@ export function AIChat({
         <div className={styles.scope}>
           <span className={styles.scopeLabel}>Current scope</span>
           <strong>{scopeLabel}</strong>
-          <p className={styles.scopeHelp}>
-            Scope is sent with each request and must be enforced by the API.
-          </p>
         </div>
       )}
       {onClose && (
@@ -247,10 +257,10 @@ export function AIChat({
           &#x2715;
         </button>
       )}
-      <AuiProvider key={`${api}: ${scopeLabel ?? ''}:${session}`} config={config}>
+      <AuiProvider key={`${api}:${scope ?? ''}:${session}`} config={config}>
         <ThreadPrimitive.Root className={styles.thread}>
           <ChatViewport
-            messageLimit={Math.max(1, Math.floor(messageLimit))}
+            messageLimit={Number.isFinite(messageLimit) ? Math.max(1, Math.floor(messageLimit)) : DEFAULT_MESSAGE_LIMIT}
             inputPlaceholder={inputPlaceholder}
             inputMaxLength={inputMaxLength}
             components={components}
@@ -318,6 +328,11 @@ function ChatViewport({
 
   return (
     <ThreadPrimitive.Viewport autoScroll className={styles.viewport}>
+      {messages.length > 0 && (
+        <div className={styles.chatToolbar}>
+          <button type="button" onClick={handleNewChat}>New chat</button>
+        </div>
+      )}
       <div className={styles.messageList} role="log" aria-label="Chat history" aria-live="polite">
         {messages.length === 0 && (
           <div className={styles.emptyState}>
