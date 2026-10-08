@@ -98,8 +98,12 @@
   .launcher {
     right: max(1rem, env(safe-area-inset-right));
     bottom: calc(1rem + env(safe-area-inset-bottom));
+    width: 3.5rem;
+    height: 3.5rem;
     min-width: 3.5rem;
+    padding: 0;
   }
+  .actions .iconButton:first-child { display: none; }
   .launcherText { display: none; }
   .backdrop { display: block; position: fixed; z-index: 100; inset: 0; background: color-mix(in srgb, var(--foreground) 35%, transparent); }
   .panel, .panel[data-expanded='true'] {
