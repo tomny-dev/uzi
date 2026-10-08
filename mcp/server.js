@@ -4,6 +4,30 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 
 const COMPONENTS = {
+  AIChat: {
+    description: "Streaming client-side AI SDK chat surface. Consumes an application-owned UI-message stream endpoint and supports custom reasoning, sources, data and errors.",
+    props: {
+      api: { type: "string", description: "Required AI SDK UI-message stream endpoint URL" },
+      scope: { type: "string", optional: true, description: "Opaque resource ID forwarded to server; API must authorize it" },
+      scopeLabel: { type: "string", optional: true, description: "Display-only human-readable scope label; never an authorization value" },
+      fetch: { type: "typeof fetch", optional: true, description: "Optional custom fetch implementation for authentication, interceptors or demos" },
+      headers: { type: "Record<string, string>", optional: true },
+      credentials: { type: "RequestCredentials", optional: true },
+      messageLimit: { type: "number", default: 8, description: "Maximum user prompts per session" },
+      inputPlaceholder: { type: "string", default: "Ask a question..." },
+      inputMaxLength: { type: "number", default: 2000 },
+      components: { type: "AIChatComponents", optional: true, description: "Custom Message, Reasoning, Source, Data and Error renderers" },
+      onClose: { type: "() => void", optional: true },
+      className: { type: "string", optional: true },
+      style: { type: "CSSProperties", optional: true },
+    },
+    examples: [
+      '<div style={{ height: 520 }}><AIChat api="/api/chat" scope="project-id" scopeLabel="My project" /></div>',
+      '<div style={{ height: 520 }}><AIChat api="/api/chat" messageLimit={5} inputPlaceholder="Ask the assistant..." /></div>',
+    ],
+    notes: "Client-only: parent must provide a bounded height. Endpoint must authenticate and authorize scope, enforce request limits and return an AI SDK UI-message stream (not JSON). Enter sends, Shift+Enter adds a line, Stop cancels, Retry regenerates, New chat resets. Docs: docs/guides/ai-chat.md. Storybook: Components/AIChat.",
+  },
+
   Button: {
     description: "Polymorphic button. Renders as <button> by default or <a> with as='a'. Supports asChild for custom element composition.",
     props: {
