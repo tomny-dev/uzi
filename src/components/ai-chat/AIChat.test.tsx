@@ -111,6 +111,13 @@ describe('AIChat', () => {
     expect(screen.getByText('My private workspace')).toBeTruthy();
   });
 
+  it('accepts a consumer-provided request serializer for strict API routes', () => {
+    const serialize: NonNullable<React.ComponentProps<typeof AIChat>['prepareSendMessagesRequest']> =
+      ({ messages }) => ({ body: { messages } });
+    render(<AIChat api="/api/ask/game" prepareSendMessagesRequest={serialize} />);
+    expect(stubs.transportOptions).toEqual([{ api: '/api/ask/game', prepareSendMessagesRequest: serialize }]);
+  });
+
   it('accepts a custom fetch adapter and request headers for consumer APIs', () => {
     const requestFetch: typeof fetch = async () => new Response();
     render(<AIChat api="/api/chat" fetch={requestFetch} credentials="include" headers={{ 'X-Test': 'uzi' }} />);
