@@ -257,7 +257,7 @@ export function AIChat({
           &#x2715;
         </button>
       )}
-      <AuiProvider key={`${api}:${scope ?? ''}:${session}`} config={config}>
+      <AuiProvider key={`${api}:${scope ?? ''}:${session}:${JSON.stringify({ fetch: !!requestFetch, headers: !!headers, credentials })}`} config={config}>
         <ThreadPrimitive.Root className={styles.thread}>
           <ChatViewport
             messageLimit={Number.isFinite(messageLimit) ? Math.max(1, Math.floor(messageLimit)) : DEFAULT_MESSAGE_LIMIT}
