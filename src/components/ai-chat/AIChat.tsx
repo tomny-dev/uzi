@@ -8,7 +8,7 @@ import { AISDKChat, AssistantChatTransport, useAISDKChat } from '@assistant-ui/a
 
 import styles from './ai-chat.module.css';
 
-type AIChatTransportOptions = ConstructorParameters<typeof AssistantChatTransport>[0];
+type AIChatTransportOptions = NonNullable<ConstructorParameters<typeof AssistantChatTransport>[0]>;
 
 export interface AIChatProps {
   /** AI SDK UI-message stream endpoint. */
