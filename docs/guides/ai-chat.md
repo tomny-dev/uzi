@@ -139,9 +139,13 @@ export function ExistingChat() {
   return (
     <div style={{ height: 520 }}>
       <AIChatView
-        messages={chat.messages.filter((message) =>
-          message.role === "user" || message.role === "assistant"
-        )}
+        messages={chat.messages
+          .filter((message) => message.role === "user" || message.role === "assistant")
+          .map((message) => ({
+            id: message.id,
+            role: message.role as "user" | "assistant",
+            parts: message.parts,
+          }))}
         draft={draft}
         onDraftChange={setDraft}
         status={chat.status}
