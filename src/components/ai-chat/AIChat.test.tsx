@@ -151,6 +151,18 @@ describe('AIChat', () => {
     expect(screen.queryByRole('link')).toBeNull();
   });
 
+  it('keeps Stop available while streaming the final allowed response', () => {
+    stubs.messages = [
+      { id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'Last question' }] },
+    ];
+    stubs.status = 'streaming';
+    render(<AIChat api="/api/chat" messageLimit={1} />);
+    expect(screen.getByRole('button', { name: 'Stop' })).toBeTruthy();
+    expect(screen.queryByText(/1-question limit/)).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Stop' }));
+    expect(stubs.stop).toHaveBeenCalledTimes(1);
+  });
+
   it('offers a Stop button while streaming and disables the input', () => {
     stubs.status = 'streaming';
     render(<AIChat api="/api/chat" />);
