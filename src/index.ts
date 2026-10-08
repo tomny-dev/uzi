@@ -193,6 +193,7 @@ export type {
   AIChatDataRendererProps,
   AIChatErrorRendererProps,
 } from "./components/ai-chat/AIChat";
-export { AIChat, AIChatView } from "./components/ai-chat/AIChat";
+export { AIChat, AIChatView, AIChatMessageBubble } from "./components/ai-chat/AIChat";
+export type { AIChatMessageBubbleProps } from "./components/ai-chat/AIChat";
 export { AIChatDock } from "./components/ai-chat/AIChatDock";
 export type { AIChatDockProps } from "./components/ai-chat/AIChatDock";

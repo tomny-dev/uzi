@@ -178,15 +178,33 @@ function safeHttpUrl(value: unknown): string | undefined {
   return url && /^https?:\/\//i.test(url) ? url : undefined;
 }
 
+/** Reusable role-aware message surface for domain renderers. */
+export interface AIChatMessageBubbleProps {
+  readonly role: 'user' | 'assistant';
+  readonly label?: string;
+  readonly children: ReactNode;
+  readonly className?: string;
+}
+
+export function AIChatMessageBubble({ role, label, children, className }: AIChatMessageBubbleProps) {
+  return (
+    <div className={[styles.messageBubble, role === 'user' ? styles.userMessage : styles.assistantMessage, className]
+      .filter(Boolean).join(' ')} data-role={role}>
+      {label && <span className={styles.messageLabel}>{label}</span>}
+      {children}
+    </div>
+  );
+}
+
 function DefaultMessageRenderer({ message, renderMessagePart }: AIChatMessageRendererProps) {
   return (
-    <div className={message.role === 'user' ? styles.userMessage : styles.assistantMessage}>
+    <AIChatMessageBubble role={message.role}>
       {message.parts.map((part, index) => (
         <div key={isRecord(part) && typeof part.id === 'string' ? part.id : index}>
           {isRecord(part) ? renderMessagePart(part, index) : null}
         </div>
       ))}
-    </div>
+    </AIChatMessageBubble>
   );
 }
 

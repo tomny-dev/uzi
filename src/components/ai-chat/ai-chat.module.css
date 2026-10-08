@@ -392,3 +392,9 @@
 .attachmentError { color: var(--destructive); padding: 0.5rem 1rem; margin: 0; }
 .attachmentList { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.4rem 0; margin: 0; list-style: none; }
 .attachmentList li { display: inline-flex; gap: 0.5rem; align-items: center; font-size: 0.75rem; }
+
+/* Role-aware message layout shared by the default renderer and consumer apps. */
+.messageBubble { width: fit-content; min-width: 0; max-width: 100%; }
+.messageBubble.userMessage { align-self: flex-end; max-width: min(90%, 42rem); }
+.messageBubble.assistantMessage { align-self: flex-start; max-width: 100%; }
+.messageLabel { font-size: 0.6875rem; font-weight: 650; color: var(--muted-foreground); }

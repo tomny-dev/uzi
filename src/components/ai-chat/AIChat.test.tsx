@@ -403,3 +403,17 @@ describe('AIChatDock', () => {
     expect(screen.getByRole('button', { name: 'Open Ask Tultr' })).toBeTruthy();
   });
 });
+
+describe('AIChatMessageBubble', () => {
+  it('provides identical role-aware rendering for different assistant names', async () => {
+    const { AIChatMessageBubble } = await import('./AIChat');
+    render(
+      <AIChatMessageBubble role="assistant" label="Betty">
+        <span>Result</span>
+      </AIChatMessageBubble>,
+    );
+    const bubble = screen.getByText('Result').closest('[data-role="assistant"]');
+    expect(bubble).toBeTruthy();
+    expect(screen.getByText('Betty')).toBeTruthy();
+  });
+});
