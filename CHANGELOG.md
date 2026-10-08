@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.7.1...uzi-v0.8.0) (2026-10-08)
+
+
+### Features
+
+* **ai-chat:** add unified AIChat component ([#82](https://github.com/tomny-dev/uzi/issues/82)) ([8821564](https://github.com/tomny-dev/uzi/commit/88215645ff3717347b81048e06d59052bfae6565))
+
 ## [0.7.1](https://github.com/tomny-dev/uzi/compare/uzi-v0.7.0...uzi-v0.7.1) (2026-10-01)
 
 
