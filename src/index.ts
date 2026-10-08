@@ -174,3 +174,15 @@ export { ErrorPage, NotFoundPage, MaintenancePage } from "./components/error-pag
 // EmptyStatePage — card-based empty state template with variants (noData, noConnection, noPermissions)
 export type { EmptyStatePageProps, EmptyStatePageVariant } from "./components/empty-state-page/EmptyStatePage";
 export { EmptyStatePage } from "./components/empty-state-page/EmptyStatePage";
+
+// AIChat — unified AI chat component using @assistant-ui/react + @assistant-ui/ai-sdk
+export type {
+  AIChatProps,
+  AIChatComponents,
+  AIChatMessageRendererProps,
+  AIChatReasoningRendererProps,
+  AIChatSourceRendererProps,
+  AIChatDataRendererProps,
+  AIChatErrorRendererProps,
+} from "./components/ai-chat/AIChat";
+export { AIChat } from "./components/ai-chat/AIChat";
