@@ -678,7 +678,7 @@ export function AIChatView({
 
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!isBusy && !historyFull && !error && draft.trim()) onSend?.();
+    if (!isBusy && !historyFull && !error && (draft.trim() || (attachments?.length ?? 0) > 0)) onSend?.();
   };
 
   return (
@@ -749,6 +749,7 @@ export function AIChatView({
                 <div className={styles.composerExtras}>
                   <input
                     ref={fileInputRef}
+                    className={styles.visuallyHidden}
                     type="file"
                     aria-label="Add attachments"
                     accept={attachmentAccept}
@@ -774,27 +775,46 @@ export function AIChatView({
                   )}
                 </div>
               )}
-              <textarea
-                className={styles.input}
-                aria-label={inputAriaLabel}
-                rows={2}
-                value={draft}
-                onChange={(event) => onDraftChange?.(event.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={inputPlaceholder}
-                maxLength={inputMaxLength}
-                disabled={isBusy || !onSend || !onDraftChange}
-                readOnly={!onDraftChange}
-              />
-              <div className={styles.composerActions}>
-                {composerTrailing}
-                {isBusy ? (
-                  onStop && <button type="button" className={styles.sendButton} onClick={onStop}>Stop</button>
-                ) : (
-                  <button type="submit" className={styles.sendButton} disabled={!onSend || (!draft.trim() && !attachments?.length)}>
-                    Send
-                  </button>
-                )}
+              <div className={styles.composerSurface}>
+                <div className={styles.composerRow}>
+                  {onSelectAttachments && (
+                    <button type="button" className={styles.composerIconButton}
+                      aria-label="Add attachments" title="Add attachments"
+                      disabled={isBusy} onClick={() => fileInputRef.current?.click()}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="m21 11-8.5 8.5a6 6 0 0 1-8.5-8.5l9-9a4 4 0 0 1 5.7 5.7l-9 9a2 2 0 0 1-2.8-2.8l8.5-8.5" />
+                      </svg>
+                    </button>
+                  )}
+                  <textarea
+                    className={styles.input}
+                    aria-label={inputAriaLabel}
+                    rows={1}
+                    value={draft}
+                    onChange={(event) => onDraftChange?.(event.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder={inputPlaceholder}
+                    maxLength={inputMaxLength}
+                    disabled={isBusy || !onSend || !onDraftChange}
+                    readOnly={!onDraftChange}
+                  />
+                  <div className={styles.composerActions}>
+                    {composerTrailing}
+                    {isBusy ? (
+                      onStop && <button type="button" className={styles.composerIconButton} onClick={onStop}
+                        aria-label="Stop response" title="Stop response">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2" /></svg>
+                      </button>
+                    ) : (
+                      <button type="submit" className={styles.sendButton} aria-label="Send message"
+                        title="Send message" disabled={!onSend || (!draft.trim() && !attachments?.length)}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 19V5m-7 7 7-7 7 7" /></svg>
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             </form>
           )
