@@ -181,6 +181,7 @@ export type {
   AIChatComponents,
   AIChatMessageRendererProps,
   AIChatReasoningRendererProps,
+  AIChatSource,
   AIChatSourceRendererProps,
   AIChatDataRendererProps,
   AIChatErrorRendererProps,
