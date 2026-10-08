@@ -61,6 +61,11 @@ describe('AIChat', () => {
     expect(input.value).toBe('');
   });
 
+  it('allows a consumer-specific accessible input label', () => {
+    render(<AIChat api="/api/chat" inputAriaLabel="Ask Tultr a question" />);
+    expect(screen.getByRole('textbox', { name: 'Ask Tultr a question' })).toBeTruthy();
+  });
+
   it('sends on Enter but not Shift+Enter', () => {
     render(<AIChat api="/api/chat" />);
     const input = screen.getByRole('textbox', { name: 'Message' });
