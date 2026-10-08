@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 const stubs = vi.hoisted(() => ({
   messages: [] as Array<{ id: string; role: 'user' | 'assistant'; parts: Array<Record<string, unknown>> }>,
@@ -10,6 +10,8 @@ const stubs = vi.hoisted(() => ({
   clearError: vi.fn(),
   regenerate: vi.fn(),
   stop: vi.fn(),
+  setMessages: vi.fn(),
+  addToolApprovalResponse: vi.fn(),
   transportOptions: [] as unknown[],
 }));
 
@@ -288,5 +290,81 @@ describe('AIChatView (external runtime)', () => {
     expect(screen.getByRole('alert').textContent).toContain('Network issue');
     expect(screen.queryByRole('button', { name: 'Send' })).toBeNull();
     expect(send).not.toHaveBeenCalled();
+  });
+});
+
+describe('AIChat shared opt-in capabilities', () => {
+  it('uses SDK-native structured approval response with the exact approval id', async () => {
+    stubs.messages = [{
+      id: 'assistant-approval',
+      role: 'assistant',
+      parts: [{ type: 'tool-place_order', state: 'approval-requested', approval: { id: 'approval-42' }, input: { dryRun: true } }],
+    }];
+    render(<AIChat api="/api/chat" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Approve' }));
+    await waitFor(() => expect(stubs.addToolApprovalResponse).toHaveBeenCalledWith({
+      id: 'approval-42', approved: true,
+    }));
+    expect(stubs.sendMessage).not.toHaveBeenCalled();
+  });
+
+  it('allows explicit denial without transmitting text-based approval JSON', async () => {
+    stubs.messages = [{
+      id: 'assistant-approval',
+      role: 'assistant',
+      parts: [{ type: 'tool-place_order', state: 'approval-requested', approval: { id: 'approval-77' } }],
+    }];
+    render(<AIChat api="/api/chat" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Deny' }));
+    await waitFor(() => expect(stubs.addToolApprovalResponse).toHaveBeenCalledWith({
+      id: 'approval-77', approved: false, reason: 'User denied approval',
+    }));
+    expect(stubs.sendMessage).not.toHaveBeenCalled();
+  });
+
+  it('shows staged attachments and rejects unsupported types before sending', () => {
+    render(<AIChat api="/api/chat" attachments={{
+      accept: 'image/png,image/jpeg', maxFiles: 2, maxBytesPerFile: 1024,
+    }} />);
+    const picker = screen.getByLabelText('Add attachments') as HTMLInputElement;
+    fireEvent.change(picker, { target: { files: [new File(['sample'], 'test.exe', { type: 'application/octet-stream' })] } });
+    expect(screen.getByRole('alert').textContent).toContain('Unsupported attachment type');
+    expect(stubs.sendMessage).not.toHaveBeenCalled();
+    fireEvent.change(picker, { target: { files: [new File(['sample'], 'screen.png', { type: 'image/png' })] } });
+    expect(screen.getByText('screen.png')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Remove screen.png' }));
+    expect(screen.queryByText('screen.png')).toBeNull();
+  });
+
+  it('does not render upload controls unless file attachments are opted into', () => {
+    render(<AIChat api="/api/chat" />);
+    expect(screen.queryByLabelText('Add attachments')).toBeNull();
+  });
+
+  it('restores app-scoped history through the SDK without sending requests', async () => {
+    const restored = [{
+      id: 'past-user-1', role: 'user' as const, parts: [{ type: 'text', text: 'Earlier question' }],
+    }];
+    const adapter = { load: vi.fn(() => restored), save: vi.fn(), clear: vi.fn() };
+    render(<AIChat api="/api/chat" history={adapter} />);
+    await waitFor(() => expect(stubs.setMessages).toHaveBeenCalled());
+    expect(stubs.setMessages).toHaveBeenCalledWith(restored);
+    expect(stubs.sendMessage).not.toHaveBeenCalled();
+    expect(adapter.load).toHaveBeenCalledTimes(1);
+  });
+
+  it('delegates tool action from AIChatView to the existing app approval handler', async () => {
+    const respond = vi.fn();
+    render(<AIChatView
+      messages={[{
+        id: 'assistant-approval',
+        role: 'assistant',
+        parts: [{ type: 'tool-checkout', state: 'approval-requested', approval: { id: 'external-approval' } }],
+      }]}
+      onToolApproval={respond}
+    />);
+    fireEvent.click(screen.getByRole('button', { name: 'Deny' }));
+    await waitFor(() => expect(respond).toHaveBeenCalledWith('external-approval', false));
+    expect(stubs.addToolApprovalResponse).not.toHaveBeenCalled();
   });
 });

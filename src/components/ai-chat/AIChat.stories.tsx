@@ -177,3 +177,13 @@ export const ExternallyManagedRuntime: Story = {
     docs: { description: { story: 'The host controls chat history, attachments, approval actions and composer state. This demo makes no network requests or wagers.' } },
   },
 };
+
+export const FileAttachments: Story = {
+  args: {
+    attachments: { accept: 'image/png,image/jpeg,image/webp', maxFiles: 3, maxBytesPerFile: 5_000_000 },
+    inputPlaceholder: 'Describe your screenshot...',
+  },
+  parameters: {
+    docs: { description: { story: 'Opt-in image attachments with client limits and removal. Application server must independently enforce media limits.' } },
+  },
+};
