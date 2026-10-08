@@ -242,3 +242,11 @@ focus handling, Escape and keyboard-accessible dismissal. The dock works
 with scoped server endpoints but **never** authorizes application data.
 Do not simultaneously mount a second chat instance on a legacy `/ask` page;
 instead route the same dock to its expanded state so the transcript is retained.
+
+### History adapter failures
+
+History storage is application-owned. `history.onError(operation, error)` receives
+load/save/clear failures so the app can surface a toast or telemetry without
+logging private message payloads. If omitted, Uzi emits a generic console
+warning. Failed saves do not stop later saves; a failed clear aborts the
+conversation reset to avoid making an old transcript appear deleted.

@@ -417,3 +417,18 @@ describe('AIChatMessageBubble', () => {
     expect(screen.getByText('Betty')).toBeTruthy();
   });
 });
+
+describe('AIChat history errors', () => {
+  it('reports failed restoration without blocking chat access', async () => {
+    const onError = vi.fn();
+    const adapter = {
+      load: vi.fn(async () => { throw new Error('Storage unavailable'); }),
+      save: vi.fn(),
+      clear: vi.fn(),
+      onError,
+    };
+    render(<AIChat api="/api/chat" history={adapter} />);
+    await waitFor(() => expect(onError).toHaveBeenCalledWith('load', expect.any(Error)));
+    expect(screen.getByRole('textbox', { name: 'Message' })).toBeTruthy();
+  });
+});

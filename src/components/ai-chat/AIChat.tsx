@@ -67,6 +67,8 @@ export interface AIChatHistoryAdapter {
   /** Save after complete turns; the consumer decides what metadata is safe. */
   readonly save: (messages: readonly AIChatMessage[]) => Promise<void> | void;
   readonly clear: () => Promise<void> | void;
+  /** Observability for failed history operations; never include message payloads in logs. */
+  readonly onError?: (operation: 'load' | 'save' | 'clear', error: unknown) => void;
 }
 
 export type AIChatToolApprovalHandler = (id: string, approved: boolean) => Promise<void> | void;
@@ -452,6 +454,10 @@ function ChatViewport({
   const status = chat?.status ?? 'ready';
   const isBusy = status === 'submitted' || status === 'streaming';
   const historyFull = messages.filter((message) => message.role === 'user').length >= messageLimit;
+  const reportHistoryError = (operation: 'load' | 'save' | 'clear', error: unknown) => {
+    if (history?.onError) history.onError(operation, error);
+    else console.warn(`[Uzi AIChat] History ${operation} failed`);
+  };
   // Persist only complete turns. Do not save an empty runtime over stored history
   // during hydration or while a response is still streaming.
   useEffect(() => {
@@ -468,7 +474,12 @@ function ChatViewport({
         if (valid.length) chat?.setMessages(valid as Parameters<NonNullable<typeof chat>['setMessages']>[0]);
       }
       setHydrated(true);
-    }).catch(() => { if (active) setHydrated(true); });
+    }).catch((error: unknown) => {
+      if (active) {
+        reportHistoryError('load', error);
+        setHydrated(true);
+      }
+    });
     return () => { active = false; };
   }, [chat?.setMessages, history]);
 
@@ -485,10 +496,13 @@ function ChatViewport({
       expectedRestoredId.current = null;
     }
     // Serialize writes. New Chat waits for in-flight writes before clearing.
-    saveQueue.current = saveQueue.current.catch(() => {}).then(async () => {
-      await history.save(snapshot);
-    });
-    void saveQueue.current.catch(() => {});
+    saveQueue.current = saveQueue.current.then(
+      () => history.save(snapshot),
+      () => history.save(snapshot),
+    ).then(
+      () => {},
+      (error: unknown) => { reportHistoryError('save', error); },
+    );
   }, [history, hydrated, isBusy, messages]);
 
   const handleSelectedFiles = (files: FileList) => {
@@ -539,9 +553,12 @@ function ChatViewport({
       await chat?.stop();
       if (history) {
         try {
-          await saveQueue.current.catch(() => {});
+          await saveQueue.current;
           await history.clear();
-        } catch { return; }
+        } catch (error) {
+          reportHistoryError('clear', error);
+          return;
+        }
       }
       onNewChat();
     })();

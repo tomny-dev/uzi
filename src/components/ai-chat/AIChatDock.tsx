@@ -26,6 +26,8 @@ export interface AIChatDockProps {
  * Shared chat navigation chrome. Children remain mounted while closed to retain
  * the consumer's active AI SDK conversation, pending approvals and attachments.
  * The dock never creates a second chat runtime or reads application messages.
+ * Desktop is deliberately non-modal: Tab can move back into the page.
+ * On mobile the full-screen modal sheet traps sequential keyboard focus.
  */
 export function AIChatDock({
   title,
@@ -99,10 +101,11 @@ export function AIChatDock({
         changeOpen(false);
         return;
       }
+      // On desktop the panel is non-modal; only the mobile sheet traps focus.
       if (event.key !== 'Tab' || !mobile) return;
       const focusable = Array.from(panelRef.current?.querySelectorAll<HTMLElement>(
         'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
-      ) ?? []).filter((item) => item.getClientRects().length > 0);
+      ) ?? []).filter((item) => item.tabIndex >= 0 && item.getClientRects().length > 0);
       if (!focusable.length) { event.preventDefault(); panelRef.current?.focus(); return; }
       const first = focusable[0], last = focusable[focusable.length - 1];
       if (event.shiftKey && (document.activeElement === first || !panelRef.current?.contains(document.activeElement))) {
