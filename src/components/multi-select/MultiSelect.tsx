@@ -20,6 +20,8 @@ export type MultiSelectProps = {
   placeholder?: string;
   fullWidth?: boolean;
   maxVisibleValues?: number;
+  /** Minimum popup width, independent of the trigger (e.g. '24rem'). */
+  contentMinWidth?: string;
   /** Formats the closed trigger text from the selected options, including an empty selection. */
   formatValue?: (selected: MultiSelectOption[]) => string;
   /** Shows Select all and Clear all actions. Bulk actions modify enabled options only. */
@@ -46,6 +48,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
       placeholder = "Select options",
       fullWidth = true,
       maxVisibleValues = 2,
+      contentMinWidth,
       formatValue,
       bulkActions = false,
       draftMode = false,
@@ -178,6 +181,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
           <DropdownMenuPrimitive.Portal>
             <DropdownMenuPrimitive.Content
               className={styles.menu}
+              style={contentMinWidth ? { '--uzi-multiselect-content-min-width': contentMinWidth } as React.CSSProperties : undefined}
               sideOffset={4}
               align="start"
             >
