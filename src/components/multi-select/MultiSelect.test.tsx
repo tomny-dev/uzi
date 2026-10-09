@@ -46,6 +46,35 @@ describe("MultiSelect", () => {
     expect(onChange).toHaveBeenCalledWith(["beta", "alpha"]);
   });
 
+  it("stages bulk actions until Apply and preserves the applied trigger label", () => {
+    const onChange = vi.fn();
+    render(<MultiSelect options={options} value={["alpha"]} onChange={onChange}
+      bulkActions draftMode minSelected={1}
+      formatValue={(selected) => `${selected.length} applied`} />);
+    openMenu();
+    fireEvent.click(screen.getByText("Clear enabled"));
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.getByText("1 applied")).toBeTruthy();
+    expect((screen.getByText("Apply") as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.click(screen.getByText("Select all"));
+    fireEvent.click(screen.getByText("Apply"));
+    expect(onChange).toHaveBeenCalledOnce();
+    expect(onChange).toHaveBeenCalledWith(["alpha", "beta"]);
+  });
+
+  it("cancels an unfinished draft without changing applied values", () => {
+    const onChange = vi.fn();
+    render(<MultiSelect options={options} value={["alpha"]} onChange={onChange}
+      bulkActions draftMode minSelected={1} />);
+    openMenu();
+    fireEvent.click(screen.getByText("Clear enabled"));
+    fireEvent.click(screen.getByText("Cancel"));
+    expect(onChange).not.toHaveBeenCalled();
+    openMenu();
+    expect(screen.getByText("Clear enabled")).toBeTruthy();
+    expect(screen.getByRole("menuitemcheckbox", { name: "Alpha" }).getAttribute("aria-checked")).toBe("true");
+  });
+
   it("clears enabled selections while preserving disabled selected values", () => {
     const onChange = vi.fn();
     render(
