@@ -197,6 +197,7 @@ export const StagedSelection: Story = {
           onChange={setValue}
           bulkActions
           draftMode
+          contentMinWidth="24rem"
           minSelected={1}
           formatValue={(selected) => selected.length === options.length
             ? "All languages"
