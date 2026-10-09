@@ -209,6 +209,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
               {bulkActions && enabledValues.length > 0 ? (
                 <DropdownMenuPrimitive.Separator className={styles.separator} />
               ) : null}
+              <div className={styles.optionsViewport}>
               {options.map((option) => {
                 const selected = selectedSet.has(option.value);
 
@@ -258,6 +259,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                   </DropdownMenuPrimitive.CheckboxItem>
                 );
               })}
+              </div>
               {draftMode ? (
                 <div className={styles.draftActions}>
                   <button type="button" className={styles.draftButton} onClick={() => setOpen(false)}>Cancel</button>
