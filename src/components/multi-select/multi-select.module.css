@@ -257,3 +257,27 @@
     transform: translateY(0) scale(1);
   }
 }
+
+.draftActions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 0.25rem 0.125rem;
+  border-top: 1px solid var(--ts-menu-border, var(--border));
+}
+.draftButton {
+  flex: 1;
+  border: 1px solid var(--ts-menu-border, var(--border));
+  border-radius: var(--uzi-menu-item-radius);
+  background: transparent;
+  color: inherit;
+  padding: 0.4rem 0.75rem;
+  font: inherit;
+  cursor: pointer;
+}
+.draftButton:last-child {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+.draftButton:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-ring-offset); }
+.draftButton:disabled { opacity: 0.5; cursor: not-allowed; }
