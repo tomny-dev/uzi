@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.8.0...uzi-v0.9.0) (2026-10-09)
+
+
+### Features
+
+* **multiselect:** optional draft selection with Apply and Cancel ([#85](https://github.com/tomny-dev/uzi/issues/85)) ([2650493](https://github.com/tomny-dev/uzi/commit/26504939d94130abff794543227adbcd0d8f59bb))
+
 ## [0.8.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.7.1...uzi-v0.8.0) (2026-10-08)
 
 
