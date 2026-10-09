@@ -185,3 +185,26 @@ export const BulkActionsWithDisabledSelection: Story = {
     );
   },
 };
+
+export const StagedSelection: Story = {
+  render: () => {
+    const [value, setValue] = useState(["js", "ts"]);
+    return (
+      <div style={{ width: "280px" }}>
+        <MultiSelect
+          options={options}
+          value={value}
+          onChange={setValue}
+          bulkActions
+          draftMode
+          contentMinWidth="24rem"
+          minSelected={1}
+          formatValue={(selected) => selected.length === options.length
+            ? "All languages"
+            : selected.length === 0 ? "Choose languages" : `${selected.length} languages`}
+        />
+        <p>Applied: {value.join(", ")}</p>
+      </div>
+    );
+  },
+};
