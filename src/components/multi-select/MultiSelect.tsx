@@ -28,6 +28,7 @@ export type MultiSelectProps = {
   bulkActions?: boolean;
   /** Stage changes until Apply. Cancel/dismiss discards the draft. */
   draftMode?: boolean;
+  /** Minimum number of selected values required to apply; immediate mode blocks changes below this count. */
   minSelected?: number;
   selectAllLabel?: string;
   /** Label for clearing all enabled selections. Disabled selected options remain selected. */
@@ -65,6 +66,8 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
   ) => {
     const [open, setOpen] = React.useState(false);
     const [draft, setDraft] = React.useState<string[]>(value);
+    const appliedValueRef = React.useRef(value);
+    appliedValueRef.current = value;
     const editValue = draftMode && open ? draft : value;
     const updateSelection = (next: string[]) => {
       if (draftMode) setDraft(next);
@@ -112,7 +115,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
 
     return (
       <DropdownMenuPrimitive.Root modal={false} open={open} onOpenChange={(next) => {
-        if (next) setDraft([...value]);
+        setDraft([...appliedValueRef.current]);
         setOpen(next);
       }}>
         <div
@@ -214,7 +217,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                 <DropdownMenuPrimitive.Separator className={styles.separator} />
               ) : null}
               <div className={styles.optionsViewport}>
-              {options.map((option) => {
+                {options.map((option) => {
                 const selected = selectedSet.has(option.value);
 
                 return (
@@ -262,11 +265,11 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                         </span>
                   </DropdownMenuPrimitive.CheckboxItem>
                 );
-              })}
+                })}
               </div>
               {draftMode ? (
                 <div className={styles.draftActions}>
-                  <button type="button" className={styles.draftButton} onClick={() => setOpen(false)}>Cancel</button>
+                  <button type="button" className={styles.draftButton} onClick={() => { setDraft([...appliedValueRef.current]); setOpen(false); }}>Cancel</button>
                   <button type="button" className={styles.draftButton} disabled={editValue.length < minSelected} onClick={() => {
                     onChange(editValue);
                     setOpen(false);
