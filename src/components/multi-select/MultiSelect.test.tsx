@@ -75,6 +75,27 @@ describe("MultiSelect", () => {
     expect(screen.getByRole("menuitemcheckbox", { name: "Alpha" }).getAttribute("aria-checked")).toBe("true");
   });
 
+  it("rejects removing the last selection in immediate mode", () => {
+    const onChange = vi.fn();
+    render(<MultiSelect options={options} value={["alpha"]} onChange={onChange} minSelected={1} />);
+    openMenu();
+    fireEvent.click(screen.getByRole("menuitemcheckbox", { name: "Alpha" }));
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("opens a fresh draft after the parent replaces the applied value", () => {
+    const onChange = vi.fn();
+    const view = render(<MultiSelect options={options} value={["alpha"]} onChange={onChange}
+      draftMode bulkActions minSelected={1} />);
+    view.rerender(<MultiSelect options={options} value={["beta"]} onChange={onChange}
+      draftMode bulkActions minSelected={1} />);
+    openMenu();
+    expect(screen.getByRole("menuitemcheckbox", { name: "Beta" }).getAttribute("aria-checked")).toBe("true");
+    expect(screen.getByRole("menuitemcheckbox", { name: "Alpha" }).getAttribute("aria-checked")).toBe("false");
+    fireEvent.click(screen.getByText("Cancel"));
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
   it("clears enabled selections while preserving disabled selected values", () => {
     const onChange = vi.fn();
     render(
