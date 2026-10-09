@@ -69,8 +69,8 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
     };
     const selectedSet = React.useMemo(() => new Set(editValue), [editValue]);
     const selectedOptions = React.useMemo(
-      () => options.filter((opt) => selectedSet.has(opt.value)),
-      [options, selectedSet],
+      () => options.filter((opt) => value.includes(opt.value)),
+      [options, value],
     );
 
     const enabledValues = React.useMemo(
