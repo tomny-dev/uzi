@@ -123,7 +123,8 @@
   top: calc(100% + 6px);
   left: 0;
   z-index: var(--uzi-popover-z-index, 1100);
-  min-width: 100%;
+  width: max(24rem, var(--radix-dropdown-menu-trigger-width));
+  max-width: min(calc(100vw - 1rem), var(--radix-dropdown-menu-content-available-width));
   max-height: min(28rem, var(--radix-dropdown-menu-content-available-height, calc(100dvh - 1rem)));
   display: flex;
   flex-direction: column;
