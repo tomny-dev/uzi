@@ -2,210 +2,80 @@
 
 Rapid-fire React UI components. Ship faster, build more.
 
+Uzi is a reusable React component library for app interfaces, with design tokens, accessible interaction primitives, application layouts, and AI chat components.
+
 ## Install
 
 ```bash
 pnpm add @tomny-dev/uzi
 ```
 
-## Usage
+Uzi supports React 18 and 19 and uses CSS modules internally; Tailwind is not required.
 
-```tsx
-import { Button, Card, Modal, ThemeProvider, useToast } from "@tomny-dev/uzi";
-```
+## Quick start
 
-If you want the packaged component styles, import the exported stylesheet once in your app:
+Import the component stylesheet **once** in your application's global CSS:
 
 ```css
 @import "@tomny-dev/uzi/styles.css";
 ```
 
-## Storybook
-
-Uzi includes Storybook as the interactive component catalog for exploring components, variants, states, and composition patterns.
-
-To run Storybook locally:
-
-```bash
-pnpm install
-pnpm storybook
-```
-
-Then open `http://localhost:6006`.
-
-To verify the production Storybook build:
-
-```bash
-pnpm build-storybook
-```
-
-The static output is written to `storybook-static/`. Story files live beside their components under `src/components/**` using the `*.stories.tsx` naming convention.
-
-The **Components / AIChat** stories demonstrate streaming, custom renderers, scoped requests, message limits, error recovery, and an externally controlled runtime with mock approvals; no external AI credentials are needed.
-
-CI builds Storybook on every pull request and push to `main`. After changes land on `main`, the Storybook deployment workflow publishes `storybook-static/` to the `uzi-storybook` Cloudflare Pages project. The deployment workflow requires these repository secrets:
-
-- `CLOUDFLARE_API_TOKEN` — API token with Pages Write permission.
-- `CLOUDFLARE_ACCOUNT_ID` — Cloudflare account identifier.
-
-The Cloudflare Pages project should use `main` as its production branch. A custom domain such as `uzi.tomny.dev` can be attached to that Pages project after the project exists.
-
-## Using With Coding Agents
-
-Installing `@tomny-dev/uzi` in an app does not by itself cause Claude Code, Codex, or similar agents to prefer `uzi` components. You should add that policy to the consumer repo's agent guidance.
-
-Recommended snippet for the consumer repo's `CLAUDE.md`, `AGENTS.md`, or equivalent:
-
-```md
-## UI Components
-
-- Prefer `@tomny-dev/uzi` for shared UI primitives and layout components.
-- Check `uzi` before creating new local primitives such as buttons, inputs, labels, cards, modals, selects, dropdown menus, alerts, shells, navigation, and theme controls.
-- Only introduce a repo-local primitive when `uzi` lacks the required behavior or when the local file is intentionally app-specific composition.
-- Keep imports consistent with the surrounding area of the codebase. If the repo already uses thin wrappers around `uzi`, follow that local pattern.
-```
-
-If you want agents to discover props and examples directly, also configure the `uzi` MCP server. See [`mcp/README.md`](./mcp/README.md).
-
-## Themes
-
-`uzi` ships with built-in light/dark tokens and a small accent palette layer.
+Then use components in your app:
 
 ```tsx
 "use client";
 
-import { Button, ThemeProvider, useTheme } from "@tomny-dev/uzi";
-
-function ThemeToggle() {
-  const { resolvedTheme, toggleTheme, accent, setAccent } = useTheme();
-
-  return (
-    <div>
-      <Button onClick={toggleTheme}>
-        {resolvedTheme === "dark" ? "Switch to light" : "Switch to dark"}
-      </Button>
-      <Button variant="outline" onClick={() => setAccent(accent === "violet" ? "blue" : "violet")}>
-        Toggle accent
-      </Button>
-    </div>
-  );
-}
+import { Button, Card, ThemeProvider } from "@tomny-dev/uzi";
 
 export function App() {
   return (
     <ThemeProvider defaultTheme="system" defaultAccent="blue">
-      <ThemeToggle />
+      <Card padding="md">
+        <h2>Welcome to Uzi</h2>
+        <Button onClick={() => alert("Hello!")}>Get started</Button>
+      </Card>
     </ThemeProvider>
   );
 }
 ```
 
-Supported themes:
+For installation variants and a longer walkthrough, see [Getting Started](docs/getting-started.md).
 
-- `light`
-- `dark`
-- `system`
+## What's included
 
-Supported accent palettes:
-
-- `blue`
-- `cyan`
-- `violet`
-- `emerald`
-- `amber`
-- `rose`
-
-## Component Philosophy
-
-`uzi` is not meant to be a from-scratch accessibility framework.
-
-- Use native HTML for simple form controls when the platform already gives the right behavior.
-- Use Radix for interaction-heavy primitives such as menus, dialogs, popovers, toasts, and custom selects.
-- Use `uzi` for the public component API, styling, tokens, and higher-level templates like `TopBar`, `SidebarNav`, and `AppShell`.
-
-In practice, `uzi` should spend its complexity budget on reusable app scaffolding and cohesive design, not on rebuilding low-level widget behavior that Radix or the browser already solves.
-
-## Components
-
-| Component | Description |
+| Area | Examples |
 |---|---|
-| `Avatar` | Profile image with fallback states |
-| `AIChat` | Plug-and-play AI SDK streaming chat with scoped context and customizable renderers |
-| `AIChatView` | Controlled chat presentation for external runtimes, tool approvals, attachment adapters and persisted history |
-| `AIChatDock` | Shared floating chat launcher, responsive panel and expand/close controls |
-| `Button` | Primary, secondary, outline, ghost variants |
-| `Card` | Discrete object container with tone/padding control |
-| `Surface` | Semantic visual grouping with base/subtle/raised/selected hierarchy |
-| `Checkbox` | Checkbox form primitive |
-| `Input` | Text input primitive |
-| `Label` | Form label primitive |
-| `MultiSelect` | Custom multi-option picker with checkbox-style menu |
-| `Pill` | Inline badge/tag |
-| `Modal` | Radix-backed overlay dialog |
-| `Select` | Styled Radix-based single-select field |
-| `Dropdown` | Deprecated compatibility alias for Select |
-| `DropdownMenu` | Radix-based action menu primitives |
-| `AppShell` | Responsive layout with collapsible sidebar |
-| `SidebarNav` | Sidebar navigation list |
-| `TopBar` | Composable header shell for brand, nav triggers, and actions |
-| `PageContainer` | Centered responsive page wrapper with standard horizontal and vertical gutters |
-| `PageHeader` | Page title, eyebrow, description, and action composition |
-| `SectionHeader` | Reusable section title, description, and actions |
-| `EmptyState` | Empty-result/resource state with visual and action slots |
-| `Stack` / `Inline` | Small gap/alignment layout helpers for common composition |
-| `Stat` / `StatGroup` | Domain-agnostic summary value and responsive stat grouping |
-| `Toolbar` / `ToolbarGroup` | Responsive compact filter/action workspace |
-| `ThemeToggleButton` | Reusable light/dark toggle wired to `ThemeProvider` |
-| `ThemeProvider` / `useTheme` | Light/dark + accent palette theming |
-| `ToastProvider` / `useToast` | Radix-backed toast notification system |
+| UI primitives | `Button`, `Card`, `Surface`, `Input`, `Label`, `Checkbox`, `Select`, `MultiSelect`, `Modal`, `DropdownMenu` |
+| App layout | `AppShell`, `SidebarNav`, `TopBar`, `PageContainer`, `PageHeader`, `SectionHeader`, `Stack`, `Inline` |
+| Common patterns | `Toolbar`, `ToolbarGroup`, `EmptyState`, `Avatar`, `Pill`, `Stat`, `StatGroup` |
+| Theming and feedback | `ThemeProvider`, `useTheme`, `ThemeToggleButton`, `ToastProvider`, `useToast` |
+| AI experiences | `AIChat`, `AIChatView`, `AIChatDock`, `FloatingActionStack`, `FloatingActionButton` |
 
-`TopBar` supports:
-
-- `brandingLocation="left" | "center"`
-- `isSticky={true | false}`
-- `showThemeToggle`
-- `themeToggleProps`
+These are representative exports, not an exhaustive API reference. Use the guides below for configuration and composition examples.
 
 ## Documentation
 
-- [Getting Started](docs/getting-started.md) — Installation, setup, and first component
-- [Theming](docs/theming.md) — ThemeProvider, useTheme, accent palettes, CSS overrides
-- [Layout Patterns](docs/guides/layout-patterns.md) — Dashboard, full-width header, center-branded
-- [Application Scaffolding](docs/guides/application-scaffolding.md) — Page containers, headers, empty states, stats, and layout composition
-- [Visual Hierarchy](docs/guides/visual-hierarchy.md) — Surface levels, typography, borders, shadows, and toolbar conventions
-- [Form Patterns](docs/guides/form-patterns.md) — Input, Select, MultiSelect, SegmentedToggle patterns
-- [AI Chat](docs/guides/ai-chat.md) — Streaming endpoint contract, authentication, scope authorization, renderers and local Storybook demos
+- [Getting Started](docs/getting-started.md) — Installation, styles, and first components
+- [Theming](docs/theming.md) — Light/dark mode, accent palettes, theme APIs, and CSS overrides
+- [Layout Patterns](docs/guides/layout-patterns.md) — Dashboard and header compositions
+- [Application Scaffolding](docs/guides/application-scaffolding.md) — Page structure, empty states, and stats
+- [Visual Hierarchy](docs/guides/visual-hierarchy.md) — Surface, typography, border, and toolbar conventions
+- [Form Patterns](docs/guides/form-patterns.md) — Input, Select, MultiSelect, and SegmentedToggle
+- [AI Chat](docs/guides/ai-chat.md) — Streaming API contracts, scope authorization, and renderers
+- [SSR and Next.js](docs/ssr.md) — Server rendering, stylesheet imports, and server-safe exports
 
-## SSR Notes
+## Using Uzi with coding agents
 
-This package bundles CSS inline into the JavaScript output via `vite-plugin-css-injected-by-js`.
-At runtime, a `<style>` tag is injected into the document head so consumers do **not** need
-to import `./styles.css` for client-side rendering.
+Installing the package does not automatically tell Claude Code, Codex, or other agents to prefer Uzi components. Add a rule to your consuming application's `AGENTS.md`, `CLAUDE.md`, or equivalent instructing agents to check Uzi before creating new shared UI primitives.
 
-If your app uses SSR (Next.js, Remix, etc.), the injected `<style>` tag won't run on the
-server, so there may be a brief flash of unstyled content on the first client render.
-Consumers who need SSR-safe styles should continue importing the separate stylesheet:
+For component discovery, usage examples, and agent configuration, see the [Uzi MCP server guide](mcp/README.md). The MCP server is not bundled in the main npm package.
 
-```css
-@import "@tomny-dev/uzi/styles.css";
-```
+## SSR and Next.js
 
-### Next.js App Router
+For SSR frameworks, keep the stylesheet import shown above to prevent a flash of unstyled components. The main package entry is a client entry; `@tomny-dev/uzi/server` exposes the server-safe `getThemeScript`, while `@tomny-dev/uzi/utils` exposes environment-neutral helpers such as `cx`.
 
-The main `@tomny-dev/uzi` entry is a client entry because it exports interactive components
-and React context providers. Next.js Server Components can import and render these exports;
-Next.js will preserve the client boundary without requiring a local wrapper.
+See [SSR and Next.js](docs/ssr.md) for details.
 
-The application-scaffolding components themselves do not use hooks or browser-only APIs, but they remain exposed through the main client entry in this release. A separate server-safe layout entry can be considered later if consumer measurements justify the added package surface.
+## Contributing
 
-Use `@tomny-dev/uzi/server` for the server-safe `getThemeScript` export.
-Use `@tomny-dev/uzi/utils` for environment-neutral utilities such as `cx`, including
-calls made directly from Server Components.
-
-## Notes
-
-- No Tailwind — components use CSS modules internally
-- `"use client"` is handled by the bundle — no need to wrap imports
-- `react` and `react-dom` are peer dependencies, provided by your app
-
-- `FloatingActionStack` and `FloatingActionButton` provide a single, accessible floating-action rail with mobile safe-area spacing. An `AIChatDock` can opt out of its built-in FAB via `showLauncher={false}`.
+Working on Uzi itself? See [CONTRIBUTING.md](CONTRIBUTING.md) for local development, Storybook, testing, and design conventions. Infrastructure maintainers can find the Cloudflare Pages setup in [Storybook Deployment](docs/deployment.md).
