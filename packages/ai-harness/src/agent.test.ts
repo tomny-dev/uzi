@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createHarnessAgent } from './agent';
+import { createHarnessAgent } from './agent.js';
 
 const model = { provider: 'test', modelId: 'fake' } as Parameters<typeof createHarnessAgent>[0]['model'];
 
