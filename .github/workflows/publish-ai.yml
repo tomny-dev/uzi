@@ -35,7 +35,7 @@ jobs:
         run: |
           node -e '
             const pkg = require("./packages/ai/package.json");
-            if (pkg.name !== "@tomny-dev/ai" || pkg.private || !/^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?$/.test(pkg.version)) {
+            if (pkg.name !== "@tomny-dev/ai" || pkg.private || ! /^[0-9]+[.][0-9]+[.][0-9]+(?:-[0-9A-Za-z.-]+)?$/.test(pkg.version)) {
               throw new Error("Invalid package name, version, or private flag");
             }
           '
