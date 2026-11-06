@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.11.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.10.1...uzi-v0.11.0) (2026-11-06)
+
+
+### Features
+
+* **ai:** add reusable AI SDK 7 integration package (@tomny-dev/ai) ([#95](https://github.com/tomny-dev/uzi/issues/95)) ([5747805](https://github.com/tomny-dev/uzi/commit/57478051051f2e5683d8deaa371002aaadc97e00))
+* **ai:** independent npm publishing for @tomny-dev/ai ([#97](https://github.com/tomny-dev/uzi/issues/97)) ([1a91d81](https://github.com/tomny-dev/uzi/commit/1a91d819078aa65ae6dd50d174a022f33cc94537))
+
+
+### Bug Fixes
+
+* **ai:** correct ToolLoopAgent generics for app consumers ([#98](https://github.com/tomny-dev/uzi/issues/98)) ([aac746b](https://github.com/tomny-dev/uzi/commit/aac746b147e06a94012069232e5ba7a0f7c75490))
+* **ai:** use package.json as sole publishing version source ([#99](https://github.com/tomny-dev/uzi/issues/99)) ([e676097](https://github.com/tomny-dev/uzi/commit/e676097f6eeb4f0d121155ba0d6a39845207a8c4))
+
 ## [0.10.1](https://github.com/tomny-dev/uzi/compare/uzi-v0.10.0...uzi-v0.10.1) (2026-11-06)
 
 
