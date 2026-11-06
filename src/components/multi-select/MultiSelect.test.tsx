@@ -18,6 +18,29 @@ const options = [
 ];
 
 describe("MultiSelect", () => {
+  it("portals long options and draft actions into the same popup", () => {
+    const onChange = vi.fn();
+    const longOptions = [
+      ...options,
+      { label: "Women's Pro Basketball (WNBA)", value: "wnba" },
+    ];
+    render(
+      <MultiSelect
+        options={longOptions}
+        value={["alpha"]}
+        onChange={onChange}
+        bulkActions
+        draftMode
+        contentMinWidth="24rem"
+      />,
+    );
+    openMenu();
+    const menu = screen.getByRole("menu");
+    expect(menu.style.getPropertyValue("--uzi-multiselect-content-min-width")).toBe("24rem");
+    expect(menu.contains(screen.getByRole("menuitemcheckbox", { name: "Women's Pro Basketball (WNBA)" }))).toBe(true);
+    expect(menu.contains(screen.getByText("Apply"))).toBe(true);
+  });
+
   it("lets formatValue describe an empty selection", () => {
     render(
       <MultiSelect

@@ -184,6 +184,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
               className={styles.menu}
               style={contentMinWidth ? { '--uzi-multiselect-content-min-width': contentMinWidth } as React.CSSProperties : undefined}
               sideOffset={4}
+              collisionPadding={8}
               align="start"
             >
               {bulkActions && enabledValues.length > 0 ? (
