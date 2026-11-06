@@ -27,6 +27,13 @@ describe('createHarnessAgent', () => {
     expect(agent.stream).toBeTypeOf('function');
   });
 
+  it('keeps per-call options optional for consumers with server-owned tools', () => {
+    const agent = createHarnessAgent({ model, instructions: 'Use trusted sources.' });
+    // Typecheck the call without executing the fake provider.
+    const stream = () => agent.stream({ messages: [] });
+    expect(stream).toBeTypeOf('function');
+  });
+
   it('rejects missing server-owned instructions', () => {
     expect(() => createHarnessAgent({ model, instructions: '  ' })).toThrow();
   });
