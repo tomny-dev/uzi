@@ -146,6 +146,21 @@ describe('AIChat', () => {
     expect((screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement).value).toBe('');
   });
 
+  it('shares the native New chat toolbar row with app-provided actions', () => {
+    stubs.messages = [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'hello' }] }];
+    render(
+      <AIChat
+        api="/api/chat"
+        toolbarActions={<label htmlFor="uzi-scope">Scope <select id="uzi-scope"><option>All games</option></select></label>}
+      />,
+    );
+    const newChat = screen.getByRole('button', { name: 'New chat' });
+    const scope = screen.getByLabelText('Scope');
+    expect(newChat.parentElement).toBe(scope.closest('label')?.parentElement);
+    fireEvent.click(newChat);
+    expect(stubs.stop).toHaveBeenCalledTimes(1);
+  });
+
   it('allows starting a new session before reaching the question limit', () => {
     stubs.messages = [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'hello' }] }];
     render(<AIChat api="/api/chat" />);
