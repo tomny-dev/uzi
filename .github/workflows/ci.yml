@@ -41,6 +41,15 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Type check AI harness
+        run: pnpm --filter @tomny-dev/ai-harness lint
+
+      - name: Test AI harness
+        run: pnpm --filter @tomny-dev/ai-harness test
+
+      - name: Build AI harness
+        run: pnpm --filter @tomny-dev/ai-harness build
+
       - name: Build Storybook
         run: pnpm build-storybook
 
