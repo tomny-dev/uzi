@@ -2,11 +2,6 @@ name: Publish AI package
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: "Exact @tomny-dev/ai version to publish (must match packages/ai/package.json)"
-        required: true
-        type: string
 
 permissions:
   contents: read
@@ -36,16 +31,33 @@ jobs:
       - name: Use supported npm trusted publishing client
         run: npm install --global npm@latest
 
-      - name: Verify exact package version and publishing settings
-        env:
-          REQUESTED_VERSION: ${{ inputs.version }}
+      - name: Verify package identity and manifest
         run: |
           node -e '
             const pkg = require("./packages/ai/package.json");
-            if (pkg.name !== "@tomny-dev/ai" || pkg.private || pkg.version !== process.env.REQUESTED_VERSION) {
-              throw new Error("Package name/version/private flag does not match the requested publish");
+            if (pkg.name !== "@tomny-dev/ai" || pkg.private || !/^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?$/.test(pkg.version)) {
+              throw new Error("Invalid package name, version, or private flag");
             }
           '
+
+      - name: Check exact manifest version on npm
+        id: registry
+        shell: bash
+        run: |
+          NAME=$(node -p "require('./packages/ai/package.json').name")
+          VERSION=$(node -p "require('./packages/ai/package.json').version")
+          echo "Publishing candidate: $NAME@$VERSION"
+          if npm view "$NAME@$VERSION" version --registry=https://registry.npmjs.org > /dev/null 2> npm-view-error.log; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "Version already exists; publishing will be skipped."
+          elif grep -q 'E404' npm-view-error.log; then
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "Version is not published yet."
+          else
+            cat npm-view-error.log
+            echo "Registry check failed; refusing to publish."
+            exit 1
+          fi
 
       - name: Install locked dependencies
         run: pnpm install --frozen-lockfile
@@ -62,6 +74,7 @@ jobs:
         run: npm pack --dry-run --json
 
       - name: Publish independently of Uzi
+        if: steps.registry.outputs.exists == 'false'
         working-directory: packages/ai
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
