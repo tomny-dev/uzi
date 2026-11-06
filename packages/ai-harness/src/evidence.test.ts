@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createEvidenceRegistry, isSafeInternalPath } from './evidence';
+import { createEvidenceRegistry, isSafeInternalPath } from './evidence.js';
 
 describe('evidence registry', () => {
   it('selects only verified canonical paths, once, in requested order', () => {
