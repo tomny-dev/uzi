@@ -13,6 +13,20 @@ describe('createHarnessAgent', () => {
   it.each([0, -1, 21, 1.5, Number.NaN])('rejects invalid agent limits: %s', (maxSteps) => {
     expect(() => createHarnessAgent({ model, instructions: 'Safe instructions', maxSteps })).toThrow(RangeError);
   });
+  it('accepts native SDK orchestration settings without adding a new loop', () => {
+    const prepareStep = () => ({ toolChoice: 'none' as const });
+    const agent = createHarnessAgent({
+      model,
+      instructions: 'Use trusted evidence.',
+      maxSteps: 7,
+      maxRetries: 0,
+      maxOutputTokens: 1200,
+      prepareStep,
+    });
+    expect(agent).toBeDefined();
+    expect(agent.stream).toBeTypeOf('function');
+  });
+
   it('rejects missing server-owned instructions', () => {
     expect(() => createHarnessAgent({ model, instructions: '  ' })).toThrow();
   });
