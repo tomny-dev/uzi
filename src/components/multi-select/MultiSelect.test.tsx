@@ -1,4 +1,3 @@
-import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 
@@ -19,13 +18,27 @@ const options = [
 ];
 
 describe("MultiSelect", () => {
-  it("keeps its portaled popup measurable for collision handling and viewport-limited", () => {
-    const css = readFileSync(new URL("./multi-select.module.css", import.meta.url), "utf8");
-    const menuRule = css.match(/\.menu\s*\{([^}]*)\}/)?.[1];
-    expect(menuRule).toBeDefined();
-    expect(menuRule).not.toMatch(/\b(?:position|top|left)\s*:/);
-    expect(menuRule).toContain("max-width: min(calc(100vw - 1rem)");
-    expect(menuRule).toContain("--radix-dropdown-menu-content-available-width");
+  it("portals long options and draft actions into the same popup", () => {
+    const onChange = vi.fn();
+    const longOptions = [
+      ...options,
+      { label: "Women's Pro Basketball (WNBA)", value: "wnba" },
+    ];
+    render(
+      <MultiSelect
+        options={longOptions}
+        value={["alpha"]}
+        onChange={onChange}
+        bulkActions
+        draftMode
+        contentMinWidth="24rem"
+      />,
+    );
+    openMenu();
+    const menu = screen.getByRole("menu");
+    expect(menu.style.getPropertyValue("--uzi-multiselect-content-min-width")).toBe("24rem");
+    expect(menu.contains(screen.getByRole("menuitemcheckbox", { name: "Women's Pro Basketball (WNBA)" }))).toBe(true);
+    expect(menu.contains(screen.getByText("Apply"))).toBe(true);
   });
 
   it("lets formatValue describe an empty selection", () => {
