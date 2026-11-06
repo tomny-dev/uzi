@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.1](https://github.com/tomny-dev/uzi/compare/uzi-v0.10.0...uzi-v0.10.1) (2026-11-06)
+
+
+### Bug Fixes
+
+* **ai-chat:** retain right-aligned New chat without custom actions ([#93](https://github.com/tomny-dev/uzi/issues/93)) ([8479abe](https://github.com/tomny-dev/uzi/commit/8479abecd8373b8dbecbf21718bde83709fe57b2))
+
 ## [0.10.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.9.0...uzi-v0.10.0) (2026-11-06)
 
 
