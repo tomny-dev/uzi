@@ -208,3 +208,35 @@ export const StagedSelection: Story = {
     );
   },
 };
+
+/** Regression scenario: a 24rem menu triggered beside a narrow viewport edge. */
+export const NarrowEdgePopup: Story = {
+  render: () => {
+    const sports = [
+      { label: "Pro Football (NFL)", value: "nfl" },
+      { label: "College Football (NCAAF)", value: "ncaaf" },
+      { label: "Pro Basketball (NBA)", value: "nba" },
+      { label: "Women's Pro Basketball (WNBA)", value: "wnba" },
+      { label: "College Basketball (NCAAB)", value: "ncaab" },
+      { label: "FIFA World Cup Qualifying", value: "soccer" },
+      { label: "International Ice Hockey Championship", value: "hockey" },
+    ];
+    const [value, setValue] = useState(sports.map((sport) => sport.value));
+
+    return (
+      <div style={{ width: "min(100%, 18rem)", marginInlineStart: "auto" }}>
+        <MultiSelect
+          options={sports}
+          value={value}
+          onChange={setValue}
+          bulkActions
+          draftMode
+          contentMinWidth="24rem"
+          minSelected={1}
+          formatValue={(selected) => selected.length === sports.length
+            ? "All sports" : `${selected.length} sports`}
+        />
+      </div>
+    );
+  },
+};

@@ -119,13 +119,12 @@
 }
 
 .menu {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
+  /* Keep the menu in Radix Popper's layout so collision detection measures its real size. */
   z-index: var(--uzi-popover-z-index, 1100);
-  min-width: var(--radix-dropdown-menu-trigger-width);
+  box-sizing: border-box;
+  min-width: 0;
   width: max(var(--radix-dropdown-menu-trigger-width), var(--uzi-multiselect-content-min-width, 0px));
-  max-width: min(calc(100vw - 1rem), var(--radix-dropdown-menu-content-available-width));
+  max-width: min(calc(100vw - 1rem), var(--radix-dropdown-menu-content-available-width, calc(100vw - 1rem)));
   max-height: min(28rem, var(--radix-dropdown-menu-content-available-height, calc(100dvh - 1rem)));
   display: flex;
   flex-direction: column;
@@ -136,6 +135,7 @@
   color: var(--ts-menu-fg, var(--popover-foreground));
   padding: var(--uzi-menu-padding);
   box-shadow: var(--uzi-menu-shadow);
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
   animation: menuFadeIn 140ms ease;
 }
 
@@ -231,9 +231,12 @@
 .optionLabel {
   min-width: 0;
   flex: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--uzi-menu-item-gap);
+  overflow-wrap: anywhere;
+}
+
+.optionLabel > .optionIcon {
+  margin-right: var(--uzi-menu-item-gap);
+  vertical-align: middle;
 }
 
 .optionIcon {
