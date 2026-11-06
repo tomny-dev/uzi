@@ -32,6 +32,8 @@ export interface AIChatProps {
   readonly inputAriaLabel?: string;
   readonly inputMaxLength?: number;
   readonly components?: AIChatComponents;
+  /** Actions displayed beside the native New chat control in one shared toolbar. */
+  readonly toolbarActions?: ReactNode;
   /** Opt-in files, restricted to images/text accepted by the application API. */
   readonly attachments?: AIChatAttachmentOptions;
   /** Optional persistence; implementations must scope storage by user AND resource. */
@@ -365,6 +367,7 @@ export function AIChat({
   inputAriaLabel = 'Message',
   inputMaxLength = 2000,
   components,
+  toolbarActions,
   attachments,
   history,
   sendAutomaticallyWhen,
@@ -413,6 +416,7 @@ export function AIChat({
             inputAriaLabel={inputAriaLabel}
             inputMaxLength={inputMaxLength}
             components={components}
+            toolbarActions={toolbarActions}
             attachmentOptions={attachments}
             history={history}
             onNewChat={() => setSession((previous) => previous + 1)}
@@ -429,6 +433,7 @@ interface ChatViewportProps {
   readonly inputAriaLabel: string;
   readonly inputMaxLength: number;
   readonly components?: AIChatComponents;
+  readonly toolbarActions?: ReactNode;
   readonly attachmentOptions?: AIChatAttachmentOptions;
   readonly history?: AIChatHistoryAdapter;
   readonly onNewChat: () => void;
@@ -440,6 +445,7 @@ function ChatViewport({
   inputAriaLabel,
   inputMaxLength,
   components,
+  toolbarActions,
   attachmentOptions,
   history,
   onNewChat,
@@ -594,6 +600,7 @@ function ChatViewport({
       onStop={() => { void chat?.stop(); }}
       onRetry={handleRetry}
       onNewChat={handleNewChat}
+      toolbarActions={toolbarActions}
       messageLimit={messageLimit}
       attachments={selectedFiles.map((file, index) => ({ name: file.name, size: file.size, ...(attachmentPreviews[index] ? { previewUrl: attachmentPreviews[index] } : {}) }))}
       onSelectAttachments={attachmentOptions ? handleSelectedFiles : undefined}
