@@ -53,6 +53,13 @@ For installation variants and a longer walkthrough, see [Getting Started](docs/g
 
 These are representative exports, not an exhaustive API reference. Use the guides below for configuration and composition examples.
 
+## AI harness workspace
+
+This repository also hosts `packages/ai`, a small **server-only** AI SDK 7 integration
+package. It has its own package name, tests and build and does not change the
+published `@tomny-dev/uzi` UI entry points. See
+[AI harness workspace](packages/ai/README.md) for usage and release status.
+
 ## Documentation
 
 - [Getting Started](docs/getting-started.md) — Installation, styles, and first components
