@@ -2,7 +2,7 @@
 
 Small server-side integration helpers around **AI SDK 7**. This package lives in the Uzi repository but does not import React or `@tomny-dev/uzi`.
 
-> Initial workspace package: private until build, package exports, CI, and an independent publish workflow are approved. Do not publish it through the existing Uzi release job.
+> Published independently from the UI package. Use the dedicated GitHub Actions `Publish AI package` workflow; do not run the existing Uzi release job to publish this package.
 
 ## Usage in a workspace
 
@@ -34,3 +34,12 @@ const safe = citations.select(['/minecraft/modpacks/prominence-ii', '/invented']
 - `createEvidenceRegistry` returns a boolean from `addVerified` and defaults to at most three citations from `select` (configurable 0–20). It does not determine if a claim is true. `addVerified` is for sources validated by application data/tool execution; a model's suggested path must never be added unverified.
 - The existing `@tomny-dev/uzi` package remains the UI layer. Uzi's `AIChat` can consume a normal AI SDK stream without depending on the server-side harness.
 - Use `pnpm --filter @tomny-dev/ai lint`, `test`, `build`. No migration to the harness is included in this PR.
+
+## Publishing
+
+1. For the first publication of `@tomny-dev/ai`, authorize the package on npm (a scoped package may need an initial bootstrap publish using an npm granular access token stored as the repository secret `NPM_TOKEN`).
+2. Prefer npm trusted publishing after bootstrap: configure the npm package's GitHub trusted publisher with repository `tomny-dev/uzi` and workflow file `publish-ai.yml`. This requires GitHub-hosted runners and the workflow's OIDC permission.
+3. Run **Actions → Publish AI package → Run workflow** from `main` with the exact version in `packages/ai/package.json` (initially `0.1.0`). This workflow installs the frozen workspace lockfile, typechecks, tests, builds, smoke-tests the Node ESM exports, checks package contents, then publishes with provenance.
+4. Do not merge a Tultr dependency change until the exact version is visible on npm. The UI's existing release-please configuration remains independent.
+
+The workflow intentionally has **no push-triggered publishing**; a maintainer must explicitly dispatch it.
