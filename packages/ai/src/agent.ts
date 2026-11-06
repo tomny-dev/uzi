@@ -20,7 +20,7 @@ export interface HarnessAgentOptions {
  * Configure AI SDK's native agent loop without reimplementing streaming,
  * tool execution, retries, persistence, or provider adapters.
  */
-export function createHarnessAgent(options: HarnessAgentOptions): ToolLoopAgent<ToolSet> {
+export function createHarnessAgent(options: HarnessAgentOptions): ToolLoopAgent<never, ToolSet> {
   const maxSteps = options.maxSteps ?? 6;
   if (!Number.isInteger(maxSteps) || maxSteps < 1 || maxSteps > 20) {
     throw new RangeError('maxSteps must be an integer from 1 to 20');
