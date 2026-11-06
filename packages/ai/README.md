@@ -1,4 +1,4 @@
-# @tomny-dev/ai-harness
+# @tomny-dev/ai
 
 Small server-side integration helpers around **AI SDK 7**. This package lives in the Uzi repository but does not import React or `@tomny-dev/uzi`.
 
@@ -7,7 +7,7 @@ Small server-side integration helpers around **AI SDK 7**. This package lives in
 ## Usage in a workspace
 
 ```ts
-import { createHarnessAgent, createEvidenceRegistry } from '@tomny-dev/ai-harness';
+import { createHarnessAgent, createEvidenceRegistry } from '@tomny-dev/ai';
 import { tool } from 'ai';
 
 // The application owns provider configuration, authorization and game tools.
@@ -33,4 +33,4 @@ const safe = citations.select(['/minecraft/modpacks/prominence-ii', '/invented']
 - Consumers own retrieval indexes, domain permissions, identity validation, source verification, conversation storage, rate limiting and deployment.
 - `createEvidenceRegistry` returns a boolean from `addVerified` and defaults to at most three citations from `select` (configurable 0–20). It does not determine if a claim is true. `addVerified` is for sources validated by application data/tool execution; a model's suggested path must never be added unverified.
 - The existing `@tomny-dev/uzi` package remains the UI layer. Uzi's `AIChat` can consume a normal AI SDK stream without depending on the server-side harness.
-- Use `pnpm --filter @tomny-dev/ai-harness lint`, `test`, `build`. No migration to the harness is included in this PR.
+- Use `pnpm --filter @tomny-dev/ai lint`, `test`, `build`. No migration to the harness is included in this PR.

@@ -55,10 +55,10 @@ These are representative exports, not an exhaustive API reference. Use the guide
 
 ## AI harness workspace
 
-This repository also hosts `packages/ai-harness`, a small **server-only** AI SDK 7 integration
+This repository also hosts `packages/ai`, a small **server-only** AI SDK 7 integration
 package. It has its own package name, tests and build and does not change the
 published `@tomny-dev/uzi` UI entry points. See
-[AI harness workspace](packages/ai-harness/README.md) for usage and release status.
+[AI harness workspace](packages/ai/README.md) for usage and release status.
 
 ## Documentation
 

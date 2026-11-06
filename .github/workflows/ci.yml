@@ -42,16 +42,16 @@ jobs:
         run: pnpm build
 
       - name: Type check AI harness
-        run: pnpm --filter @tomny-dev/ai-harness lint
+        run: pnpm --filter @tomny-dev/ai lint
 
       - name: Test AI harness
-        run: pnpm --filter @tomny-dev/ai-harness test
+        run: pnpm --filter @tomny-dev/ai test
 
       - name: Build AI harness
-        run: pnpm --filter @tomny-dev/ai-harness build
+        run: pnpm --filter @tomny-dev/ai build
 
       - name: Smoke-test packaged AI harness with Node ESM
-        run: pnpm --filter @tomny-dev/ai-harness exec node --input-type=module -e "const p = await import('./dist/index.js'); if (typeof p.createHarnessAgent !== 'function' || typeof p.createEvidenceRegistry !== 'function') process.exit(1)"
+        run: pnpm --filter @tomny-dev/ai exec node --input-type=module -e "const p = await import('./dist/index.js'); if (typeof p.createHarnessAgent !== 'function' || typeof p.createEvidenceRegistry !== 'function') process.exit(1)"
 
       - name: Build Storybook
         run: pnpm build-storybook
