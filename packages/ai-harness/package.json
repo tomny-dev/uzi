@@ -24,7 +24,7 @@
     "node": ">=24"
   },
   "peerDependencies": {
-    "ai": "^7.0.0"
+    "ai": "^7.0.159"
   },
   "devDependencies": {
     "ai": "^7.0.159",
