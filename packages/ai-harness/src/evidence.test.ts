@@ -15,7 +15,7 @@ describe('evidence registry', () => {
       { path: '/minecraft/mods/create-fabric', title: 'Create (Fabric)' },
     ]);
   });
-  it.each(['//evil.test', 'https://evil.test', '/a/../b', '/a/%2e%2e/b', '/a\\b', '/a?x=1', '/a#fragment'])(
+  it.each(['//evil.test', 'https://evil.test', '/a/../b', '/a/%2e%2e/b', '/a/%00', '/a/%0a', '/a/%0d', '/a/%1f', '/a/%7f', '/a\\b', '/a?x=1', '/a#fragment'])(
     'does not trust unsafe paths: %s',
     (value) => expect(isSafeInternalPath(value)).toBe(false),
   );
