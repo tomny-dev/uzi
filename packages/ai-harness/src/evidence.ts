@@ -4,11 +4,11 @@ export interface EvidenceSource {
   readonly title: string;
 }
 
-/** Reject protocol-relative URLs, schemes, backslashes, control chars and traversal. */
+/** Reject protocol-relative URLs, schemes, backslashes, raw or escaped control chars and traversal. */
 export function isSafeInternalPath(value: unknown): value is string {
   if (typeof value !== 'string' || !/^\/(?!\/)[^\\?#\s\x00-\x1f]*$/.test(value)) return false;
   const segments = value.split('/');
-  return !segments.some((segment) => segment === '.' || segment === '..' || /%2f|%5c|%2e/i.test(segment));
+  return !segments.some((segment) => segment === '.' || segment === '..' || /%(?:2f|5c|2e|0[0-9a-f]|1[0-9a-f]|7f)/i.test(segment));
 }
 
 export interface EvidenceRegistry {
