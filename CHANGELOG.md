@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.10.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.9.0...uzi-v0.10.0) (2026-11-06)
+
+
+### Features
+
+* **ai-chat:** expose shared toolbar actions beside native New chat ([#92](https://github.com/tomny-dev/uzi/issues/92)) ([5ad223c](https://github.com/tomny-dev/uzi/commit/5ad223cf26c472f6f27d47865c8d3cb720c0e9ef))
+
+
+### Bug Fixes
+
+* **multiselect:** keep popup within mobile viewport ([#90](https://github.com/tomny-dev/uzi/issues/90)) ([affd686](https://github.com/tomny-dev/uzi/commit/affd686cbea8c21de1be3959bc9fbadec44dfad7))
+
 ## [0.9.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.8.0...uzi-v0.9.0) (2026-10-09)
 
 
