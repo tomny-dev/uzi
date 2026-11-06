@@ -37,9 +37,9 @@ const safe = citations.select(['/minecraft/modpacks/prominence-ii', '/invented']
 
 ## Publishing
 
-1. For the first publication of `@tomny-dev/ai`, authorize the package on npm (a scoped package may need an initial bootstrap publish using an npm granular access token stored as the repository secret `NPM_TOKEN`).
-2. Prefer npm trusted publishing after bootstrap: configure the npm package's GitHub trusted publisher with repository `tomny-dev/uzi` and workflow file `publish-ai.yml`. This requires GitHub-hosted runners and the workflow's OIDC permission.
-3. Run **Actions → Publish AI package → Run workflow** from `main` with the exact version in `packages/ai/package.json` (initially `0.1.0`). This workflow installs the frozen workspace lockfile, typechecks, tests, builds, smoke-tests the Node ESM exports, checks package contents, then publishes with provenance.
-4. Do not merge a Tultr dependency change until the exact version is visible on npm. The UI's existing release-please configuration remains independent.
+1. The initial `@tomny-dev/ai@0.1.0` version is already published. In npm package settings, keep the GitHub trusted publisher connected to repository `tomny-dev/uzi` and workflow `publish-ai.yml`.
+2. Update `packages/ai/package.json` with the new version in a reviewed PR. The package manifest is the only version source.
+3. Run **Actions → Publish AI package → Run workflow** from `main` without inputs. The workflow checks whether that exact version exists, validates the package, then publishes with npm trusted publishing and provenance. Existing versions are not republished; unexpected registry errors stop the workflow.
+4. No `NPM_TOKEN` secret is required for this dedicated workflow. The UI's release-please process remains independent.
 
 The workflow intentionally has **no push-triggered publishing**; a maintainer must explicitly dispatch it.
