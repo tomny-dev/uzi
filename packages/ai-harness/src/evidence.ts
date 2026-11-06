@@ -12,9 +12,9 @@ export function isSafeInternalPath(value: unknown): value is string {
 }
 
 export interface EvidenceRegistry {
-  /** Record a source only after the application has verified its existence/identity. */
-  readonly addVerified: (source: EvidenceSource) => void;
-  /** Select only verified paths, in answer-selected order, without inventing titles. */
+  /** Register an application-verified source. Returns false for unsafe paths, blank titles, or when the 100-distinct-source cap is reached. Existing paths may be updated at capacity. */
+  readonly addVerified: (source: EvidenceSource) => boolean;
+  /** Select only previously registered paths, in requested order, without inventing titles. @param max Maximum citations to return (default 3; allowed 0–20). */
   readonly select: (paths: readonly string[], max?: number) => readonly EvidenceSource[];
 }
 
@@ -22,9 +22,10 @@ export function createEvidenceRegistry(): EvidenceRegistry {
   const verified = new Map<string, EvidenceSource>();
   return {
     addVerified(source) {
-      if (!isSafeInternalPath(source.path) || !source.title.trim()) return;
-      if (verified.size >= 100 && !verified.has(source.path)) return;
+      if (!isSafeInternalPath(source.path) || !source.title.trim()) return false;
+      if (verified.size >= 100 && !verified.has(source.path)) return false;
       verified.set(source.path, { path: source.path, title: source.title.trim() });
+      return true;
     },
     select(paths, max = 3) {
       if (!Number.isInteger(max) || max < 0 || max > 20) {
