@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.11.0...uzi-v0.12.0) (2026-11-07)
+
+
+### Features
+
+* **ai-chat:** compact New Chat action above conversation ([#100](https://github.com/tomny-dev/uzi/issues/100)) ([dc5e034](https://github.com/tomny-dev/uzi/commit/dc5e03497ca11db84119a576103f5dfbe50da723))
+
 ## [0.11.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.10.1...uzi-v0.11.0) (2026-11-06)
 
 
