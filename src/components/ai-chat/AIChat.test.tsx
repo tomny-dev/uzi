@@ -156,7 +156,10 @@ describe('AIChat', () => {
     );
     const newChat = screen.getByRole('button', { name: 'New chat' });
     const scope = screen.getByLabelText('Scope');
-    expect(newChat.parentElement).toBe(scope.closest('label')?.parentElement);
+    const toolbar = screen.getByRole('toolbar', { name: 'Conversation actions' });
+    expect(toolbar.contains(newChat)).toBe(true);
+    expect(toolbar.contains(scope)).toBe(true);
+    expect(newChat.parentElement).toBe(toolbar);
     fireEvent.click(newChat);
     expect(stubs.stop).toHaveBeenCalledTimes(1);
   });
