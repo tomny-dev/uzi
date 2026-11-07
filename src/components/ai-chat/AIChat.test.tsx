@@ -156,7 +156,10 @@ describe('AIChat', () => {
     );
     const newChat = screen.getByRole('button', { name: 'New chat' });
     const scope = screen.getByLabelText('Scope');
-    expect(newChat.parentElement).toBe(scope.closest('label')?.parentElement);
+    const toolbar = screen.getByRole('toolbar', { name: 'Conversation actions' });
+    expect(toolbar.contains(newChat)).toBe(true);
+    expect(toolbar.contains(scope)).toBe(true);
+    expect(newChat.parentElement).toBe(toolbar);
     fireEvent.click(newChat);
     expect(stubs.stop).toHaveBeenCalledTimes(1);
   });
@@ -216,6 +219,34 @@ describe('AIChat', () => {
     expect((screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement).disabled).toBe(true);
     fireEvent.click(screen.getByRole('button', { name: 'Stop response' }));
     expect(stubs.stop).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Compact conversation toolbar', () => {
+  const messages = [{ id: 'user-1', role: 'user' as const, parts: [{ type: 'text' as const, text: 'Hello' }] }];
+
+  it('keeps New chat keyboard-accessible above the scrollable transcript', () => {
+    const onNewChat = vi.fn();
+    const { container } = render(<AIChatView messages={messages} onNewChat={onNewChat} />);
+    const toolbar = screen.getByRole('toolbar', { name: 'Conversation actions' });
+    const button = screen.getByRole('button', { name: 'New chat' });
+    expect(toolbar.contains(button)).toBe(true);
+    expect(button.getAttribute('title')).toBe('New chat');
+    expect(button.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
+    const viewport = container.querySelector('.uzi-viewport');
+    expect(viewport).toBeTruthy();
+    expect(toolbar.compareDocumentPosition(viewport!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    fireEvent.click(button);
+    expect(onNewChat).toHaveBeenCalledOnce();
+  });
+
+  it('hides New chat when the transcript is empty but keeps supplied toolbar controls', () => {
+    const onNewChat = vi.fn();
+    const { rerender } = render(<AIChatView messages={[]} onNewChat={onNewChat} />);
+    expect(screen.queryByRole('toolbar')).toBeNull();
+    rerender(<AIChatView messages={[]} onNewChat={onNewChat} toolbarActions={<span>Scope</span>} />);
+    expect(screen.getByRole('toolbar', { name: 'Conversation actions' }).textContent).toContain('Scope');
+    expect(screen.queryByRole('button', { name: 'New chat' })).toBeNull();
   });
 });
 
