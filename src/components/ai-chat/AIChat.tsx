@@ -699,6 +699,26 @@ export function AIChatView({
   return (
     <div className={[styles.thread, className].filter(Boolean).join(' ')} style={style}>
       {header}
+      {(messages.length > 0 || toolbarActions) && (onNewChat || toolbarActions) && (
+        <div className={styles.chatToolbar} role="toolbar" aria-label="Conversation actions">
+          <div className={styles.chatToolbarExtras}>{toolbarActions}</div>
+          {onNewChat && messages.length > 0 && (
+            <button
+              type="button"
+              className={styles.newChatButton}
+              onClick={onNewChat}
+              aria-label="New chat"
+              title="New chat"
+            >
+              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-6" />
+                <path d="m15 5 4 4M13 11l7-7a2.12 2.12 0 0 1 3 3l-7 7-4 1 1-4Z" transform="translate(-2 -2)" />
+              </svg>
+            </button>
+          )}
+        </div>
+      )}
       <div
         ref={viewportRef}
         className={styles.viewport}
@@ -707,14 +727,6 @@ export function AIChatView({
           pinnedToBottom.current = viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight < 80;
         }}
       >
-        {(messages.length > 0 || toolbarActions) && (onNewChat || toolbarActions) && (
-          <div className={styles.chatToolbar}>
-            {toolbarActions}
-            {onNewChat && messages.length > 0 && (
-              <button type="button" onClick={onNewChat}>New chat</button>
-            )}
-          </div>
-        )}
         <div className={styles.messageList} role="log" aria-label="Chat history" aria-live="polite">
           {messages.length === 0 && (
             <div className={styles.emptyState}>
