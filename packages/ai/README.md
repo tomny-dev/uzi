@@ -134,11 +134,58 @@ return response.toUIMessageStreamResponse();
   cancellation, invalid JSON and publication-date handling; perform a live
   authenticated search smoke test before enabling in production.
 
+## LiteLLM MCP Gateway (shared web search)
+
+Use the shared LiteLLM MCP gateway rather than exposing SearXNG to each app.
+The reusable `createLiteLLMMcpSearch` provider uses LiteLLM's authenticated
+`/mcp-rest/tools/list` and `/mcp-rest/tools/call` endpoints, selects **only**
+the configured SearXNG `web_search` tool and requests structured JSON results.
+No model-controlled tool names or gateway URLs are accepted. The existing
+`createWebSearchTool` still enforces per-turn query budgets, private-query
+safeguards, and public HTTPS source normalization.
+
+```ts
+import { createHarnessAgent, createLiteLLMMcpSearch, createWebSearchTool } from '@tomny-dev/ai';
+
+const search = createLiteLLMMcpSearch({
+  baseURL: process.env.LITELLM_MCP_BASE_URL!, // trusted proxy origin (no /v1)
+  apiKey: process.env.LITELLM_MCP_API_KEY!,  // scoped LiteLLM virtual key
+  serverId: 'searxng',
+});
+const agent = createHarnessAgent({
+  model: configuredLiteLLMModel,
+  instructions: trustedAppInstructions,
+  tools: {
+    ...authorizedApplicationTools,
+    web_search: createWebSearchTool({
+      search,
+      allowQuery: (query) => appAllowsPublicQuery(query),
+      maxResults: 5,
+      maxSearchesPerTurn: 3,
+    }),
+  },
+});
+```
+
+LiteLLM itself must have a configured SearXNG MCP server and the calling key
+must have MCP permission for that server. Grant access to the search tool only.
+The shared bridge deliberately **does not** expose all discovered MCP tools as
+automatic AI SDK tools, since unreviewed tools may have side effects.
+`LITELLM_MCP_BASE_URL` is the **proxy's HTTPS origin**, not SearXNG's private
+LAN address and not a path ending in `/v1`. Explicit `allowHttp` is available
+only for trusted private development. Keep all credentials server-side. If the
+LiteLLM MCP gateway is unavailable, the search tool returns an unavailable
+result rather than inventing current web information.
+
+For deployments, test `GET /mcp-rest/tools/list?server_id=searxng` and
+`POST /mcp-rest/tools/call` with the exact application's scoped LiteLLM key.
+Verify a real search and that the returned content can be parsed into sources.
+No UI, default model endpoint, or authorization policy is changed automatically.
+
 ## Publishing
 
-1. The initial `@tomny-dev/ai@0.1.0` version is already published. In npm package settings, keep the GitHub trusted publisher connected to repository `tomny-dev/uzi` and workflow `publish-ai.yml`.
-2. Update `packages/ai/package.json` with the new version in a reviewed PR. The package manifest is the only version source.
-3. Run **Actions → Publish AI package → Run workflow** from `main` without inputs. The workflow checks whether that exact version exists, validates the package, then publishes with npm trusted publishing and provenance. Existing versions are not republished; unexpected registry errors stop the workflow.
-4. No `NPM_TOKEN` secret is required for this dedicated workflow. The UI's release-please process remains independent.
+The package is independently versioned and automatically published from
+`main` via the trusted-publisher `.github/workflows/publish-ai.yml`
+workflow when relevant package files change. The manifest is the version source;
+published versions are never overwritten. No `NPM_TOKEN` is needed.
 
-The workflow intentionally has **no push-triggered publishing**; a maintainer must explicitly dispatch it.
