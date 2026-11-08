@@ -33,6 +33,9 @@ export function parseLiteLLMMcpSearchSources(value: unknown): WebSearchSource[] 
   }
   const result = asObject(response.result) ?? response;
   if (result.isError === true || result.error) throw new Error('LiteLLM MCP search failed');
+  if (!Array.isArray(result.content) && result.structuredContent === undefined && !Array.isArray(result.results)) {
+    throw new Error('LiteLLM MCP returned no search tool payload');
+  }
 
   const candidates: unknown[] = [result.structuredContent, result];
   const blocks = Array.isArray(result.content) ? result.content : [];
