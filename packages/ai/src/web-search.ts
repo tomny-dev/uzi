@@ -1,4 +1,4 @@
-import { jsonSchema, tool } from 'ai';
+import { jsonSchema, tool, type Tool } from 'ai';
 
 /** Public web metadata only. Do not pass user/private records to the search backend. */
 export interface WebSearchSource {
@@ -109,7 +109,7 @@ function validPublicQuery(raw: unknown): string | null {
  * compact citation metadata. Instantiate once *per authenticated request*.
  * No network access is built into the harness; the application injects a backend.
  */
-export function createWebSearchTool(options: WebSearchToolOptions) {
+export function createWebSearchTool(options: WebSearchToolOptions): Tool<{ query: string; timeRange?: WebSearchTimeRange }, WebSearchToolResult> {
   const maxResults = boundedInt(options.maxResults, 5, 1, 8, 'maxResults');
   const maxSearches = boundedInt(options.maxSearchesPerTurn, 3, 1, 5, 'maxSearchesPerTurn');
   let searches = 0;
