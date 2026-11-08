@@ -1,6 +1,6 @@
 {
   "name": "@tomny-dev/ai",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": false,
   "type": "module",
   "description": "Server-side AI SDK 7 agent configuration and evidence utilities",
