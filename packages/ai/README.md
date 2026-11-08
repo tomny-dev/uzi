@@ -35,6 +35,40 @@ const safe = citations.select(['/minecraft/modpacks/prominence-ii', '/invented']
 - The existing `@tomny-dev/uzi` package remains the UI layer. Uzi's `AIChat` can consume a normal AI SDK stream without depending on the server-side harness.
 - Use `pnpm --filter @tomny-dev/ai lint`, `test`, `build`. No migration to the harness is included in this PR.
 
+## Streaming and observability
+
+For apps with existing streaming chat, construct an agent **per authenticated request**
+when its tools capture user-specific database access or permissions:
+
+```ts
+const agent = createHarnessAgent({
+  model: provider(modelId),
+  instructions: trustedSystemPrompt,
+  tools: authorizedTools,
+  maxSteps: 10,
+  timeout: { totalMs: 60_000 },
+  onStepStart: telemetry.onStepStart,
+  onToolExecutionStart: telemetry.onToolExecutionStart,
+  onToolExecutionEnd: telemetry.onToolExecutionEnd,
+  onStepEnd: telemetry.onStepEnd,
+  onEnd: telemetry.onEnd,
+  onAbort: telemetry.onAbort,
+  onError: telemetry.onError,
+});
+const result = await agent.stream({
+  messages: await convertToModelMessages(validatedMessages),
+  abortSignal: request.signal,
+});
+return result.toUIMessageStreamResponse();
+```
+
+All callbacks and timeout options are forwarded to AI SDK 7. They do not
+implement a custom loop or capture sensitive request data in Uzi. Pass
+`abortSignal` per invocation, not into a globally shared agent. The consuming
+app owns message validation, the stream error policy, native SDK approval
+continuations, idempotency and authorization for every tool action. Avoid logging
+raw prompts, tool arguments, screenshots or financial data.
+
 ## Publishing
 
 1. The initial `@tomny-dev/ai@0.1.0` version is already published. In npm package settings, keep the GitHub trusted publisher connected to repository `tomny-dev/uzi` and workflow `publish-ai.yml`.
