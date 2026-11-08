@@ -12,10 +12,13 @@ async function invoke(searchTool: ReturnType<typeof createWebSearchTool>, input:
 describe('public web search tool', () => {
   it('validates external HTTPS sources and rejects unsafe destinations', () => {
     expect(isSafePublicWebURL('https://example.com/story')).toBe(true);
+    expect(isSafePublicWebURL('https://8.8.8.8/news')).toBe(true);
     for (const bad of [
       'javascript:alert(1)', 'http://example.com', 'https://localhost/',
       'https://127.0.0.1/path', 'https://10.2.3.4/', 'https://192.168.1.50/',
-      'https://internal.local/', 'https://user:pass@example.com',
+      'https://192.0.0.1/', 'https://192.0.2.1/', 'https://198.51.100.10/',
+      'https://203.0.113.5/', 'https://internal.local/',
+      'https://user:pass@example.com',
     ]) expect(isSafePublicWebURL(bad)).toBe(false);
   });
 
