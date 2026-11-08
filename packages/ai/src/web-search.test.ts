@@ -83,6 +83,38 @@ describe('SearXNG adapter', () => {
     expect(hits[0]).toMatchObject({ title: 'Weather', publishedAt: '2026-11-08' });
   });
 
+  it('forwards a private service header and honors caller cancellation', async () => {
+    const controller = new AbortController();
+    let fetchSignal: AbortSignal | undefined;
+    const fetchImpl = vi.fn(async (_url: string, init?: RequestInit) => {
+      expect(new Headers(init?.headers).get('CF-Access-Client-Id')).toBe('service-client');
+      fetchSignal = init?.signal ?? undefined;
+      await new Promise<never>((_resolve, reject) => {
+        init?.signal?.addEventListener('abort', () => reject(new Error('cancelled')), { once: true });
+      });
+      throw new Error('unreachable');
+    }) as unknown as typeof fetch;
+    const search = createSearxngSearch({
+      baseURL: 'https://search.example.com/',
+      headers: { 'CF-Access-Client-Id': 'service-client' },
+      fetchImpl,
+    });
+    const pending = search({ query: 'public sports news', limit: 3, timeRange: 'any', signal: controller.signal });
+    controller.abort();
+    await expect(pending).rejects.toThrow('cancelled');
+    expect(fetchSignal?.aborted).toBe(true);
+  });
+
+  it('rejects oversized search responses', async () => {
+    const search = createSearxngSearch({
+      baseURL: 'https://search.example.com/',
+      fetchImpl: async () => Response.json({
+        results: [{ title: 'Huge', url: 'https://example.com/a', content: 'x'.repeat(600_000) }],
+      }),
+    });
+    await expect(search({ query: 'public update', limit: 3, timeRange: 'any' })).rejects.toThrow('size limit');
+  });
+
   it('requires a trusted server endpoint and rejects malformed API responses', async () => {
     expect(() => createSearxngSearch({ baseURL: 'http://search.example.com/' })).toThrow();
     expect(() => createSearxngSearch({ baseURL: 'https://user:pass@example.com/' })).toThrow();
