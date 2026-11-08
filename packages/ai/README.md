@@ -2,7 +2,7 @@
 
 Small server-side integration helpers around **AI SDK 7**. This package lives in the Uzi repository but does not import React or `@tomny-dev/uzi`.
 
-> Published independently from the UI package. Use the dedicated GitHub Actions `Publish AI package` workflow; do not run the existing Uzi release job to publish this package.
+> Published independently from the UI package. The dedicated GitHub Actions `Publish AI package` workflow automatically publishes an explicitly versioned release on merge to `main`; do not use the Uzi UI release job for this package.
 
 ## Usage in a workspace
 
@@ -136,9 +136,16 @@ return response.toUIMessageStreamResponse();
 
 ## Publishing
 
-1. The initial `@tomny-dev/ai@0.1.0` version is already published. In npm package settings, keep the GitHub trusted publisher connected to repository `tomny-dev/uzi` and workflow `publish-ai.yml`.
-2. Update `packages/ai/package.json` with the new version in a reviewed PR. The package manifest is the only version source.
-3. Run **Actions → Publish AI package → Run workflow** from `main` without inputs. The workflow checks whether that exact version exists, validates the package, then publishes with npm trusted publishing and provenance. Existing versions are not republished; unexpected registry errors stop the workflow.
-4. No `NPM_TOKEN` secret is required for this dedicated workflow. The UI's release-please process remains independent.
+1. Change the version in `packages/ai/package.json` in a reviewed PR. The
+   package manifest is the source of truth; versions are not bumped implicitly.
+2. Merge to `main` after CI passes. The dedicated
+   `.github/workflows/publish-ai.yml` workflow automatically validates and
+   publishes an unpublished version through npm trusted publishing (OIDC).
+3. The workflow skips versions already on npm and preserves manual
+   `workflow_dispatch` for recovery. No `NPM_TOKEN` is required, and the
+   UI package's release workflow is independent.
 
-The workflow intentionally has **no push-triggered publishing**; a maintainer must explicitly dispatch it.
+For MCP clients, use the official `@ai-sdk/mcp` package in the consuming
+application. Keep this shared package focused on the AI SDK agent harness,
+provider-neutral search tools, and evidence validation; do not implement a
+second MCP protocol client in Uzi.
