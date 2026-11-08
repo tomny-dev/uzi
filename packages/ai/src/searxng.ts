@@ -5,6 +5,8 @@ export interface SearxngSearchOptions {
   readonly baseURL: string;
   /** Only for trusted private-network development; HTTPS is required by default. */
   readonly allowHttp?: boolean;
+  /** Optional server-controlled authentication headers; never expose these to the model. */
+  readonly headers?: Readonly<Record<string, string>>;
   readonly fetchImpl?: typeof fetch;
   readonly timeoutMs?: number;
 }
@@ -30,7 +32,10 @@ async function readLimitedJson(response: Response): Promise<unknown> {
       const next = await reader.read();
       if (next.done) break;
       length += next.value.byteLength;
-      if (length > MAX_BODY_BYTES) throw new Error('Search response exceeded size limit.');
+      if (length > MAX_BODY_BYTES) {
+        await reader.cancel();
+        throw new Error('Search response exceeded size limit.');
+      }
       chunks.push(next.value);
     }
   } finally {
@@ -64,7 +69,7 @@ export function createSearxngSearch(options: SearxngSearchOptions): WebSearchPro
     const combinedSignal = signal ? AbortSignal.any([signal, timeout]) : timeout;
     const response = await fetchImpl(url.toString(), {
       method: 'GET',
-      headers: { Accept: 'application/json' },
+      headers: { Accept: 'application/json', ...(options.headers ?? {}) },
       redirect: 'error',
       signal: combinedSignal,
     });
