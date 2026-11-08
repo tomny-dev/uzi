@@ -14,6 +14,7 @@ export interface LiteLLMMcpOptions {
 }
 
 const BODY_LIMIT = 512 * 1024;
+// Bound decoded result objects even when the MCP service returns thousands of hits.
 const SOURCE_SCAN_LIMIT = 40;
 
 function endpoint(baseURL: string, path: string, allowHttp: boolean): string {
@@ -71,18 +72,28 @@ export function createLiteLLMMcpClient(options: LiteLLMMcpOptions) {
   const headers = { Authorization: `Bearer ${key}`, Accept: 'application/json' };
 
   async function request(url: string, init: RequestInit = {}, signal?: AbortSignal) {
-    return limitedJSON(await fetcher(url, {
-      ...init,
-      headers: { ...headers, ...(init.headers as Record<string, string> | undefined) },
-      redirect: 'error',
-      signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(timeoutMs)]) : AbortSignal.timeout(timeoutMs),
-    }));
+    const deadline = new AbortController();
+    const timer = setTimeout(() => deadline.abort(), timeoutMs);
+    const onAbort = () => deadline.abort(signal?.reason);
+    signal?.addEventListener('abort', onAbort, { once: true });
+    if (signal?.aborted) onAbort();
+    try {
+      return await limitedJSON(await fetcher(url, {
+        ...init,
+        headers: { ...headers, ...(init.headers as Record<string, string> | undefined) },
+        redirect: 'error',
+        signal: deadline.signal,
+      }));
+    } finally {
+      clearTimeout(timer);
+      signal?.removeEventListener('abort', onAbort);
+    }
   }
   return {
     /** Returns only tools authorized for the supplied LiteLLM key and server. */
     async listTools(signal?: AbortSignal): Promise<readonly { name: string }[]> {
       const payload = record(await request(listURL.toString(), {}, signal));
-      if (payload?.error) throw new Error('LiteLLM MCP discovery failed');
+      if (payload?.error) throw new Error('LiteLLM MCP discovery failed (check gateway key and server permissions)');
       if (!Array.isArray(payload?.tools)) throw new Error('Malformed LiteLLM MCP tools list');
       return payload.tools.flatMap((value: unknown) => {
         const item = record(value);
@@ -119,7 +130,7 @@ function extractSearchHits(value: unknown): WebSearchSource[] {
         if (Array.isArray(json?.results)) return json;
       } catch { /* Non-JSON tool output is not acceptable as trusted source metadata. */ }
     }
-    return record(payload?.results) ? payload : null;
+    return Array.isArray(payload?.results) ? payload : null;
   })();
   if (!Array.isArray(candidate?.results)) throw new Error('Invalid MCP search result');
   const output: WebSearchSource[] = [];
