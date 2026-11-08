@@ -145,7 +145,7 @@ import { createLiteLLMMcpSearch, createWebSearchTool } from '@tomny-dev/ai';
 
 const search = createWebSearchTool({
   search: createLiteLLMMcpSearch({
-    baseURL: process.env.LITELLM_BASE_URL!, // origin, without /v1
+    baseURL: process.env.LITELLM_BASE_URL!, // gateway origin only; no /v1 or other path
     apiKey: process.env.LITELLM_API_KEY!, // application-scoped key
   }),
   maxResults: 5,
