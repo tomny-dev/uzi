@@ -11,5 +11,5 @@ export type { WebSearchToolOptions, WebSearchSource, WebSearchRequest, WebSearch
 export { createSearxngSearch } from './searxng.js';
 export type { SearxngSearchOptions } from './searxng.js';
 
-export { createLiteLLMMcpSearch, parseLiteLLMMcpSearchSources } from './litellm-mcp-search.js';
+export { createLiteLLMMcpSearch } from './litellm-mcp-search.js';
 export type { LiteLLMMcpSearchOptions } from './litellm-mcp-search.js';
