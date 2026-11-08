@@ -134,6 +134,39 @@ return response.toUIMessageStreamResponse();
   cancellation, invalid JSON and publication-date handling; perform a live
   authenticated search smoke test before enabling in production.
 
+## Shared LiteLLM MCP search provider
+
+Use the existing LiteLLM model gateway's MCP REST API without an extra model
+invocation or a new MCP client. Applications only supply the trusted proxy
+origin and an authorized virtual key; LiteLLM owns the private MCP connection:
+
+```ts
+import { createLiteLLMMcpSearch, createWebSearchTool } from '@tomny-dev/ai';
+
+const search = createWebSearchTool({
+  search: createLiteLLMMcpSearch({
+    baseURL: process.env.LITELLM_BASE_URL!, // gateway origin only; no /v1 or other path
+    apiKey: process.env.LITELLM_API_KEY!, // application-scoped key
+  }),
+  maxResults: 5,
+  maxSearchesPerTurn: 3,
+  allowQuery: (query) => appAllowsPublicQuery(query),
+});
+```
+
+The adapter makes one fixed `POST /mcp-rest/tools/call` request to
+`server_id: searxng`, `name: web_search` with `response_format: json`.
+It does **not** discover other tools, execute arbitrary MCP operations, or
+create an agent. The generic `createWebSearchTool` remains responsible for
+validating public query terms, per-response budgets, public HTTPS source URLs,
+source deduplication, and cancellation. Each application owns its own
+authorization and private-data search policy.
+
+Enable web search explicitly in each application's tool set. Do not assume
+that registering an MCP server in LiteLLM automatically injects search into
+every ordinary model completion. Verify the deployed LiteLLM gateway and
+scoped key can execute the search tool before removing any previous backend.
+
 ## Publishing
 
 1. Change the version in `packages/ai/package.json` in a reviewed PR. The

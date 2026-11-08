@@ -10,3 +10,6 @@ export { createWebSearchTool, isSafePublicWebURL } from './web-search.js';
 export type { WebSearchToolOptions, WebSearchSource, WebSearchRequest, WebSearchProvider, WebSearchTimeRange, WebSearchToolResult } from './web-search.js';
 export { createSearxngSearch } from './searxng.js';
 export type { SearxngSearchOptions } from './searxng.js';
+
+export { createLiteLLMMcpSearch } from './litellm-mcp-search.js';
+export type { LiteLLMMcpSearchOptions } from './litellm-mcp-search.js';
