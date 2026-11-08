@@ -12,6 +12,35 @@ describe('LiteLLM MCP search bridge', () => {
     expect(() => createLiteLLMMcpClient({ baseURL: 'https://litellm.example', apiKey: 'sk-1', serverId: '../other' })).toThrow();
   });
 
+  it('validates server ids and timeout boundaries on the public client', () => {
+    for (const serverId of ['', 'a'.repeat(65), 'wrong/path', 'other server']) {
+      expect(() => createLiteLLMMcpClient({ baseURL: 'https://litellm.example', apiKey: 'key', serverId })).toThrow();
+    }
+    for (const timeoutMs of [499, 20001, NaN]) {
+      expect(() => createLiteLLMMcpClient({ baseURL: 'https://litellm.example', apiKey: 'key', timeoutMs })).toThrow();
+    }
+    for (const timeoutMs of [500, 20000]) {
+      expect(() => createLiteLLMMcpClient({ baseURL: 'https://litellm.example', apiKey: 'key', timeoutMs })).not.toThrow();
+    }
+  });
+
+  it('supports empty authorized discovery and rejects malformed calls', async () => {
+    const fetchImpl = vi.fn(async (_url: RequestInfo | URL, init?: RequestInit) =>
+      init?.method === 'POST' ? new Response('not json', { status: 200 }) : json({ tools: [] }));
+    const client = createLiteLLMMcpClient({ baseURL: 'https://litellm.example', apiKey: 'key', fetchImpl: fetchImpl as typeof fetch });
+    await expect(client.listTools()).resolves.toEqual([]);
+    await expect(client.callTool('wrong/name', {})).rejects.toThrow('Invalid MCP tool name');
+    await expect(client.callTool('web_search', {})).rejects.toThrow();
+  });
+
+  it('rejects empty MCP response bodies', async () => {
+    const client = createLiteLLMMcpClient({
+      baseURL: 'https://litellm.example', apiKey: 'key',
+      fetchImpl: vi.fn(async () => new Response(null, { status: 200 })) as typeof fetch,
+    });
+    await expect(client.listTools()).rejects.toThrow('no body');
+  });
+
   it('discovers ONLY the allowed web_search and parses JSON tool content', async () => {
     const calls: Array<{ url: string; init: RequestInit }> = [];
     const fetchImpl = vi.fn(async (url: RequestInfo | URL, init?: RequestInit) => {
