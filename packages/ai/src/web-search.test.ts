@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createWebSearchTool, isSafePublicWebURL } from './web-search.js';
+import { createWebSearchTool, isSafePublicWebURL, type WebSearchToolResult } from './web-search.js';
 import { createSearxngSearch } from './searxng.js';
 
 const source = { title: 'Official weather advisory', url: 'https://example.com/news?utm_source=spam', snippet: '<b>Public update</b>' };
 
 async function invoke(searchTool: ReturnType<typeof createWebSearchTool>, input: { query: string; timeRange?: 'any' | 'day' | 'month' | 'year' }) {
   const execute = searchTool.execute!;
-  return execute(input, { abortSignal: new AbortController().signal } as Parameters<typeof execute>[1]);
+  return await execute(input, { abortSignal: new AbortController().signal } as Parameters<typeof execute>[1]) as WebSearchToolResult;
 }
 
 describe('public web search tool', () => {
