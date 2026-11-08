@@ -7,8 +7,6 @@ export interface LiteLLMMcpSearchOptions {
   readonly apiKey: string;
   /** LiteLLM MCP server alias or id; default `searxng`. */
   readonly serverId?: string;
-  /** Upstream read-only search tool; default `web_search`. */
-  readonly toolName?: string;
   readonly timeoutMs?: number;
   readonly fetchImpl?: typeof fetch;
   /** Explicit opt-in for trusted private-network development. */
@@ -105,11 +103,7 @@ export function createLiteLLMMcpSearch(options: LiteLLMMcpSearchOptions): WebSea
   const apiKey = options.apiKey.trim();
   if (!apiKey || /[\r\n]/.test(apiKey)) throw new Error('LiteLLM MCP API key is required');
   const serverId = options.serverId ?? 'searxng';
-  const toolName = options.toolName ?? 'web_search';
   if (!/^[A-Za-z0-9_-]{1,64}$/.test(serverId)) throw new Error('Invalid LiteLLM MCP server id');
-  // Deliberately restrict this helper to public web search rather than allow
-  // arbitrary side-effecting MCP tools to be executed by an agent.
-  if (toolName !== 'web_search') throw new Error('Only the read-only web_search tool is supported');
   const timeoutMs = options.timeoutMs ?? 7_000;
   if (!Number.isInteger(timeoutMs) || timeoutMs < 500 || timeoutMs > 20_000) {
     throw new RangeError('Invalid LiteLLM MCP search timeout');
@@ -135,7 +129,8 @@ export function createLiteLLMMcpSearch(options: LiteLLMMcpSearchOptions): WebSea
         },
         body: JSON.stringify({
           server_id: serverId,
-          name: toolName,
+          // Fixed read-only operation. Never accept model-selected MCP names.
+          name: 'web_search',
           arguments: {
             query,
             categories: 'general',
