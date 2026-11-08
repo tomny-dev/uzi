@@ -59,11 +59,14 @@ export function isSafePublicWebURL(value: unknown): value is string {
     if (/(^|\.)(localhost|local|internal|lan|test)$/.test(host)) return false;
     const ip = host.split('.').map(Number);
     if (ip.length === 4 && ip.every(n => Number.isInteger(n) && n >= 0 && n <= 255)) {
-      const [a, b] = ip;
+      const [a, b, c] = ip;
       if (a === 0 || a === 10 || a === 127 || a >= 224 ||
         (a === 100 && b >= 64 && b <= 127) ||
         (a === 169 && b === 254) || (a === 172 && b >= 16 && b <= 31) ||
-        (a === 192 && b === 168) || (a === 198 && (b === 18 || b === 19))) return false;
+        // IANA special-purpose and documentation ranges are not public sources.
+        (a === 192 && (b === 168 || (b === 0 && (c === 0 || c === 2)))) ||
+        (a === 198 && (b === 18 || b === 19 || (b === 51 && c === 100))) ||
+        (a === 203 && b === 0 && c === 113)) return false;
     }
     return true;
   } catch {
