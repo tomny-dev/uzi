@@ -1,6 +1,13 @@
 name: Publish AI package
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/ai/**"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/publish-ai.yml"
   workflow_dispatch:
 
 permissions:
