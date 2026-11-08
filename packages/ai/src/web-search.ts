@@ -99,7 +99,7 @@ function validPublicQuery(raw: unknown): string | null {
   if (query.length < 2 || query.length > 180) return null;
   // Defense in depth, not a replacement for application-owned privacy controls.
   if (/[\w.+-]+@[\w.-]+\.[a-z]{2,}/i.test(query) ||
-      /\b(?:bearer\s+\S+|(?:api[_-]?key|access[_-]?token|password|secret)\s*[:=]\s*\S+)/i.test(query) ||
+      /\b(?:bearer\s+\S+|(?:api[_-]?key|(?:access[_-]?)?token|password|secret)\s*[:=]\s*\S+)/i.test(query) ||
       /\b(?:\d[ -]?){13,19}\b/.test(query)) return null;
   return query;
 }
