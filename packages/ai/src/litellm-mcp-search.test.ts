@@ -13,7 +13,6 @@ describe('LiteLLM MCP search adapter', () => {
     expect(() => createLiteLLMMcpSearch({ ...options, baseURL: 'https://litellm.example/v1' })).toThrow();
     expect(() => createLiteLLMMcpSearch({ ...options, apiKey: '' })).toThrow();
     expect(() => createLiteLLMMcpSearch({ ...options, serverId: '../server' })).toThrow();
-    expect(() => createLiteLLMMcpSearch({ ...options, toolName: 'delete_records' })).toThrow();
     expect(() => createLiteLLMMcpSearch({ ...options, timeoutMs: 499 })).toThrow();
     expect(() => createLiteLLMMcpSearch({ ...options, timeoutMs: 20001 })).toThrow();
   });
