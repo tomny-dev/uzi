@@ -27,6 +27,25 @@ describe('createHarnessAgent', () => {
     expect(agent.stream).toBeTypeOf('function');
   });
 
+  it('forwards lifecycle hooks and timeout settings without a parallel runtime', () => {
+    const events: string[] = [];
+    const agent = createHarnessAgent({
+      model,
+      instructions: 'Use approved tools only.',
+      timeout: { totalMs: 60_000, stepMs: 20_000 },
+      onStart: () => { events.push('start'); },
+      onStepStart: () => { events.push('step-start'); },
+      onToolExecutionStart: () => { events.push('tool-start'); },
+      onToolExecutionEnd: () => { events.push('tool-end'); },
+      onStepEnd: () => { events.push('step-end'); },
+      onEnd: () => { events.push('end'); },
+      onAbort: () => { events.push('abort'); },
+      onError: () => { events.push('error'); },
+    });
+    expect(agent.stream).toBeTypeOf('function');
+    expect(events).toEqual([]); // Construction cannot execute tools, providers, or hooks.
+  });
+
   it('keeps per-call options optional for consumers with server-owned tools', () => {
     const agent = createHarnessAgent({ model, instructions: 'Use trusted sources.' });
     // Typecheck the call without executing the fake provider.
