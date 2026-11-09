@@ -24,7 +24,7 @@ export interface AuthPageProps {
   mode?: AuthMode;
   onModeChange?: (mode: AuthMode) => void;
   /** App-specific auth callbacks; throwing an Error displays an inline failure. */
-  onSignIn: (credentials: AuthCredentials) => Promise<unknown> | unknown;
+  onSignIn?: (credentials: AuthCredentials) => Promise<unknown> | unknown;
   onSignUp?: (credentials: AuthCredentials) => Promise<unknown> | unknown;
   onError?: (error: unknown, mode: AuthMode) => void;
   /** Prefill email without ever populating a password. */
@@ -85,7 +85,7 @@ export function AuthPage({
   const termsId = id + "-terms";
   const signup = mode === "signup";
   const termsRequired = signup && !!signUpOptions?.requireTerms;
-  const canSwitch = !!onSignUp;
+  const canSwitch = !!onModeChange || (!!onSignIn && !!onSignUp);
 
   React.useEffect(() => {
     // Changes from an authenticated account may prefill the email after hydration.
@@ -126,6 +126,7 @@ export function AuthPage({
         if (!onSignUp) return;
         await onSignUp(credentials);
       } else {
+        if (!onSignIn) return;
         await onSignIn(credentials);
       }
       setPassword("");
@@ -197,7 +198,7 @@ export function AuthPage({
         )}
         {!signup && forgotPasswordHref && <a className={styles.forgot} href={forgotPasswordHref}>Forgot password?</a>}
         {serverError && <p className={styles.error} role="alert">{serverError}</p>}
-        <Button type="submit" variant="primary" size="lg" disabled={disabled || pending}>
+        <Button type="submit" variant="primary" size="lg" disabled={disabled || pending || (signup ? !onSignUp : !onSignIn)}>
           {pending ? (signup ? "Creating account..." : "Signing in...") : (signup ? "Create account" : "Sign in")}
         </Button>
       </AuthForm>
