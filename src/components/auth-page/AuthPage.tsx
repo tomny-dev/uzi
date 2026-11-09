@@ -128,6 +128,15 @@ export function AuthPage({
   const termsRequired = signup && !!signUpOptions?.requireTerms;
   const canSwitch = !!onModeChange || (!!onSignIn && !!onSignUp);
 
+  const fieldNames = signUpFields.map((field) => field.name).join("\\u0000");
+  React.useEffect(() => {
+    const activeNames = new Set(fieldNames.split("\\u0000").filter(Boolean));
+    setExtraValues((previous) => {
+      if (Object.keys(previous).every((name) => activeNames.has(name))) return previous;
+      return Object.fromEntries(Object.entries(previous).filter(([name]) => activeNames.has(name)));
+    });
+  }, [fieldNames]);
+
   React.useEffect(() => { setServerError(initialError ?? ""); }, [initialError]);
 
   React.useEffect(() => {
@@ -151,7 +160,7 @@ export function AuthPage({
     if (pendingRef.current || disabled) return;
     const nextErrors: Record<string, string> = {};
     const normalizedEmail = email.trim();
-    if (!normalizedEmail) nextErrors.email = signup || identifierIsEmail ? "Email is required" : "Identifier is required";
+    if (!normalizedEmail) nextErrors.email = (signup ? "Email" : signInIdentifier?.label ?? "Email") + " is required";
     else if (identifierIsEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) nextErrors.email = "Enter a valid email address";
     if (!signup && signInIdentifier?.maxLength && normalizedEmail.length > signInIdentifier.maxLength) nextErrors.email = "Identifier is too long";
     if (!password) nextErrors.password = "Password is required";
