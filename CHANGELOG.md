@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.13.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.12.0...uzi-v0.13.0) (2026-11-09)
+
+
+### Features
+
+* **ai:** add lifecycle parity and safe, opt-in web search to Uzi harness ([#102](https://github.com/tomny-dev/uzi/issues/102)) ([e9fdec1](https://github.com/tomny-dev/uzi/commit/e9fdec1af468c8148d5fc660b5334c3a86063b2d))
+* **ai:** share read-only LiteLLM MCP search provider ([#107](https://github.com/tomny-dev/uzi/issues/107)) ([b4b9e57](https://github.com/tomny-dev/uzi/commit/b4b9e570705b7f432db0870b5f7e5611ede3e18b))
+* **auth:** add all-in-one AuthPage for cross-app sign in and signup ([#108](https://github.com/tomny-dev/uzi/issues/108)) ([46d8815](https://github.com/tomny-dev/uzi/commit/46d881505a986d2b07742d848b67ee3647b92a93))
+
 ## [0.12.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.11.0...uzi-v0.12.0) (2026-11-07)
 
 
