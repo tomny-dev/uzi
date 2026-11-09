@@ -176,7 +176,11 @@ export function AuthPage({
     pendingRef.current = true;
     setPending(true);
     try {
-      const credentials: AuthCredentials = { email: normalizedEmail, identifier: normalizedEmail, password, fields: Object.fromEntries(signUpFields.map((field) => [field.name, (extraValues[field.name] ?? "").trim()])) };
+      const credentials: AuthCredentials = { email: normalizedEmail, password };
+      if (!signup && signInIdentifier) credentials.identifier = normalizedEmail;
+      if (signup && signUpFields.length) {
+        credentials.fields = Object.fromEntries(signUpFields.map((field) => [field.name, (extraValues[field.name] ?? "").trim()]));
+      }
       if (signup) {
         if (!onSignUp) return;
         await onSignUp(credentials);
