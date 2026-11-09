@@ -8,6 +8,8 @@
   background: var(--background);
 }
 
+.authLayoutEmbedded { min-height: min(70dvh, 720px); background: transparent; }
+
 .authCard {
   width: 100%;
   max-width: 400px;
