@@ -65,6 +65,7 @@ function PasswordField({ id, label, placeholder, value, onChange, error }: Passw
           value={value}
           onChange={onChange}
           className={styles.input}
+          autoComplete="current-password"
         />
         <button
           ref={toggleRef}
@@ -291,7 +292,7 @@ export function SignUpPage({
     if (!password) newErrors.password = "Password is required";
     else if (password.length < 8) newErrors.password = "At least 8 characters";
     if (password !== confirmPassword) newErrors.confirmPassword = "Passwords do not match";
-    if (!agreed) newErrors.agreed = "You must agree to continue";
+    if (checkboxLabel && !agreed) newErrors.agreed = "You must agree to continue";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -427,7 +428,7 @@ export function ForgotPasswordPage({
     if (!email.trim()) { setError("Email is required"); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError("Enter a valid email"); return; }
     onSubmit?.({ email });
-    setSent(true);
+    // The parent owns the API result. Do not claim delivery before it completes.
   };
 
   return (
