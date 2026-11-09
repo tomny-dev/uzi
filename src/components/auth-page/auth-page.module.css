@@ -1,0 +1,12 @@
+.passwordRow { position: relative; }
+.passwordRow input { padding-right: 4.5rem; }
+.visibility { position: absolute; right: .5rem; top: 50%; transform: translateY(-50%); background: transparent; border: 0; border-radius: 6px; color: var(--muted-foreground); font: inherit; font-size: .8rem; cursor: pointer; padding: .35rem .5rem; }
+.visibility:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-ring-offset); }
+.visibility:disabled { cursor: not-allowed; opacity: .5; }
+.forgot { align-self: flex-end; color: var(--primary); font-size: .875rem; text-decoration: none; }
+.forgot:hover { text-decoration: underline; }
+.terms { display: flex; flex-direction: column; gap: .35rem; }
+.termsLabel { display: flex; align-items: flex-start; gap: .6rem; font-size: .875rem; color: var(--foreground); }
+.termsLabel input { margin-top: .2rem; accent-color: var(--primary); }
+.termsLabel a { color: var(--primary); }
+.error { color: var(--destructive); margin: 0; font-size: .8125rem; }
