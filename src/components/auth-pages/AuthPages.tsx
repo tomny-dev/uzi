@@ -428,7 +428,7 @@ export function ForgotPasswordPage({
     if (!email.trim()) { setError("Email is required"); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError("Enter a valid email"); return; }
     onSubmit?.({ email });
-    // The parent owns the API result. Do not claim delivery before it completes.
+    setSent(true);
   };
 
   return (
