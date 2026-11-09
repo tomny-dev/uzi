@@ -42,6 +42,7 @@ export interface AuthPageProps {
   /** Optional app-owned password recovery route. */
   forgotPasswordHref?: string;
   className?: string;
+  layout?: "fullscreen" | "embedded";
 }
 
 /**
@@ -66,6 +67,7 @@ export function AuthPage({
   signUpOptions,
   forgotPasswordHref,
   className,
+  layout = "fullscreen",
 }: AuthPageProps) {
   const [internalMode, setInternalMode] = React.useState<AuthMode>(defaultMode);
   const mode = controlledMode ?? internalMode;
@@ -143,6 +145,7 @@ export function AuthPage({
   return (
     <AuthCard
       className={className}
+      layout={layout}
       brand={brand}
       title={signup ? signUpTitle : signInTitle}
       subtitle={signup ? signUpSubtitle : signInSubtitle}
