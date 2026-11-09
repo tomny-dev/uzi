@@ -46,6 +46,16 @@ describe("AuthPage", () => {
     expect(onError).toHaveBeenCalledTimes(1);
   });
 
+  it("explains unavailable account actions rather than displaying a silent disabled form", () => {
+    const { rerender } = render(<AuthPage defaultMode="signup" />);
+    expect(screen.getByRole("status").textContent).toBe("Sign-up is not available.");
+    expect((screen.getByRole("button", { name: "Create account" }) as HTMLButtonElement).disabled).toBe(true);
+
+    rerender(<AuthPage mode="signin" />);
+    expect(screen.getByRole("status").textContent).toBe("Sign-in is not available.");
+    expect((screen.getByRole("button", { name: "Sign in" }) as HTMLButtonElement).disabled).toBe(true);
+  });
+
   it("respects controlled navigation without assuming a router", () => {
     const onModeChange = vi.fn();
     render(<AuthPage mode="signin" onModeChange={onModeChange} onSignIn={vi.fn()} />);
