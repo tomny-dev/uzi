@@ -15,6 +15,8 @@ export interface AuthCardProps {
   brand?: React.ReactNode;
   /** Additional class name for the outer wrapper. */
   className?: string;
+  /** Use embedded when rendering within an existing application shell. */
+  layout?: "fullscreen" | "embedded";
 }
 
 /**
@@ -25,9 +27,9 @@ export interface AuthCardProps {
  * - No auth logic — just the visual template
  */
 export const AuthCard = React.forwardRef<HTMLDivElement, AuthCardProps>(
-  ({ title, subtitle, children, footer, brand, className }, ref) => {
+  ({ title, subtitle, children, footer, brand, className, layout = "fullscreen" }, ref) => {
     return (
-      <div className={cx(styles.authLayout, className)} ref={ref}>
+      <div className={cx(styles.authLayout, layout === "embedded" && styles.authLayoutEmbedded, className)} ref={ref}>
         <div className={styles.authCard}>
           {brand && <div className={styles.authBrand}>{brand}</div>}
           <div className={styles.authHeader}>

@@ -4,9 +4,11 @@
   justify-content: center;
   min-height: 100vh;
   min-height: 100dvh;
-  padding: 24px;
+  padding: 20px;
   background: var(--background);
 }
+
+.authLayoutEmbedded { min-height: min(70dvh, 720px); background: transparent; }
 
 .authCard {
   width: 100%;
@@ -19,13 +21,13 @@
   padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .authBrand {
   display: flex;
   justify-content: center;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .authBrand svg {
