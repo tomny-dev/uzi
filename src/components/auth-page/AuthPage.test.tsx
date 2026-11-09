@@ -97,4 +97,38 @@ describe("AuthPage", () => {
     expect(screen.getByRole("alert").textContent).toBe("Session verification failed");
   });
 
+  it("validates required identifiers using the displayed field label", () => {
+    render(<AuthPage onSignIn={vi.fn()} signInIdentifier={{ label: "Email or username", type: "text" }} />);
+    fireEvent.click(screen.getByRole("button", { name: /^sign in$/i }));
+    expect(screen.getByRole("alert").textContent).toBe("Email or username is required");
+  });
+
+  it("does not submit values from removed conditional signup fields", async () => {
+    const onSignUp = vi.fn().mockResolvedValue(undefined);
+    const props = {
+      defaultMode: "signup" as const,
+      onSignUp,
+      requirePasswordConfirmation: false,
+    };
+    const { rerender } = render(<AuthPage {...props}
+      signUpFields={[{ name: "username", label: "Username" }]} />);
+    fireEvent.change(screen.getByLabelText("Username"), { target: { value: "oldusername" } });
+    rerender(<AuthPage {...props} signUpFields={[]} />);
+    fireEvent.change(screen.getByLabelText("Email"), { target: { value: "person@example.com" } });
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "password123" } });
+    fireEvent.click(screen.getByRole("button", { name: /^create account$/i }));
+    await waitFor(() => expect(onSignUp).toHaveBeenCalledWith({ email: "person@example.com", password: "password123" }));
+  });
+
+  it("allows empty optional signup inputs with minimum length", async () => {
+    const onSignUp = vi.fn().mockResolvedValue(undefined);
+    render(<AuthPage defaultMode="signup" onSignUp={onSignUp}
+      requirePasswordConfirmation={false}
+      signUpFields={[{ name: "nickname", label: "Nickname", minLength: 3 }]} />);
+    fireEvent.change(screen.getByLabelText("Email"), { target: { value: "person@example.com" } });
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "password123" } });
+    fireEvent.click(screen.getByRole("button", { name: /^create account$/i }));
+    await waitFor(() => expect(onSignUp).toHaveBeenCalledWith(expect.objectContaining({ fields: { nickname: "" } })));
+  });
+
 });
