@@ -1,0 +1,10 @@
+.modeSwitch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px; padding: 3px; background: var(--background); border-radius: 10px; }
+.modeButton { min-height: 36px; border: 0; border-radius: 7px; background: transparent; color: var(--muted-foreground); font: inherit; font-size: .875rem; font-weight: 600; cursor: pointer; }
+.modeButton[aria-pressed="true"] { background: var(--ts-card-bg, var(--card)); color: var(--foreground); box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+.modeButton:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-ring-offset); }
+.form { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+.form > button[type="submit"] { width: 100%; min-height: 42px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.label { font-size: .875rem; font-weight: 500; color: var(--foreground); }
+.field input { width: 100%; min-height: 40px; }
+.error { margin: 0; color: var(--destructive); font-size: .8125rem; }
