@@ -139,6 +139,10 @@ export { Select } from "./components/select/Select";
 export type { SegmentedToggleProps, SegmentedToggleOption } from "./components/segmented-toggle/SegmentedToggle";
 export { SegmentedToggle } from "./components/segmented-toggle/SegmentedToggle";
 
+// Complete authentication experience (application owns the API and sessions)
+export type { AuthPageProps, AuthCredentials } from "./components/auth-page/AuthPage";
+export { AuthPage } from "./components/auth-page/AuthPage";
+
 // Shared authentication UI primitives
 export type { AuthFormProps, AuthFieldProps, AuthMode, AuthModeSwitchProps } from "./components/auth-form/AuthForm";
 export { AuthForm, AuthField, AuthModeSwitch } from "./components/auth-form/AuthForm";
