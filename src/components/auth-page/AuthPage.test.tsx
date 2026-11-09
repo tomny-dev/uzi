@@ -63,4 +63,38 @@ describe("AuthPage", () => {
     expect(onModeChange).toHaveBeenCalledWith("signup");
     expect(screen.getByRole("heading", { name: "Welcome back" })).toBeTruthy();
   });
+  it("supports a username sign-in identifier without email validation", async () => {
+    const onSignIn = vi.fn().mockResolvedValue(undefined);
+    render(<AuthPage onSignIn={onSignIn}
+      signInIdentifier={{ type: "text", label: "Email or username", placeholder: "Your account" }}
+      minSignInPasswordLength={8} />);
+    fireEvent.change(screen.getByLabelText("Email or username"), { target: { value: "  trader42  " } });
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "securepassword" } });
+    fireEvent.click(screen.getByRole("button", { name: /^sign in$/i }));
+    await waitFor(() => expect(onSignIn).toHaveBeenCalledWith(expect.objectContaining({
+      email: "trader42", identifier: "trader42", password: "securepassword",
+    })));
+  });
+
+  it("collects configurable signup fields without mandatory password confirmation", async () => {
+    const onSignUp = vi.fn().mockResolvedValue(undefined);
+    render(<AuthPage defaultMode="signup" onSignUp={onSignUp} requirePasswordConfirmation={false}
+      signUpFields={[{ name: "username", label: "Username", required: true, maxLength: 100 }]} />);
+    fireEvent.change(screen.getByLabelText("Email"), { target: { value: "user@example.com" } });
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "securepassword" } });
+    fireEvent.click(screen.getByRole("button", { name: /^create account$/i }));
+    expect(screen.getByRole("alert").textContent).toContain("Username is required");
+    expect(screen.queryByLabelText("Confirm password")).toBeNull();
+    fireEvent.change(screen.getByLabelText("Username"), { target: { value: "testuser" } });
+    fireEvent.click(screen.getByRole("button", { name: /^create account$/i }));
+    await waitFor(() => expect(onSignUp).toHaveBeenCalledWith(expect.objectContaining({
+      email: "user@example.com", fields: { username: "testuser" },
+    })));
+  });
+
+  it("shows an external session verification error", () => {
+    render(<AuthPage initialError="Session verification failed" onSignIn={vi.fn()} />);
+    expect(screen.getByRole("alert").textContent).toBe("Session verification failed");
+  });
+
 });
