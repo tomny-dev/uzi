@@ -163,7 +163,7 @@ export function AuthPage({
       for (const field of signUpFields) {
         const value = (extraValues[field.name] ?? "").trim();
         if (field.required && !value) nextErrors[field.name] = field.label + " is required";
-        else if (field.minLength && value.length < field.minLength) nextErrors[field.name] = field.label + " is too short";
+        else if (value && field.minLength && value.length < field.minLength) nextErrors[field.name] = field.label + " is too short";
         else if (field.maxLength && value.length > field.maxLength) nextErrors[field.name] = field.label + " is too long";
         else if (field.type === "email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) nextErrors[field.name] = "Enter a valid email address";
       }
