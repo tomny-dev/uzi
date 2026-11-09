@@ -100,7 +100,8 @@ describe("AuthPage", () => {
   it("validates required identifiers using the displayed field label", () => {
     render(<AuthPage onSignIn={vi.fn()} signInIdentifier={{ label: "Email or username", type: "text" }} />);
     fireEvent.click(screen.getByRole("button", { name: /^sign in$/i }));
-    expect(screen.getByRole("alert").textContent).toBe("Email or username is required");
+    expect(screen.getByText("Email or username is required")).toBeTruthy();
+    expect(screen.getByText("Password is required")).toBeTruthy();
   });
 
   it("does not submit values from removed conditional signup fields", async () => {
