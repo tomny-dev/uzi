@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.13.0...uzi-v0.14.0) (2026-11-09)
+
+
+### Features
+
+* **auth:** configurable identifier and registration fields in shared AuthPage ([#109](https://github.com/tomny-dev/uzi/issues/109)) ([6ea9b20](https://github.com/tomny-dev/uzi/commit/6ea9b20d8eeb139879707a476848ee36f7c21087))
+
 ## [0.13.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.12.0...uzi-v0.13.0) (2026-11-09)
 
 
