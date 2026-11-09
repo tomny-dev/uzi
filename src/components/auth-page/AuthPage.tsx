@@ -201,6 +201,11 @@ export function AuthPage({
         )}
         {!signup && forgotPasswordHref && <a className={styles.forgot} href={forgotPasswordHref}>Forgot password?</a>}
         {serverError && <p className={styles.error} role="alert">{serverError}</p>}
+        {!(signup ? onSignUp : onSignIn) && (
+          <p className={styles.error} role="status">
+            {signup ? "Sign-up is not available." : "Sign-in is not available."}
+          </p>
+        )}
         <Button type="submit" variant="primary" size="lg" disabled={disabled || pending || (signup ? !onSignUp : !onSignIn)}>
           {pending ? (signup ? "Creating account..." : "Signing in...") : (signup ? "Create account" : "Sign in")}
         </Button>
