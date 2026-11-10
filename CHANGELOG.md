@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.14.0...uzi-v0.15.0) (2026-11-10)
+
+
+### Features
+
+* add standardized filter bar, chips and popover primitives ([#111](https://github.com/tomny-dev/uzi/issues/111)) ([dcb45c3](https://github.com/tomny-dev/uzi/commit/dcb45c372c89bc956dbc1a6f53c47913a4476740))
+
 ## [0.14.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.13.0...uzi-v0.14.0) (2026-11-09)
 
 
