@@ -73,7 +73,6 @@ export function FilterPopover({
 }: FilterPopoverProps) {
   const [internalOpen, setInternalOpen] = React.useState(false);
   const isOpen = open ?? internalOpen;
-  const triggerRef = React.useRef<HTMLButtonElement>(null);
   const rootRef = React.useRef<HTMLDivElement>(null);
   const panelId = React.useId();
 
@@ -91,7 +90,7 @@ export function FilterPopover({
       if (event.key !== "Escape") return;
       event.stopPropagation();
       setOpen(false);
-      triggerRef.current?.focus();
+      rootRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
     };
     document.addEventListener("pointerdown", onPointer);
     document.addEventListener("keydown", onKey);
@@ -102,7 +101,7 @@ export function FilterPopover({
   }, [isOpen, setOpen]);
 
   return <div ref={rootRef} className={cx(styles.popoverRoot, className)}>
-    <Button ref={triggerRef} variant="outline" size="sm"
+    <Button variant="outline" size="sm"
       aria-expanded={isOpen} aria-controls={panelId} aria-haspopup="dialog"
       onClick={() => setOpen(!isOpen)}>
       {label}{activeCount > 0 ? ` (${activeCount})` : ""}
