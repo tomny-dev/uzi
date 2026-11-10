@@ -115,6 +115,9 @@ export { Stat, StatGroup } from "./components/stat/Stat";
 export type { ToolbarDensity, ToolbarGroupProps, ToolbarProps } from "./components/toolbar/Toolbar";
 export { Toolbar, ToolbarGroup } from "./components/toolbar/Toolbar";
 
+export type { FilterBarProps, FilterChipsProps, FilterChip, FilterPopoverProps } from "./components/filter-workspace/FilterWorkspace";
+export { FilterBar, FilterChips, FilterPopover } from "./components/filter-workspace/FilterWorkspace";
+
 export type { ThemeToggleButtonProps } from "./components/theme-toggle-button/ThemeToggleButton";
 export { ThemeToggleButton } from "./components/theme-toggle-button/ThemeToggleButton";
 
