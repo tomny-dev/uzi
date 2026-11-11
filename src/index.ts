@@ -41,7 +41,11 @@ export type {
   ToastType,
 } from "./components/toast/types";
 
-// Search suggestions (applications own their search data and navigation)\nexport type { SearchAutocompleteProps, SearchSuggestion } from "./components/search-autocomplete/SearchAutocomplete";\nexport { SearchAutocomplete } from "./components/search-autocomplete/SearchAutocomplete";\n\n// Inputs
+// Search suggestions (applications own their search data and navigation)
+export type { SearchAutocompleteProps, SearchSuggestion } from "./components/search-autocomplete/SearchAutocomplete";
+export { SearchAutocomplete } from "./components/search-autocomplete/SearchAutocomplete";
+
+// Inputs
 export type { InputProps } from "./components/input/Input";
 export { Input } from "./components/input/Input";
 
