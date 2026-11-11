@@ -70,17 +70,17 @@ export function SearchAutocomplete({
   const query = value ?? internalValue;
   const [open, setOpen] = React.useState(false);
   const [active, setActive] = React.useState(-1);
-  const [results, setResults] = React.useState<readonly SearchSuggestion[]>([]);
+  const [results, setResults] = React.useState<{ query: string; items: readonly SearchSuggestion[] }>({ query: "", items: [] });
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(false);
   const trimmed = query.trim();
-  const suggestions = (trimmed ? (search ? results : recommendations.filter((item) =>
+  const suggestions = (trimmed ? (search ? (results.query === trimmed ? results.items : []) : recommendations.filter((item) =>
     `${item.label} ${item.description ?? ""} ${item.group ?? ""}`.toLowerCase().includes(trimmed.toLowerCase())
   )) : recommendations).slice(0, Math.max(0, maxSuggestions));
 
   React.useEffect(() => {
     if (!trimmed || !search) {
-      setResults([]);
+      setResults({ query: "", items: [] });
       setLoading(false);
       setError(false);
       return;
@@ -90,9 +90,9 @@ export function SearchAutocomplete({
     setError(false);
     const timer = window.setTimeout(() => {
       void search(trimmed, controller.signal).then((items) => {
-        if (!controller.signal.aborted) setResults(items);
+        if (!controller.signal.aborted) setResults({ query: trimmed, items });
       }).catch(() => {
-        if (!controller.signal.aborted) { setResults([]); setError(true); }
+        if (!controller.signal.aborted) { setResults({ query: trimmed, items: [] }); setError(true); }
       }).finally(() => {
         if (!controller.signal.aborted) setLoading(false);
       });
