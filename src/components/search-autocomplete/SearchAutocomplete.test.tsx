@@ -92,16 +92,28 @@ describe("SearchAutocomplete", () => {
   it("hides suggestions from a previous search source when scope changes", async () => {
     const firstSearch = vi.fn(async () => [recommendations[0]!]);
     const secondSearch = vi.fn(async () => [recommendations[1]!]);
+    const navigate = vi.fn();
     const { rerender } = render(
-      <SearchAutocomplete aria-label="Search" value="mine" search={firstSearch} debounceMs={0} />
+      <SearchAutocomplete aria-label="Search" value="mine" search={firstSearch} debounceMs={0} onNavigate={navigate} />
     );
-    fireEvent.focus(screen.getByRole("combobox"));
+    const input = screen.getByRole("combobox");
+    fireEvent.focus(input);
     await waitFor(() => expect(screen.getByText("Minecraft")).toBeTruthy());
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    expect(input.getAttribute("aria-activedescendant")).toBeTruthy();
 
-    rerender(<SearchAutocomplete aria-label="Search" value="mine" search={secondSearch} debounceMs={0} />);
+    rerender(<SearchAutocomplete aria-label="Search" value="mine" search={secondSearch} debounceMs={0} onNavigate={navigate} />);
     expect(screen.queryByText("Minecraft")).toBeNull();
+    expect(input.getAttribute("aria-activedescendant")).toBeNull();
     await waitFor(() => expect(screen.getByText("Palworld")).toBeTruthy());
     expect(screen.queryByText("Minecraft")).toBeNull();
+
+    // A new source must require a fresh keyboard selection before Enter can navigate.
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(navigate).not.toHaveBeenCalled();
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(navigate).toHaveBeenCalledExactlyOnceWith(recommendations[1]);
   });
 
   it("dismisses suggestions when tabbing away in either direction", () => {
