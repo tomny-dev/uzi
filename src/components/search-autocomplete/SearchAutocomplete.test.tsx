@@ -89,6 +89,20 @@ describe("SearchAutocomplete", () => {
     expect(screen.queryByText("Minecraft")).toBeNull();
   });
 
+  it("hides suggestions from a previous search source when scope changes", async () => {
+    const firstSearch = vi.fn(async () => [recommendations[0]!]);
+    const secondSearch = vi.fn(async () => [recommendations[1]!]);
+    const { rerender } = render(
+      <SearchAutocomplete aria-label="Search" value="mine" search={firstSearch} debounceMs={0} />
+    );
+    await waitFor(() => expect(screen.getByText("Minecraft")).toBeTruthy());
+
+    rerender(<SearchAutocomplete aria-label="Search" value="mine" search={secondSearch} debounceMs={0} />);
+    expect(screen.queryByText("Minecraft")).toBeNull();
+    await waitFor(() => expect(screen.getByText("Palworld")).toBeTruthy());
+    expect(screen.queryByText("Minecraft")).toBeNull();
+  });
+
   it("dismisses suggestions when tabbing away in either direction", () => {
     render(<SearchAutocomplete aria-label="Search" recommendations={recommendations} />);
     const input = screen.getByRole("combobox");
