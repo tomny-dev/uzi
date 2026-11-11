@@ -45,6 +45,19 @@ describe("SearchAutocomplete", () => {
     expect(search).toHaveBeenCalledWith("craft", expect.any(AbortSignal));
   });
 
+  it("dismisses suggestions when tabbing away in either direction", () => {
+    render(<SearchAutocomplete aria-label="Search" recommendations={recommendations} />);
+    const input = screen.getByRole("combobox");
+    for (const shiftKey of [false, true]) {
+      fireEvent.focus(input);
+      expect(input.getAttribute("aria-expanded")).toBe("true");
+      const event = fireEvent.keyDown(input, { key: "Tab", shiftKey });
+      expect(event).toBe(true);
+      expect(input.getAttribute("aria-expanded")).toBe("false");
+      expect(screen.queryByRole("listbox")).toBeNull();
+    }
+  });
+
   it("closes on Escape", () => {
     render(<SearchAutocomplete aria-label="Search" recommendations={recommendations} />);
     const input = screen.getByRole("combobox");
