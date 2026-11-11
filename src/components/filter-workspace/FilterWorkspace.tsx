@@ -74,7 +74,6 @@ export function FilterPopover({
   const [internalOpen, setInternalOpen] = React.useState(false);
   const isOpen = open ?? internalOpen;
   const rootRef = React.useRef<HTMLDivElement>(null);
-  const triggerRef = React.useRef<HTMLButtonElement>(null);
   const panelRef = React.useRef<HTMLDivElement>(null);
   const panelId = React.useId();
 
@@ -82,6 +81,15 @@ export function FilterPopover({
     if (open === undefined) setInternalOpen(next);
     onOpenChange?.(next);
   }, [open, onOpenChange]);
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    // Open the editor at its first actionable field instead of leaving keyboard
+    // focus on the trigger behind a non-modal dialog.
+    panelRef.current?.querySelector<HTMLElement>(
+      'input:not(:disabled), select:not(:disabled), textarea:not(:disabled), button:not(:disabled), [tabindex="0"]',
+    )?.focus();
+  }, [isOpen]);
 
   React.useEffect(() => {
     if (!isOpen) return;
