@@ -10,6 +10,24 @@ const recommendations: SearchSuggestion[] = [
 ];
 
 describe("SearchAutocomplete", () => {
+  it("supports the same decorative icon contract as MultiSelect without changing option names or navigation", async () => {
+    const icon = <svg role="img" aria-label="Decorative game"><path d="M0 0h16v16H0z" /></svg>;
+    const item: SearchSuggestion = { ...recommendations[0]!, icon };
+    const navigate = vi.fn();
+    render(<SearchAutocomplete recommendations={[item, recommendations[1]!]} search={async () => [item]} debounceMs={0} onNavigate={navigate} />);
+    const input = screen.getByRole("combobox");
+    fireEvent.focus(input);
+    expect(screen.getByRole("option", { name: /^Minecraft\s*Games$/ }).querySelector('[aria-hidden="true"] svg')).toBeTruthy();
+    expect(screen.queryByRole("img")).toBeNull();
+    expect(screen.getByRole("option", { name: /^Palworld\s*Games$/ })).toBeTruthy();
+    fireEvent.change(input, { target: { value: "mine" } });
+    await waitFor(() => expect(screen.getByRole("option", { name: /^Minecraft\s*Games$/ })).toBeTruthy());
+    expect(screen.getByRole("option").querySelector('[aria-hidden="true"] svg')).toBeTruthy();
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(navigate).toHaveBeenCalledExactlyOnceWith(item);
+  });
+
   it("rejects executable or invalid URL schemes while keeping normal navigation", () => {
     const base = "https://tultr.com/search?q=palworld";
     expect(resolveSafeSuggestionHref("/minecraft", base)).toBe("https://tultr.com/minecraft");

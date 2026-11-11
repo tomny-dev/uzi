@@ -8,6 +8,8 @@ export interface SearchSuggestion {
   /** Stable unique identifier, including across groups. */
   id: string;
   label: string;
+  /** Optional decorative leading visual. The label remains the accessible option name. */
+  icon?: React.ReactElement;
   description?: string;
   group?: string;
   href: string;
@@ -174,6 +176,7 @@ export function SearchAutocomplete({
                   onMouseEnter={() => setActive(index)}
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={() => navigate(item)}>
+                  {item.icon ? <span className={styles.optionIcon} aria-hidden="true">{item.icon}</span> : null}
                   <span className={styles.details}>
                     <span className={styles.label}>{item.label}</span>
                     {item.description && <span className={styles.description}>{item.description}</span>}

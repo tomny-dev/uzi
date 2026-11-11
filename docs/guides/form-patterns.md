@@ -127,6 +127,28 @@ Key props:
 | `maxVisibleValues` | `number` | `2` | Number of chips to show before collapsing into a summary. |
 | `fullWidth` | `boolean` | `true` | Whether the component takes full container width. |
 
+## SearchAutocomplete with suggestion icons
+
+`SearchAutocomplete` accepts `recommendations` and an optional async `search(query, signal)`
+source. Both return `SearchSuggestion` objects with `id`, `label`, `href`, optional
+`description`, `group`, and `icon` fields. Retrieval and type-to-icon mapping belong to the app.
+
+Like `MultiSelectOption.icon`, `SearchSuggestion.icon` is an optional `React.ReactElement`.
+Both components render it in a non-shrinking 1rem leading slot with `aria-hidden="true"`;
+the text remains the accessible option name. Use non-interactive SVGs or images with empty
+alt text. Omitting the icon preserves text-only options.
+
+```tsx
+const icon = <img src="/game.svg" alt="" />;
+const recommendations = [{ id: "game", label: "My game", href: "/game", icon }];
+
+<SearchAutocomplete name="q" recommendations={recommendations} />
+```
+
+Icons do not change arrow-key selection, Enter navigation/free-text form submission,
+Escape dismissal, or async cancellation. Create React elements in the app rather than
+serializing them in an API response.
+
 ## SegmentedToggle for View Toggles
 
 `SegmentedToggle` provides a radio-group-style control for switching between mutually exclusive views:
