@@ -74,12 +74,45 @@ export function FilterPopover({
   const [internalOpen, setInternalOpen] = React.useState(false);
   const isOpen = open ?? internalOpen;
   const rootRef = React.useRef<HTMLDivElement>(null);
+  const panelRef = React.useRef<HTMLDivElement>(null);
   const panelId = React.useId();
+  const [panelLeft, setPanelLeft] = React.useState<number | null>(null);
 
   const setOpen = React.useCallback((next: boolean) => {
     if (open === undefined) setInternalOpen(next);
     onOpenChange?.(next);
   }, [open, onOpenChange]);
+
+  React.useLayoutEffect(() => {
+    if (!isOpen) {
+      setPanelLeft(null);
+      return;
+    }
+    // Position the non-modal overlay inside the viewport, even when its
+    // trigger sits at the far left or right of a wrapping toolbar.
+    const position = () => {
+      if (!rootRef.current || !panelRef.current) return;
+      const root = rootRef.current.getBoundingClientRect();
+      const panel = panelRef.current.getBoundingClientRect();
+      const gutter = 16;
+      const width = panel.width;
+      const preferredLeft = root.right - width;
+      const viewportLeft = Math.max(gutter, Math.min(preferredLeft, window.innerWidth - width - gutter));
+      setPanelLeft(viewportLeft - root.left);
+    };
+    position();
+    window.addEventListener("resize", position);
+    return () => window.removeEventListener("resize", position);
+  }, [isOpen]);
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    // Open the editor at its first actionable field instead of leaving keyboard
+    // focus on the trigger behind a non-modal dialog.
+    panelRef.current?.querySelector<HTMLElement>(
+      'input:not(:disabled), select:not(:disabled), textarea:not(:disabled), button:not(:disabled), [tabindex="0"]',
+    )?.focus();
+  }, [isOpen]);
 
   React.useEffect(() => {
     if (!isOpen) return;
@@ -106,8 +139,9 @@ export function FilterPopover({
       onClick={() => setOpen(!isOpen)}>
       {label}{activeCount > 0 ? ` (${activeCount})` : ""}
     </Button>
-    {isOpen && <div id={panelId} role="dialog" aria-label={label}
-      className={cx(styles.panel, panelClassName)}>
+    {isOpen && <div ref={panelRef} id={panelId} role="dialog" aria-label={label}
+      aria-modal="false" className={cx(styles.panel, panelClassName)}
+      style={panelLeft === null ? undefined : { left: panelLeft, right: "auto" }}>
       {children}
     </div>}
   </div>;
