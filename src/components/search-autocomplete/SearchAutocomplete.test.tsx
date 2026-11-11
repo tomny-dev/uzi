@@ -1,14 +1,20 @@
 import * as React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { SearchAutocomplete } from "./SearchAutocomplete";
+import { SearchAutocomplete, type SearchAutocompleteProps, type SearchSuggestion } from "../../index";
 
-const recommendations = [
+const recommendations: SearchSuggestion[] = [
   { id: "a", label: "Minecraft", href: "/minecraft", group: "Games" },
   { id: "b", label: "Palworld", href: "/palworld", group: "Games" },
 ];
 
 describe("SearchAutocomplete", () => {
+  it("exposes the autocomplete and its props through the public package entrypoint", () => {
+    const props: SearchAutocompleteProps = { recommendations };
+    expect(typeof SearchAutocomplete).toBe("function");
+    expect(props.recommendations).toBe(recommendations);
+  });
+
   it("shows recommendations on focus and supports arrow-key navigation", () => {
     const navigate = vi.fn();
     render(<SearchAutocomplete aria-label="Search" recommendations={recommendations} onNavigate={navigate} />);
