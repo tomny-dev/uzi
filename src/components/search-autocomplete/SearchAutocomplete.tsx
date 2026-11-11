@@ -107,7 +107,7 @@ export function SearchAutocomplete({
     else window.location.assign(item.href);
   };
   const choose = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Escape") { setOpen(false); setActive(-1); }
+    if (event.key === "Escape" || event.key === "Tab") { setOpen(false); setActive(-1); }
     else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       if (!open) setOpen(true);
       event.preventDefault();
