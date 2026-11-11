@@ -13,6 +13,16 @@ export interface SearchSuggestion {
   href: string;
 }
 
+/** Resolve default suggestion navigation without executing non-web URL schemes. */
+export function resolveSafeSuggestionHref(href: string, baseUrl: string): string | null {
+  try {
+    const target = new URL(href, baseUrl);
+    return target.protocol === "https:" || target.protocol === "http:" ? target.href : null;
+  } catch {
+    return null;
+  }
+}
+
 export interface SearchAutocompleteProps
   extends Omit<InputProps, "value" | "defaultValue" | "onChange" | "onSelect"> {
   value?: string;
@@ -104,7 +114,10 @@ export function SearchAutocomplete({
   const navigate = (item: SearchSuggestion) => {
     setOpen(false);
     if (onNavigate) onNavigate(item);
-    else window.location.assign(item.href);
+    else {
+      const safeHref = resolveSafeSuggestionHref(item.href, window.location.href);
+      if (safeHref) window.location.assign(safeHref);
+    }
   };
   const choose = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Escape" || event.key === "Tab") { setOpen(false); setActive(-1); }
