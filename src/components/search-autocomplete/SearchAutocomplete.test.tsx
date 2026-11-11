@@ -95,6 +95,7 @@ describe("SearchAutocomplete", () => {
     const { rerender } = render(
       <SearchAutocomplete aria-label="Search" value="mine" search={firstSearch} debounceMs={0} />
     );
+    fireEvent.focus(screen.getByRole("combobox"));
     await waitFor(() => expect(screen.getByText("Minecraft")).toBeTruthy());
 
     rerender(<SearchAutocomplete aria-label="Search" value="mine" search={secondSearch} debounceMs={0} />);
