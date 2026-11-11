@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.15.0...uzi-v0.16.0) (2026-11-11)
+
+
+### Features
+
+* shared accessible search autocomplete with recommendations ([#114](https://github.com/tomny-dev/uzi/issues/114)) ([41b4623](https://github.com/tomny-dev/uzi/commit/41b4623523cf6da614b330ffa60dad611fd524cc))
+
 ## [0.15.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.14.0...uzi-v0.15.0) (2026-11-10)
 
 

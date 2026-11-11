@@ -13,6 +13,16 @@ export interface SearchSuggestion {
   href: string;
 }
 
+/** Resolve default suggestion navigation without executing non-web URL schemes. */
+export function resolveSafeSuggestionHref(href: string, baseUrl: string): string | null {
+  try {
+    const target = new URL(href, baseUrl);
+    return target.protocol === "https:" || target.protocol === "http:" ? target.href : null;
+  } catch {
+    return null;
+  }
+}
+
 export interface SearchAutocompleteProps
   extends Omit<InputProps, "value" | "defaultValue" | "onChange" | "onSelect"> {
   value?: string;
@@ -60,17 +70,17 @@ export function SearchAutocomplete({
   const query = value ?? internalValue;
   const [open, setOpen] = React.useState(false);
   const [active, setActive] = React.useState(-1);
-  const [results, setResults] = React.useState<readonly SearchSuggestion[]>([]);
+  const [results, setResults] = React.useState<{ query: string; source: typeof search; items: readonly SearchSuggestion[] }>({ query: "", source: search, items: [] });
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(false);
   const trimmed = query.trim();
-  const suggestions = (trimmed ? (search ? results : recommendations.filter((item) =>
+  const suggestions = (trimmed ? (search ? (results.query === trimmed && results.source === search ? results.items : []) : recommendations.filter((item) =>
     `${item.label} ${item.description ?? ""} ${item.group ?? ""}`.toLowerCase().includes(trimmed.toLowerCase())
   )) : recommendations).slice(0, Math.max(0, maxSuggestions));
 
   React.useEffect(() => {
     if (!trimmed || !search) {
-      setResults([]);
+      setResults({ query: "", source: search, items: [] });
       setLoading(false);
       setError(false);
       return;
@@ -80,9 +90,9 @@ export function SearchAutocomplete({
     setError(false);
     const timer = window.setTimeout(() => {
       void search(trimmed, controller.signal).then((items) => {
-        if (!controller.signal.aborted) setResults(items);
+        if (!controller.signal.aborted) setResults({ query: trimmed, source: search, items });
       }).catch(() => {
-        if (!controller.signal.aborted) { setResults([]); setError(true); }
+        if (!controller.signal.aborted) { setResults({ query: trimmed, source: search, items: [] }); setError(true); }
       }).finally(() => {
         if (!controller.signal.aborted) setLoading(false);
       });
@@ -90,7 +100,8 @@ export function SearchAutocomplete({
     return () => { window.clearTimeout(timer); controller.abort(); };
   }, [trimmed, search, debounceMs]);
 
-  React.useEffect(() => { setActive(-1); }, [query]);
+  // A new search source represents a new option set, even when the query is unchanged.
+  React.useEffect(() => { setActive(-1); }, [query, search]);
 
   React.useEffect(() => {
     if (!open) return;
@@ -104,10 +115,13 @@ export function SearchAutocomplete({
   const navigate = (item: SearchSuggestion) => {
     setOpen(false);
     if (onNavigate) onNavigate(item);
-    else window.location.assign(item.href);
+    else {
+      const safeHref = resolveSafeSuggestionHref(item.href, window.location.href);
+      if (safeHref) window.location.assign(safeHref);
+    }
   };
   const choose = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Escape") { setOpen(false); setActive(-1); }
+    if (event.key === "Escape" || event.key === "Tab") { setOpen(false); setActive(-1); }
     else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       if (!open) setOpen(true);
       event.preventDefault();
