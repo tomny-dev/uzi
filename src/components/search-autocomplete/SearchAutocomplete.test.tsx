@@ -2,6 +2,7 @@ import * as React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { SearchAutocomplete, type SearchAutocompleteProps, type SearchSuggestion } from "../../index";
+import { resolveSafeSuggestionHref } from "./SearchAutocomplete";
 
 const recommendations: SearchSuggestion[] = [
   { id: "a", label: "Minecraft", href: "/minecraft", group: "Games" },
@@ -9,6 +10,24 @@ const recommendations: SearchSuggestion[] = [
 ];
 
 describe("SearchAutocomplete", () => {
+  it("rejects executable or invalid URL schemes while keeping normal navigation", () => {
+    const base = "https://tultr.com/search?q=palworld";
+    expect(resolveSafeSuggestionHref("/minecraft", base)).toBe("https://tultr.com/minecraft");
+    expect(resolveSafeSuggestionHref("?q=crafting", base)).toBe("https://tultr.com/search?q=crafting");
+    expect(resolveSafeSuggestionHref("https://example.com/guide", base)).toBe("https://example.com/guide");
+
+    for (const href of [
+      "javascript:alert(1)",
+      "  JaVaScRiPt:alert(1)",
+      "data:text/html,<script>alert(1)</script>",
+      "vbscript:msgbox(1)",
+      "file:///etc/passwd",
+      "http://[",
+    ]) {
+      expect(resolveSafeSuggestionHref(href, base)).toBeNull();
+    }
+  });
+
   it("exposes the autocomplete and its props through the public package entrypoint", () => {
     const props: SearchAutocompleteProps = { recommendations };
     expect(typeof SearchAutocomplete).toBe("function");
