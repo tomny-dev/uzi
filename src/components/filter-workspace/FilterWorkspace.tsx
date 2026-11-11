@@ -74,6 +74,8 @@ export function FilterPopover({
   const [internalOpen, setInternalOpen] = React.useState(false);
   const isOpen = open ?? internalOpen;
   const rootRef = React.useRef<HTMLDivElement>(null);
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
+  const panelRef = React.useRef<HTMLDivElement>(null);
   const panelId = React.useId();
 
   const setOpen = React.useCallback((next: boolean) => {
@@ -106,8 +108,8 @@ export function FilterPopover({
       onClick={() => setOpen(!isOpen)}>
       {label}{activeCount > 0 ? ` (${activeCount})` : ""}
     </Button>
-    {isOpen && <div id={panelId} role="dialog" aria-label={label}
-      className={cx(styles.panel, panelClassName)}>
+    {isOpen && <div ref={panelRef} id={panelId} role="dialog" aria-label={label}
+      aria-modal="false" className={cx(styles.panel, panelClassName)}>
       {children}
     </div>}
   </div>;
