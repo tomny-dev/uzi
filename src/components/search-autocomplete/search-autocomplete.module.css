@@ -1,6 +1,6 @@
 .root { position: relative; width: 100%; min-width: 0; }
 .root > input { width: 100%; }
-.panel { position: absolute; z-index: var(--uzi-popover-z-index, 1100); inset-inline-end: 0; width: max(100%, min(24rem, calc(100vw - 2rem))); top: calc(100% + 0.375rem); overflow-y: auto; max-height: min(24rem, 60vh); padding: var(--uzi-menu-padding, 0.25rem); border: 1px solid var(--uzi-border-default, var(--border)); border-radius: var(--uzi-menu-radius, 0.625rem); background: var(--popover, var(--card)); color: var(--popover-foreground, var(--foreground)); box-shadow: var(--uzi-menu-shadow, 0 12px 32px rgba(0,0,0,.18)); }
+.panel { position: absolute; z-index: var(--uzi-popover-z-index, 1100); inset-inline: 0; top: calc(100% + 0.375rem); overflow-y: auto; max-height: min(24rem, 60vh); padding: var(--uzi-menu-padding, 0.25rem); border: 1px solid var(--uzi-border-default, var(--border)); border-radius: var(--uzi-menu-radius, 0.625rem); background: var(--popover, var(--card)); color: var(--popover-foreground, var(--foreground)); box-shadow: var(--uzi-menu-shadow, 0 12px 32px rgba(0,0,0,.18)); }
 .option { display: flex; align-items: center; justify-content: space-between; gap: var(--uzi-menu-item-gap, .5rem); cursor: pointer; padding: var(--uzi-menu-item-padding-y, .5rem) var(--uzi-menu-item-padding-x, .625rem); border-radius: var(--uzi-menu-item-radius, .5rem); }
 .option:hover, .active { background: var(--uzi-surface-selected, var(--accent)); }
 .details { display: grid; gap: .125rem; min-width: 0; flex: 1; }
