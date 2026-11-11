@@ -100,7 +100,8 @@ export function SearchAutocomplete({
     return () => { window.clearTimeout(timer); controller.abort(); };
   }, [trimmed, search, debounceMs]);
 
-  React.useEffect(() => { setActive(-1); }, [query]);
+  // A new search source represents a new option set, even when the query is unchanged.
+  React.useEffect(() => { setActive(-1); }, [query, search]);
 
   React.useEffect(() => {
     if (!open) return;
