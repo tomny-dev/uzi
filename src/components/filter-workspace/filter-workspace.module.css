@@ -42,6 +42,7 @@
 @media (max-width: 64rem) {
   .bar { grid-template-columns: minmax(0, 1fr) max-content; }
   .leading { grid-column: 1; }
+  .actions { flex-wrap: wrap; }
   .search { grid-column: 1; grid-row: 2; }
   .actions { grid-column: 2; grid-row: 2; }
 }
