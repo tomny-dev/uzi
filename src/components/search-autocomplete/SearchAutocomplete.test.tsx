@@ -64,6 +64,31 @@ describe("SearchAutocomplete", () => {
     expect(search).toHaveBeenCalledWith("craft", expect.any(AbortSignal));
   });
 
+  it("does not display or navigate stale async suggestions after the query changes", async () => {
+    const navigate = vi.fn();
+    let finishSecond: ((items: readonly SearchSuggestion[]) => void) | undefined;
+    const search = vi.fn((query: string): Promise<readonly SearchSuggestion[]> => {
+      if (query === "mine") return Promise.resolve([recommendations[0]]);
+      return new Promise((resolve) => { finishSecond = resolve; });
+    });
+    render(<SearchAutocomplete aria-label="Search" search={search} debounceMs={0} onNavigate={navigate} />);
+    const input = screen.getByRole("combobox");
+
+    fireEvent.change(input, { target: { value: "mine" } });
+    await waitFor(() => expect(screen.getByText("Minecraft")).toBeTruthy());
+
+    fireEvent.change(input, { target: { value: "pal" } });
+    expect(screen.queryByText("Minecraft")).toBeNull();
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(navigate).not.toHaveBeenCalled();
+
+    await waitFor(() => expect(search).toHaveBeenCalledWith("pal", expect.any(AbortSignal)));
+    finishSecond?.([recommendations[1]]);
+    await waitFor(() => expect(screen.getByText("Palworld")).toBeTruthy());
+    expect(screen.queryByText("Minecraft")).toBeNull();
+  });
+
   it("dismisses suggestions when tabbing away in either direction", () => {
     render(<SearchAutocomplete aria-label="Search" recommendations={recommendations} />);
     const input = screen.getByRole("combobox");
