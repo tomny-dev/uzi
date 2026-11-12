@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.16.0...uzi-v0.17.0) (2026-11-12)
+
+
+### Features
+
+* **search:** add decorative autocomplete suggestion icons ([#116](https://github.com/tomny-dev/uzi/issues/116)) ([2ff9c97](https://github.com/tomny-dev/uzi/commit/2ff9c97cc00442716434572d137fd1552a70ccfd))
+
 ## [0.16.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.15.0...uzi-v0.16.0) (2026-11-11)
 
 
