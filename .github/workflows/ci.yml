@@ -32,6 +32,16 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # mcp/ is an independent npm package (not part of pnpm-workspace.yaml).
+      # Root pnpm checks do not install or exercise its lockfile.
+      - name: Validate MCP package and locked dependencies
+        working-directory: mcp
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm ls @hono/node-server
+          node --check server.js
+          node --input-type=module -e "await import('@hono/node-server')"
+
       - name: Type check
         run: pnpm lint
 
