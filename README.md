@@ -60,6 +60,15 @@ package. It has its own package name, tests and build and does not change the
 published `@tomny-dev/uzi` UI entry points. See
 [AI harness workspace](packages/ai/README.md) for usage and release status.
 
+## Cloudflare platform foundation
+
+This repository now also contains `packages/cloudflare`, an **unpublished, Worker-only**
+integration workspace for typed D1 bindings and standardized API errors.
+It is independent of `@tomny-dev/uzi` UI and `@tomny-dev/ai`; do not import it
+in browser components. See [Cloudflare integration](packages/cloudflare/README.md)
+and [platform architecture](docs/architecture/cloudflare-platform.md).
+The package is intentionally private until its first consumer and release workflow are validated.
+
 ## Documentation
 
 - [Getting Started](docs/getting-started.md) — Installation, styles, and first components
