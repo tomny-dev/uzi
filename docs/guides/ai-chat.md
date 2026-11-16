@@ -230,6 +230,15 @@ import { AIChat, AIChatDock } from "@tomny-dev/uzi";
 </AIChatDock>;
 ```
 
+For apps with a consumer-owned conversation reset, pass `onNewChat` to
+`AIChatDock` so the action appears in the **dock header**, beside expand and close.
+When using controlled `AIChatView` inside the dock, keep `onNewChat` on the
+view for recovery controls, but pass `showNewChatInToolbar={false}` to suppress
+the redundant toolbar below the header. Disable the dock action using
+`newChatDisabled` while an approval or another action must remain in progress.
+The consumer still owns transcript deletion and conversation state; Uzi never
+clears history or grants tool permission implicitly.
+
 For external app state, pass `open`, `onOpenChange`, `expanded` and
 `onExpandedChange`. The dock does **not** recreate the chat runtime when closed:
 children stay mounted (but hidden), so queued requests, native tool approvals,
