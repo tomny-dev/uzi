@@ -208,17 +208,24 @@ function formatAttachmentSize(bytes: number): string {
   return bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-interface ChatAttachmentProps {
+/** Shared attachment surface for built-in Uzi chat and custom SDK runtimes. */
+export interface AIChatAttachmentPreviewProps {
   readonly name: string;
   readonly size?: number;
+  /** HTTP(S), safe bitmap data URI, or a local object URL when staged. */
   readonly imageUrl?: string;
+  /** Optional HTTP(S) link for non-image files. */
   readonly href?: string;
+  /** Compact composer chip rather than a history attachment. */
   readonly staged?: boolean;
   readonly onRemove?: () => void;
+  /** Pass an SDK-owned remove button here when removal must be done by a primitive. */
+  readonly removeControl?: ReactNode;
 }
 
 /** The same attachment surface is used for staged files and sent message parts. */
-function ChatAttachment({ name, size, imageUrl, href, staged, onRemove }: ChatAttachmentProps) {
+export function AIChatAttachmentPreview({ name, size, imageUrl, href, staged, onRemove, removeControl }: AIChatAttachmentPreviewProps) {
+  const safePreviewUrl = imageUrl && (safeImageUrl(imageUrl) || (staged && /^blob:/i.test(imageUrl) ? imageUrl : undefined));
   const dialogRef = useRef<HTMLDialogElement>(null);
   const previewButtonRef = useRef<HTMLButtonElement>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -229,11 +236,11 @@ function ChatAttachment({ name, size, imageUrl, href, staged, onRemove }: ChatAt
 
   return (
     <div className={[styles.attachmentCard, staged ? styles.stagedAttachment : styles.sentAttachment,
-      staged && !imageUrl ? styles.stagedFileAttachment : ''].filter(Boolean).join(' ')}>
-      {imageUrl ? (
+      staged && !safePreviewUrl ? styles.stagedFileAttachment : ''].filter(Boolean).join(' ')}>
+      {safePreviewUrl ? (
         <button ref={previewButtonRef} type="button" className={styles.imageAttachmentButton}
           onClick={() => setPreviewOpen(true)} aria-label={`Preview ${name}`} title={`Preview ${name}`}>
-          <img className={styles.attachmentThumbnail} src={imageUrl} alt={name} loading="lazy" />
+          <img className={styles.attachmentThumbnail} src={safePreviewUrl} alt={name} loading="lazy" />
         </button>
       ) : (
         <div className={styles.fileAttachment}>
@@ -249,12 +256,13 @@ function ChatAttachment({ name, size, imageUrl, href, staged, onRemove }: ChatAt
           </span>
         </div>
       )}
-      {imageUrl && !staged && <span className={styles.sentAttachmentName} title={name}>{name}</span>}
-      {onRemove && (
+      {safePreviewUrl && !staged && <span className={styles.sentAttachmentName} title={name}>{name}</span>}
+      {removeControl && <span className={styles.removeAttachmentSlot}>{removeControl}</span>}
+      {!removeControl && onRemove && (
         <button type="button" className={styles.removeAttachment} onClick={onRemove}
           aria-label={`Remove ${name}`} title={`Remove ${name}`}>×</button>
       )}
-      {previewOpen && imageUrl && (
+      {previewOpen && safePreviewUrl && (
         <dialog ref={dialogRef} className={styles.attachmentDialog} aria-label={`Preview ${name}`}
           onClose={() => { setPreviewOpen(false); previewButtonRef.current?.focus(); }}
           onClick={(event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }}>
@@ -262,7 +270,7 @@ function ChatAttachment({ name, size, imageUrl, href, staged, onRemove }: ChatAt
             <span title={name}>{name}</span>
             <button type="button" onClick={() => dialogRef.current?.close()} aria-label="Close attachment preview">×</button>
           </div>
-          <img src={imageUrl} alt={name} />
+          <img src={safePreviewUrl} alt={name} />
         </dialog>
       )}
     </div>
@@ -430,7 +438,7 @@ function renderPart(
     const isImage = type === 'image' || /^image\/(?:png|jpeg|gif|webp|avif)$/i.test(mediaType ?? '')
       || /\.(?:png|jpe?g|gif|webp|avif)$/i.test(name);
     const imageUrl = isImage ? safeImageUrl(part.url) : undefined;
-    return <ChatAttachment name={name} imageUrl={imageUrl} href={safeHttpUrl(part.url)}
+    return <AIChatAttachmentPreview name={name} imageUrl={imageUrl} href={safeHttpUrl(part.url)}
       size={typeof part.size === 'number' && part.size >= 0 ? part.size : undefined} />;
   }
   // Preserve unsupported part types as inspectable data instead of silently dropping them.
@@ -926,7 +934,7 @@ export function AIChatView({
                   <ul className={styles.attachmentList} aria-label="Attached files">
                     {attachments.map((attachment, index) => (
                       <li key={index}>
-                        <ChatAttachment name={attachment.name} size={attachment.size} staged
+                        <AIChatAttachmentPreview name={attachment.name} size={attachment.size} staged
                           imageUrl={attachment.previewUrl}
                           onRemove={onRemoveAttachment ? () => onRemoveAttachment(index) : undefined} />
                       </li>
