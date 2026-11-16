@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.1](https://github.com/tomny-dev/uzi/compare/uzi-v0.18.0...uzi-v0.18.1) (2026-11-16)
+
+
+### Bug Fixes
+
+* **ai-chat:** keep New chat visible on mobile dock header ([#125](https://github.com/tomny-dev/uzi/issues/125)) ([6a835e5](https://github.com/tomny-dev/uzi/commit/6a835e5026369cd9a9a795a933e59e1023c69fb5))
+
 ## [0.18.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.17.0...uzi-v0.18.0) (2026-11-16)
 
 
