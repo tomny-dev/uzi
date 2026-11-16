@@ -226,6 +226,7 @@ export interface AIChatAttachmentPreviewProps {
 /** The same attachment surface is used for staged files and sent message parts. */
 export function AIChatAttachmentPreview({ name, size, imageUrl, href, staged, onRemove, removeControl }: AIChatAttachmentPreviewProps) {
   const safePreviewUrl = imageUrl && (safeImageUrl(imageUrl) || (staged && /^blob:/i.test(imageUrl) ? imageUrl : undefined));
+  const safeHref = safeHttpUrl(href);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const previewButtonRef = useRef<HTMLButtonElement>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -250,7 +251,7 @@ export function AIChatAttachmentPreview({ name, size, imageUrl, href, staged, on
             <path d="M14 2v6h6M8 13h8M8 17h5" />
           </svg>
           <span className={styles.fileAttachmentDetails}>
-            {href ? <a href={href} target="_blank" rel="noopener noreferrer" title={name}>{name}</a>
+            {safeHref ? <a href={safeHref} target="_blank" rel="noopener noreferrer" title={name}>{name}</a>
               : <span title={name}>{name}</span>}
             {size !== undefined && <small>{formatAttachmentSize(size)}</small>}
           </span>
