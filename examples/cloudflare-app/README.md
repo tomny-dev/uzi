@@ -20,7 +20,22 @@ Provision separate staging/production D1 databases and Worker names. Copy the ex
 
 The deployment workflow applies remote D1 migrations **before** deploying the Worker. Migration changes are not rolled back by a Worker rollback: use backward-compatible migrations and backups. It does not create databases, manage secrets, or generate identifiers.
 
-No external deployment is performed by this example or by the public Uzi repository CI.
+### Isolated public demo deployment (manual)
+
+Uzi can deploy this example to a **separate demo-only Worker and D1 database**. The workflow `.github/workflows/cloudflare-demo.yml` is **manual-only** (`workflow_dispatch`), permitted only from the default `main` branch, and requires a dedicated GitHub environment named `uzi-demo`. It never runs for pull requests or on a new PR branch. The workflow will become dispatchable only after this PR is merged into `main`.
+
+Before running it:
+
+1. Create a new Cloudflare D1 database named `uzi-demo-<suffix>` and choose an isolated Worker named `uzi-demo-<suffix>`; **do not reuse existing or production resources**.
+2. In GitHub **Settings → Environments → uzi-demo**, restrict deployments to `main` and add reviewer protection if available. Set environment variables `DEMO_WORKER_NAME`, `DEMO_D1_DATABASE_NAME`, `DEMO_D1_DATABASE_ID` (the actual UUID), and `DEMO_URL` (the Worker URL such as `https://uzi-demo-app.<account-subdomain>.workers.dev/`).
+3. Add environment secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. Use a narrowly scoped token with D1 edit, Workers Scripts edit, and required account access, limited to the intended account. Never add it as a public PR secret.
+4. After merging, run **Actions → Cloudflare demo deployment → Run workflow** on `main`. GitHub-hosted runners install, build, apply the example's migrations to the explicitly configured demo database, deploy the demo Worker, and smoke-test its HTML, `/api/health`, and `/api/items` seeded row.
+
+Missing or invalid configuration fails before migration/deployment. The smoke test fails when the live HTML, API, or D1 record is unavailable. Database migration success is **not** reversible through Worker rollback; keep the demo database disposable. Wrangler's preview and local DB are not the remote demo DB.
+
+Do **not** add this job to ordinary pull-request CI. Until that manual deployment succeeds, do not claim the real Cloudflare end-to-end path has been validated.
+
+No external deployment is performed by ordinary public Uzi CI.
 
 ## Reusable workflow callers
 
