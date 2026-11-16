@@ -37,7 +37,7 @@ jobs:
     uses: tomny-dev/uzi/.github/workflows/cloudflare-quality.yml@<PINNED_UZI_SHA>
     with:
       app_directory: .
-      pnpm_version: '10.0.0' # Match this repository's packageManager version
+      pnpm_version: '10.0.0' # Match the downstream caller's packageManager version
 ```
 
 ```yaml
@@ -55,7 +55,7 @@ jobs:
       app_directory: .
       database_binding: DB
       environment_name: production
-      pnpm_version: '10.0.0' # Match this repository's packageManager version
+      pnpm_version: '10.0.0' # Match the downstream caller's packageManager version
       deploy_ref: refs/heads/main
     secrets:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
