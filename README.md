@@ -69,6 +69,12 @@ in browser components. See [Cloudflare integration](packages/cloudflare/README.m
 and [platform architecture](docs/architecture/cloudflare-platform.md).
 The package is intentionally private until its first consumer and release workflow are validated.
 
+A runnable [Workers + D1 + Uzi example](examples/cloudflare-app/README.md) now
+illustrates a real app API and migration. GitHub-hosted reusable
+[quality](.github/workflows/cloudflare-quality.yml) and
+[deployment](.github/workflows/cloudflare-deploy.yml) workflows live alongside
+it; deployments must be invoked explicitly from a downstream repository.
+
 ## Documentation
 
 - [Getting Started](docs/getting-started.md) — Installation, styles, and first components
