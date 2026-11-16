@@ -40,6 +40,10 @@ export interface AIChatProps {
   readonly newChatRequestKey?: string | number;
   /** Opt-in files, restricted to images/text accepted by the application API. */
   readonly attachments?: AIChatAttachmentOptions;
+  /** Visible, accessible activity label while the assistant has not started answering. */
+  readonly activityLabel?: string;
+  /** Human-friendly labels for running tools, keyed by SDK tool name. */
+  readonly toolActivityLabels?: Readonly<Record<string, string>>;
   /** Optional persistence; implementations must scope storage by user AND resource. */
   readonly history?: AIChatHistoryAdapter;
   /** Native SDK continuation predicate for tool approvals. */
@@ -84,6 +88,8 @@ export type AIChatToolApprovalHandler = (id: string, approved: boolean) => Promi
 export interface AIChatViewProps {
   readonly messages: readonly AIChatMessage[];
   readonly status?: string;
+  readonly activityLabel?: string;
+  readonly toolActivityLabels?: Readonly<Record<string, string>>;
   readonly error?: Error | null;
   readonly draft?: string;
   readonly onDraftChange?: (draft: string) => void;
@@ -188,6 +194,78 @@ function asString(value: unknown): string | undefined {
 function safeHttpUrl(value: unknown): string | undefined {
   const url = asString(value);
   return url && /^https?:\/\//i.test(url) ? url : undefined;
+}
+
+/** Allow only inert bitmap image data, never script-capable data or blob links from messages. */
+function safeImageUrl(value: unknown): string | undefined {
+  const url = asString(value);
+  return url && (/^https?:\/\//i.test(url) || /^data:image\/(?:png|jpeg|gif|webp|avif);base64,/i.test(url))
+    ? url : undefined;
+}
+
+function formatAttachmentSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  return bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+interface ChatAttachmentProps {
+  readonly name: string;
+  readonly size?: number;
+  readonly imageUrl?: string;
+  readonly href?: string;
+  readonly staged?: boolean;
+  readonly onRemove?: () => void;
+}
+
+/** The same attachment surface is used for staged files and sent message parts. */
+function ChatAttachment({ name, size, imageUrl, href, staged, onRemove }: ChatAttachmentProps) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const previewButtonRef = useRef<HTMLButtonElement>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+
+  useEffect(() => {
+    if (previewOpen && dialogRef.current && !dialogRef.current.open) dialogRef.current.showModal?.();
+  }, [previewOpen]);
+
+  return (
+    <div className={[styles.attachmentCard, staged ? styles.stagedAttachment : styles.sentAttachment].join(' ')}>
+      {imageUrl ? (
+        <button ref={previewButtonRef} type="button" className={styles.imageAttachmentButton}
+          onClick={() => setPreviewOpen(true)} aria-label={`Preview ${name}`} title={`Preview ${name}`}>
+          <img className={styles.attachmentThumbnail} src={imageUrl} alt={name} loading="lazy" />
+        </button>
+      ) : (
+        <div className={styles.fileAttachment}>
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+            <path d="M14 2v6h6M8 13h8M8 17h5" />
+          </svg>
+          <span className={styles.fileAttachmentDetails}>
+            {href ? <a href={href} target="_blank" rel="noopener noreferrer" title={name}>{name}</a>
+              : <span title={name}>{name}</span>}
+            {size !== undefined && <small>{formatAttachmentSize(size)}</small>}
+          </span>
+        </div>
+      )}
+      {imageUrl && !staged && <span className={styles.sentAttachmentName} title={name}>{name}</span>}
+      {onRemove && (
+        <button type="button" className={styles.removeAttachment} onClick={onRemove}
+          aria-label={`Remove ${name}`} title={`Remove ${name}`}>×</button>
+      )}
+      {previewOpen && imageUrl && (
+        <dialog ref={dialogRef} className={styles.attachmentDialog} aria-label={`Preview ${name}`}
+          onClose={() => { setPreviewOpen(false); previewButtonRef.current?.focus(); }}
+          onClick={(event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }}>
+          <div className={styles.attachmentDialogHeader}>
+            <span title={name}>{name}</span>
+            <button type="button" onClick={() => dialogRef.current?.close()} aria-label="Close attachment preview">×</button>
+          </div>
+          <img src={imageUrl} alt={name} />
+        </dialog>
+      )}
+    </div>
+  );
 }
 
 /** Reusable role-aware message surface for domain renderers. */
@@ -346,12 +424,13 @@ function renderPart(
     );
   }
   if (type === 'file' || type === 'image') {
-    const url = safeHttpUrl(part.url);
-    return url ? (
-      <a href={url} target="_blank" rel="noopener noreferrer">
-        {asString(part.filename) ?? 'View attachment'}
-      </a>
-    ) : <span>Attachment</span>;
+    const name = asString(part.filename) ?? asString(part.name) ?? 'Attachment';
+    const mediaType = asString(part.mediaType) ?? asString(part.mimeType);
+    const isImage = type === 'image' || /^image\/(?:png|jpeg|gif|webp|avif)$/i.test(mediaType ?? '')
+      || /\.(?:png|jpe?g|gif|webp|avif)$/i.test(name);
+    const imageUrl = isImage ? safeImageUrl(part.url) : undefined;
+    return <ChatAttachment name={name} imageUrl={imageUrl} href={safeHttpUrl(part.url)}
+      size={typeof part.size === 'number' && part.size >= 0 ? part.size : undefined} />;
   }
   // Preserve unsupported part types as inspectable data instead of silently dropping them.
   return <pre className={styles.structuredData}>{JSON.stringify(part, null, 2)}</pre>;
@@ -377,6 +456,8 @@ export function AIChat({
   showNewChatInToolbar = true,
   newChatRequestKey,
   attachments,
+  activityLabel,
+  toolActivityLabels,
   history,
   sendAutomaticallyWhen,
   onClose,
@@ -428,6 +509,8 @@ export function AIChat({
             showNewChatInToolbar={showNewChatInToolbar}
             newChatRequestKey={newChatRequestKey}
             attachmentOptions={attachments}
+            activityLabel={activityLabel}
+            toolActivityLabels={toolActivityLabels}
             history={history}
             onNewChat={() => setSession((previous) => previous + 1)}
           />
@@ -447,6 +530,8 @@ interface ChatViewportProps {
   readonly showNewChatInToolbar?: boolean;
   readonly newChatRequestKey?: string | number;
   readonly attachmentOptions?: AIChatAttachmentOptions;
+  readonly activityLabel?: string;
+  readonly toolActivityLabels?: Readonly<Record<string, string>>;
   readonly history?: AIChatHistoryAdapter;
   readonly onNewChat: () => void;
 }
@@ -461,6 +546,8 @@ function ChatViewport({
   showNewChatInToolbar,
   newChatRequestKey,
   attachmentOptions,
+  activityLabel,
+  toolActivityLabels,
   history,
   onNewChat,
 }: ChatViewportProps) {
@@ -616,6 +703,8 @@ function ChatViewport({
         ...(isRecord(message.metadata) ? { metadata: message.metadata } : {}),
       }))}
       status={status}
+      activityLabel={activityLabel}
+      toolActivityLabels={toolActivityLabels}
       error={chat?.error}
       draft={draft}
       onDraftChange={setDraft}
@@ -653,6 +742,8 @@ function ChatViewport({
 export function AIChatView({
   messages,
   status = 'ready',
+  activityLabel = 'Working on your response…',
+  toolActivityLabels,
   error,
   draft = '',
   onDraftChange,
@@ -697,6 +788,18 @@ export function AIChatView({
     finally { approvalRef.current = null; setPendingApprovalId(null); }
   };
   const isBusy = status === 'submitted' || status === 'streaming';
+  const lastMessage = messages[messages.length - 1];
+  const assistantParts = lastMessage?.role === 'assistant' ? lastMessage.parts.filter(isRecord) : [];
+  const lastPart = [...assistantParts].reverse().find((part) => part.type !== 'step-start');
+  const lastPartType = asString(lastPart?.type) ?? '';
+  const activeTool = (lastPartType.startsWith('tool-') || lastPartType === 'dynamic-tool')
+    && lastPart?.state !== 'output-available' && lastPart?.state !== 'output-error'
+    ? lastPart : undefined;
+  const hasAnswer = assistantParts.some((part) => part.type === 'text' && Boolean(asString(part.text)?.trim()));
+  const showActivity = isBusy && (!hasAnswer || Boolean(activeTool));
+  const toolName = asString(activeTool?.toolName) ?? lastPartType.replace(/^tool-/, '');
+  const currentActivityLabel = activeTool?.state === 'approval-requested' ? 'Waiting for approval…'
+    : activeTool ? (toolActivityLabels?.[toolName] ?? 'Using a tool…') : activityLabel;
   const limit = messageLimit != null && Number.isFinite(messageLimit)
     ? Math.max(1, Math.floor(messageLimit)) : null;
   const historyFull = limit !== null && messages.filter((message) => message.role === 'user').length >= limit;
@@ -766,7 +869,12 @@ export function AIChatView({
               onToolApproval={onToolApproval ? respondToApproval : undefined}
             />
           ))}
-          {isBusy && <p className={styles.status}>Thinking...</p>}
+          {showActivity && (
+            <div className={styles.activityBubble} role="status" aria-label={currentActivityLabel}>
+              <span className={styles.activityDots} aria-hidden="true"><i /><i /><i /></span>
+              <span>{currentActivityLabel}</span>
+            </div>
+          )}
         </div>
       </div>
       <div className={styles.footer}>
@@ -798,33 +906,31 @@ export function AIChatView({
             <form className={styles.composerForm} onSubmit={handleFormSubmit}>
               {composerLeading && <div className={styles.composerExtras}>{composerLeading}</div>}
               {onSelectAttachments && (
+                <input
+                  ref={fileInputRef}
+                  className={styles.visuallyHidden}
+                  type="file"
+                  aria-label="Add attachments"
+                  accept={attachmentAccept}
+                  multiple
+                  disabled={isBusy}
+                  onChange={(event) => {
+                    if (event.target.files) onSelectAttachments(event.target.files);
+                    event.target.value = '';
+                  }}
+                />
+              )}
+              {attachments && attachments.length > 0 && (
                 <div className={styles.composerExtras}>
-                  <input
-                    ref={fileInputRef}
-                    className={styles.visuallyHidden}
-                    type="file"
-                    aria-label="Add attachments"
-                    accept={attachmentAccept}
-                    multiple
-                    disabled={isBusy}
-                    onChange={(event) => {
-                      if (event.target.files) onSelectAttachments(event.target.files);
-                      event.target.value = '';
-                    }}
-                  />
-                  {attachments && attachments.length > 0 && (
-                    <ul className={styles.attachmentList}>
-                      {attachments.map((attachment, index) => (
-                        <li key={index}>
-                          {attachment.previewUrl ? <img className={styles.attachmentThumbnail} src={attachment.previewUrl} alt={attachment.name} /> : <span className={styles.attachmentFilename}>{attachment.name}</span>}
-                          {onRemoveAttachment && (
-                            <button type="button" onClick={() => onRemoveAttachment(index)}
-                              aria-label={`Remove ${attachment.name}`} title={`Remove ${attachment.name}`}>×</button>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                  <ul className={styles.attachmentList} aria-label="Attached files">
+                    {attachments.map((attachment, index) => (
+                      <li key={index}>
+                        <ChatAttachment name={attachment.name} size={attachment.size} staged
+                          imageUrl={attachment.previewUrl}
+                          onRemove={onRemoveAttachment ? () => onRemoveAttachment(index) : undefined} />
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
               <div className={styles.composerSurface}>
