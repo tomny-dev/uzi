@@ -193,7 +193,7 @@ export function AIChatDock({
                 </svg>
               </button>
             )}
-            <button type="button" className={styles.iconButton}
+            <button type="button" className={`${styles.iconButton} ${styles.expandButton}`}
               aria-label={isExpanded ? `Collapse ${title}` : `Expand ${title}`}
               title={isExpanded ? 'Collapse' : 'Expand'}
               onClick={() => changeExpanded(!isExpanded)}>
