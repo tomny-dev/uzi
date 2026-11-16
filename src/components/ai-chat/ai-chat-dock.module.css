@@ -103,7 +103,8 @@
     min-width: 3.5rem;
     padding: 0;
   }
-  .actions .iconButton:first-child { display: none; }
+  /* New chat precedes Expand in the header; hide only Expand on mobile. */
+  .actions .expandButton { display: none; }
   .launcherText { display: none; }
   .backdrop { display: block; position: fixed; z-index: 100; inset: 0; background: color-mix(in srgb, var(--foreground) 35%, transparent); }
   .panel, .panel[data-expanded='true'] {
