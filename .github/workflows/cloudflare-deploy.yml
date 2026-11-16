@@ -1,0 +1,78 @@
+name: Reusable Cloudflare D1 migrate and deploy
+
+on:
+  workflow_call:
+    inputs:
+      app_directory:
+        type: string
+        required: true
+      pnpm_version:
+        description: pnpm version matching the caller's packageManager and lockfile
+        type: string
+        required: true
+      database_binding:
+        type: string
+        required: true
+      environment_name:
+        type: string
+        required: true
+      deploy_ref:
+        type: string
+        required: false
+        default: refs/heads/main
+    secrets:
+      CLOUDFLARE_API_TOKEN:
+        required: true
+      CLOUDFLARE_ACCOUNT_ID:
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-deploy-${{ github.repository }}-${{ inputs.environment_name }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # Only trusted branch pushes or explicit manual dispatches may deploy.
+    # PR-target and workflow-run events also have base-branch refs; exclude them.
+    if: >-
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      github.ref == inputs.deploy_ref
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ inputs.pnpm_version }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Typecheck and build
+        env:
+          APP_DIRECTORY: ${{ inputs.app_directory }}
+        run: |
+          set -euo pipefail
+          test -f "$APP_DIRECTORY/wrangler.jsonc"
+          pnpm --dir "$APP_DIRECTORY" run typecheck
+          pnpm --dir "$APP_DIRECTORY" run build
+      - name: Apply D1 migrations and deploy Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          APP_DIRECTORY: ${{ inputs.app_directory }}
+          DATABASE_BINDING: ${{ inputs.database_binding }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$DATABASE_BINDING" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]]; then
+            echo "::error::Invalid D1 binding name"
+            exit 1
+          fi
+          # This command is non-interactive in CI and snapshots the DB before migrating.
+          pnpm dlx wrangler@4 d1 migrations apply "$DATABASE_BINDING" --remote --config "$APP_DIRECTORY/wrangler.jsonc"
+          pnpm dlx wrangler@4 deploy --config "$APP_DIRECTORY/wrangler.jsonc"

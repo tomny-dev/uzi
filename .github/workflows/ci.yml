@@ -75,6 +75,17 @@ jobs:
       - name: Smoke-test Cloudflare package with Node ESM
         run: pnpm --filter @tomny-dev/cloudflare exec node --input-type=module -e "const p = await import('./dist/index.js'); if (typeof p.requireD1 !== 'function' || typeof p.apiError !== 'function') process.exit(1)"
 
+      - name: Typecheck Cloudflare example
+        run: pnpm --filter @tomny-dev/cloudflare-example typecheck
+
+      - name: Build Cloudflare example
+        run: pnpm --filter @tomny-dev/cloudflare-example build
+
+      - name: Check Cloudflare demo scripts
+        run: |
+          node --check scripts/prepare-cloudflare-demo.mjs
+          node --check scripts/smoke-cloudflare-demo.mjs
+
       - name: Build Storybook
         run: pnpm build-storybook
 

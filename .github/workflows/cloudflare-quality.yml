@@ -1,0 +1,38 @@
+name: Reusable Cloudflare quality
+
+on:
+  workflow_call:
+    inputs:
+      app_directory:
+        type: string
+        required: true
+      pnpm_version:
+        description: pnpm version matching the caller's packageManager and lockfile
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ inputs.pnpm_version }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Validate application
+        env:
+          APP_DIRECTORY: ${{ inputs.app_directory }}
+        run: |
+          set -euo pipefail
+          test -f "$APP_DIRECTORY/package.json"
+          pnpm --dir "$APP_DIRECTORY" run typecheck
+          pnpm --dir "$APP_DIRECTORY" run build

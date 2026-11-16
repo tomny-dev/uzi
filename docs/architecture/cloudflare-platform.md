@@ -29,7 +29,7 @@ Cloudflare is the **default for new full-stack apps**, not a requirement of `@to
 ## Module boundaries and rollout
 
 1. **Foundation (this PR):** `@tomny-dev/cloudflare` workspace, `requireD1`, `apiError`, tests and documentation. Keep `private: true` until a dedicated publication path is designed and exercised.
-2. **First consumer:** add one minimal Worker + D1 + Uzi UI example, using application-owned SQL migrations and request-level auth. Verify local/preview/production data isolation.
+2. **First consumer (in progress):** add one minimal Worker + D1 + Uzi UI example, using application-owned SQL migrations and request-level auth. Verify local/preview/production data isolation.
 3. **Reusable workflows:** extract verified quality, D1 migration and deployment procedures into reusable `workflow_call` workflows with pinned references; use GitHub-hosted runners (`ubuntu-latest`) for public Uzi CI, especially untrusted pull requests. Never expose private self-hosted Coolify runners to public Uzi workflows; private downstream repositories may independently use their own approved runners. Keep one deploy owner, honor least-privilege permissions and avoid `actions/upload-artifact`.
 4. **Publication:** implement trusted publishing for the Cloudflare workspace and a semver/update policy. Package upgrades require downstream CI and deploy; reusable workflow references have a separate versioning lifecycle.
 5. **Optional integrations:** R2, Queues, cron, Cloudflare Workflows and AI only when validated by a concrete application need.
