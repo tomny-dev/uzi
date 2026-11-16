@@ -555,7 +555,7 @@
   padding: 0.625rem;
   color: var(--foreground);
 }
-.stagedFileAttachment .fileAttachment { height: 100%; padding-right: 1.875rem; }
+.stagedFileAttachment .fileAttachment { height: 100%; box-sizing: border-box; padding-right: 1.875rem; }
 .fileAttachment svg { flex: 0 0 auto; color: var(--muted-foreground); }
 .fileAttachmentDetails {
   display: flex;
@@ -595,6 +595,29 @@
   box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
 }
 .removeAttachment:hover { background: var(--muted); }
+.removeAttachmentSlot {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  display: grid;
+  place-items: center;
+}
+.removeAttachmentSlot button {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  min-height: 1.5rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 1.125rem;
+  line-height: 1;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
+}
 .imageAttachmentButton:focus-visible, .removeAttachment:focus-visible,
 .fileAttachmentDetails a:focus-visible, .attachmentDialog button:focus-visible {
   outline: 2px solid var(--ring);
