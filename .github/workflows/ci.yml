@@ -81,6 +81,11 @@ jobs:
       - name: Build Cloudflare example
         run: pnpm --filter @tomny-dev/cloudflare-example build
 
+      - name: Check Cloudflare demo scripts
+        run: |
+          node --check scripts/prepare-cloudflare-demo.mjs
+          node --check scripts/smoke-cloudflare-demo.mjs
+
       - name: Build Storybook
         run: pnpm build-storybook
 
