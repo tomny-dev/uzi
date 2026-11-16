@@ -214,6 +214,8 @@ keeping the exact tool call and approval IDs intact.
 `onRemoveAttachment`, `attachmentAccept` and `attachmentError` for
 application-owned upload adapters. Supplied image `previewUrl` values may be local object URLs for staged files; the application is responsible for their lifecycle. Selected file cards remain visible even when the file-picking UI is owned by another component. To retain the shared message attachment presentation with a custom `MessageRenderer`, call `renderMessagePart(part, index)` for `file` and `image` parts.
 
+For applications with their own composer (such as Betty), `AIChatAttachmentPreview` is exported as a standalone presentation component. Use `staged` for compact composer thumbnails, `imageUrl` for a validated image preview, and `name`/`size` for file cards. Provide `onRemove` or `removeControl` (for example an `AttachmentPrimitive.Remove` button) to retain application-owned attachment lifecycle and removal behavior. The component intentionally does not upload, store or mutate files.
+
 **Responsibility boundaries:** Uzi provides presentation and forwards SDK
 events, but never decides whether an application tool is authorized. Backend
 authorization, trusted scoped context, transport persistence, model selection,
