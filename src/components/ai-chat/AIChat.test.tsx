@@ -164,6 +164,22 @@ describe('AIChat', () => {
     expect(stubs.stop).toHaveBeenCalledTimes(1);
   });
 
+  it('uses the native history-clear flow when an enclosing dock requests a new chat', async () => {
+    stubs.messages = [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'Old question' }] }];
+    const history = { load: vi.fn(() => []), save: vi.fn(), clear: vi.fn() };
+    const { rerender } = render(
+      <AIChat api="/api/chat" history={history} newChatRequestKey={0} showNewChatInToolbar={false} />,
+    );
+    await waitFor(() => expect(history.load).toHaveBeenCalledTimes(1));
+    expect(screen.queryByRole('toolbar', { name: 'Conversation actions' })).toBeNull();
+    rerender(<AIChat api="/api/chat" history={history} newChatRequestKey={1} showNewChatInToolbar={false} />);
+    await waitFor(() => expect(history.clear).toHaveBeenCalledTimes(1));
+    expect(stubs.stop).toHaveBeenCalledTimes(1);
+    expect(stubs.sendMessage).not.toHaveBeenCalled();
+    rerender(<AIChat api="/api/chat" history={history} newChatRequestKey={1} showNewChatInToolbar={false} />);
+    expect(history.clear).toHaveBeenCalledTimes(1);
+  });
+
   it('allows starting a new session before reaching the question limit', () => {
     stubs.messages = [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'hello' }] }];
     render(<AIChat api="/api/chat" />);
@@ -436,6 +452,31 @@ describe('AIChat shared opt-in capabilities', () => {
 import { AIChatDock } from './AIChatDock';
 
 describe('AIChatDock', () => {
+  it('places a new-chat action in the dock header without creating a second toolbar', () => {
+    const onNewChat = vi.fn();
+    render(
+      <AIChatDock title="Betty" defaultOpen onNewChat={onNewChat}>
+        <AIChatView messages={[{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'Hi' }] }]}
+          onNewChat={onNewChat} showNewChatInToolbar={false} />
+      </AIChatDock>,
+    );
+    expect(screen.getAllByRole('button', { name: 'New chat' })).toHaveLength(1);
+    expect(screen.queryByRole('toolbar', { name: 'Conversation actions' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'New chat' }));
+    expect(onNewChat).toHaveBeenCalledTimes(1);
+  });
+
+  it('disables dock new-chat while a chat approval or request is busy', () => {
+    const onNewChat = vi.fn();
+    render(<AIChatDock title="Betty" defaultOpen onNewChat={onNewChat} newChatDisabled>
+      <div>Chat</div>
+    </AIChatDock>);
+    const action = screen.getByRole('button', { name: 'New chat' }) as HTMLButtonElement;
+    expect(action.disabled).toBe(true);
+    fireEvent.click(action);
+    expect(onNewChat).not.toHaveBeenCalled();
+  });
+
   it('opens the shared floating panel and preserves children while closed', () => {
     const message = <div data-testid="persistent-chat">Chat stays mounted</div>;
     render(<AIChatDock title="Ask Tultr">{message}</AIChatDock>);
