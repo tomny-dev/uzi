@@ -41,7 +41,7 @@ vi.mock('@assistant-ui/react', () => ({
   },
 }));
 
-import { AIChat, AIChatView } from './AIChat';
+import { AIChat, AIChatView, AIChatAttachmentPreview } from './AIChat';
 
 beforeEach(() => {
   stubs.messages = [];
@@ -331,6 +331,46 @@ describe('AIChatView (external runtime)', () => {
     expect(stop).toHaveBeenCalledOnce();
   });
 
+  it('shows a compact assistant activity message before the streamed answer arrives', () => {
+    const user = { id: 'user-1', role: 'user' as const, parts: [{ type: 'text', text: 'Log this bet' }] };
+    const { rerender } = render(<AIChatView messages={[user]} status="submitted" activityLabel="Analyzing your bet…" />);
+    expect(screen.getByRole('status').textContent).toContain('Analyzing your bet…');
+    expect(screen.queryByText('Thinking...')).toBeNull();
+
+    rerender(<AIChatView messages={[user, {
+      id: 'assistant-1', role: 'assistant', parts: [{ type: 'reasoning', text: 'Checking' }],
+    }]} status="streaming" activityLabel="Analyzing your bet…" />);
+    expect(screen.getByRole('status')).toBeTruthy();
+
+    rerender(<AIChatView messages={[user, {
+      id: 'assistant-1', role: 'assistant', parts: [{ type: 'text', text: 'Bet details found.' }],
+    }]} status="streaming" activityLabel="Analyzing your bet…" />);
+    expect(screen.queryByRole('status')).toBeNull();
+    expect(screen.getByText('Bet details found.')).toBeTruthy();
+  });
+
+  it('shows meaningful in-progress tool labels and stops on completion', () => {
+    const props = {
+      status: 'streaming',
+      activityLabel: 'Analyzing your bet…',
+      toolActivityLabels: { log_bet: 'Saving your bet…' },
+    };
+    const { rerender } = render(<AIChatView {...props} messages={[{
+      id: 'assistant-1', role: 'assistant', parts: [{ type: 'tool-log_bet', state: 'input-available' }],
+    }]} />);
+    expect(screen.getByRole('status').textContent).toContain('Saving your bet…');
+
+    rerender(<AIChatView {...props} messages={[{
+      id: 'assistant-1', role: 'assistant', parts: [{ type: 'tool-log_bet', state: 'approval-requested' }],
+    }]} />);
+    expect(screen.getByRole('status').textContent).toContain('Waiting for approval…');
+
+    rerender(<AIChatView {...props} status="ready" messages={[{
+      id: 'assistant-1', role: 'assistant', parts: [{ type: 'tool-log_bet', state: 'output-available' }],
+    }]} />);
+    expect(screen.queryByRole('status')).toBeNull();
+  });
+
   it('supports a custom composer and no default user-turn cap', () => {
     const messages = Array.from({ length: 12 }, (_, index) => ({
       id: `user-${index}`, role: 'user' as const,
@@ -414,6 +454,71 @@ describe('AIChat shared opt-in capabilities', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Remove sportsbook.png' }));
     expect(remove).toHaveBeenCalledWith(0);
     expect(screen.getByRole('button', { name: 'Attach file' })).toBeTruthy();
+  });
+
+  it('displays sent images as previews and documents as readable file cards', () => {
+    const imageUrl = 'data:image/png;base64,aGVsbG8=';
+    render(<AIChatView messages={[{
+      id: 'user-attachment', role: 'user', parts: [
+        { type: 'text', text: 'Log this bet' },
+        { type: 'file', filename: 'ticket.png', mediaType: 'image/png', url: imageUrl },
+        { type: 'file', filename: 'notes.pdf', mediaType: 'application/pdf',
+          url: 'https://example.com/notes.pdf', size: 2048 },
+      ],
+    }]} />);
+    expect(screen.getByRole('img', { name: 'ticket.png' }).getAttribute('src')).toBe(imageUrl);
+    expect(screen.getByRole('button', { name: 'Preview ticket.png' })).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'notes.pdf' }).getAttribute('href')).toBe('https://example.com/notes.pdf');
+    expect(screen.getByText('2.0 KB')).toBeTruthy();
+  });
+
+  it('does not embed unsafe file URLs or active SVG data images', () => {
+    render(<AIChatView messages={[{
+      id: 'user-unsafe', role: 'user', parts: [
+        { type: 'image', filename: 'unsafe.svg', url: 'data:image/svg+xml,<svg onload=alert(1)>' },
+        { type: 'file', filename: 'unsafe.pdf', url: 'javascript:alert(1)' },
+      ],
+    }]} />);
+    expect(screen.queryByRole('link')).toBeNull();
+    expect(screen.queryByRole('img')).toBeNull();
+    expect(screen.getByText('unsafe.pdf')).toBeTruthy();
+  });
+
+  it('shows staged document cards even when uploads are controlled elsewhere', () => {
+    const remove = vi.fn();
+    render(<AIChatView messages={[]}
+      attachments={[{ name: 'stats.csv', size: 2048 }]}
+      onRemoveAttachment={remove} />);
+    expect(screen.getByText('stats.csv')).toBeTruthy();
+    expect(screen.getByText('2.0 KB')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Remove stats.csv' }));
+    expect(remove).toHaveBeenCalledWith(0);
+  });
+
+  it('exposes the same preview surface to custom composers with SDK-owned remove actions', () => {
+    const remove = vi.fn();
+    render(<AIChatAttachmentPreview name="screenshot.png" staged imageUrl="blob:local-thumbnail"
+      removeControl={<button type="button" onClick={remove}>Remove screenshot</button>} />);
+    expect(screen.getByRole('img', { name: 'screenshot.png' }).getAttribute('src')).toBe('blob:local-thumbnail');
+    fireEvent.click(screen.getByRole('button', { name: 'Remove screenshot' }));
+    expect(remove).toHaveBeenCalledOnce();
+  });
+
+  it('rejects unsafe links passed directly to the exported attachment component', () => {
+    const { rerender } = render(
+      <AIChatAttachmentPreview name="unsafe.pdf" href="javascript:alert(1)" />,
+    );
+    expect(screen.queryByRole('link')).toBeNull();
+    expect(screen.getByText('unsafe.pdf')).toBeTruthy();
+    rerender(<AIChatAttachmentPreview name="safe.pdf" href="https://example.com/safe.pdf" />);
+    expect(screen.getByRole('link', { name: 'safe.pdf' }).getAttribute('href'))
+      .toBe('https://example.com/safe.pdf');
+  });
+
+  it('rejects untrusted image preview protocols from controlled consumers', () => {
+    render(<AIChatAttachmentPreview name="unsafe.png" imageUrl="javascript:alert(1)" />);
+    expect(screen.queryByRole('img')).toBeNull();
+    expect(screen.getByText('unsafe.png')).toBeTruthy();
   });
 
   it('does not render upload controls unless file attachments are opted into', () => {

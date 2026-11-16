@@ -50,6 +50,8 @@ The client posts AI SDK UI messages to `api` and expects a **UI-message stream**
 | `inputPlaceholder` | `string` | `Ask a question...` | Message input prompt |
 | `inputMaxLength` | `number` | `2000` | HTML textarea maximum length |
 | `components` | `AIChatComponents` | built-in renderers | Override message, reasoning, source, data and error presentation |
+| `activityLabel` | `string` | `Working on your response…` | Text accompanying the inline animated activity indicator |
+| `toolActivityLabels` | `Record<string, string>` | — | App-owned text for in-progress tool names (for example `{ log_bet: 'Saving your bet…' }`) |
 | `onClose` | `() => void` | — | Optional close action |
 | `className`, `style` | React props | — | Custom outer container styling |
 
@@ -103,7 +105,9 @@ Keep authentication on the server regardless of the client configuration. If the
 
 `AIChatComponents` provides optional `MessageRenderer`, `ReasoningRenderer`, `SourceRenderer`, `DataRenderer`, and `ErrorRenderer` overrides. A custom `MessageRenderer` should call its provided `renderMessagePart` callback for each message part if you want to retain the standard source/reasoning/data fallback handling.
 
-Supported built-in parts include plain text, collapsible reasoning, linked sources, structured `data-*` parts, tool call payloads and attachments. Text is presented as text (not automatically parsed as Markdown). Only HTTP(S) source/attachment URLs become links. Do not send credentials or internal-only tool output to the browser.
+Supported built-in parts include plain text, collapsible reasoning, linked sources, structured `data-*` parts, tool call payloads and attachments. Text is presented as text (not automatically parsed as Markdown). Only HTTP(S) source and file URLs become links. Image attachments are presented as accessible thumbnails with a full-size preview; HTTP(S) and bitmap `data:image` URLs (PNG, JPEG, GIF, WebP, AVIF) are supported, not active SVG or script URLs. Do not send credentials or internal-only tool output to the browser.
+
+While an assistant request is pending, an inline assistant bubble shows an accessible animated indicator instead of the detached `Thinking...` label. The indicator is replaced once streamed answer text arrives; incomplete tool calls display a tool activity label, with an approval-specific waiting label when applicable. The native Stop button continues to work while streaming. The CSS respects `prefers-reduced-motion`. Both `AIChat` and external `AIChatView` accept `activityLabel` and `toolActivityLabels`; the mapping is purely presentational and never confirms a tool's success. For example, `toolActivityLabels={{ log_bet: 'Saving your bet…' }}` makes an application-specific action readable without hardcoding it into Uzi.
 
 - **Enter** sends a prompt; **Shift+Enter** inserts a newline.
 - **Stop** cancels an in-flight response.
@@ -193,7 +197,7 @@ two components share renderers, theme styles and keyboard behavior.
 
 The ready-to-use `AIChat` accepts the following **opt-in** capabilities:
 
-- `attachments={{ accept: 'image/png,image/jpeg,image/webp', maxFiles: 3, maxBytesPerFile: 5_000_000 }}` enables a file picker, client validation, staged attachment names, removal and AI SDK `FileList` submissions. Provider and API support for image/text input varies; servers MUST independently validate media types, file sizes and permissions. Unsupported file types must not be enabled merely because the picker can select them.
+- `attachments={{ accept: 'image/png,image/jpeg,image/webp', maxFiles: 3, maxBytesPerFile: 5_000_000 }}` enables a file picker, client validation, horizontally scrollable thumbnail chips with remove controls, zoomable local image previews, document cards with file size and AI SDK `FileList` submissions. Sent image parts use the same thumbnail/zoom surface, while documents display file cards. Provider and API support for image/text input varies; servers MUST independently validate media types, file sizes and permissions. Unsupported file types must not be enabled merely because the picker can select them.
 - `history={{ load, save, clear }}` delegates storage to the application. Keys and access controls must include the authenticated principal and chat scope. The component loads before accepting input, saves complete turns, and clears storage before a new conversation. Avoid saving unsanitized tool outputs or sensitive data in browser storage.
 - `sendAutomaticallyWhen` forwards the AI SDK's native continuation predicate to the runtime. When your backend uses approval-required tools, configure an approval-complete predicate (for example `lastAssistantMessageIsCompleteWithApprovalResponses` from `ai`), so continuation is performed by the SDK rather than by injecting JSON text.
 
@@ -208,7 +212,9 @@ keeping the exact tool call and approval IDs intact.
 
 `AIChatView` also supports `attachments`, `onSelectAttachments`,
 `onRemoveAttachment`, `attachmentAccept` and `attachmentError` for
-application-owned upload adapters.
+application-owned upload adapters. Supplied image `previewUrl` values may be local object URLs for staged files; the application is responsible for their lifecycle. Selected file cards remain visible even when the file-picking UI is owned by another component. To retain the shared message attachment presentation with a custom `MessageRenderer`, call `renderMessagePart(part, index)` for `file` and `image` parts.
+
+For applications with their own composer (such as Betty), `AIChatAttachmentPreview` is exported as a standalone presentation component. Use `staged` for compact composer thumbnails, `imageUrl` for a validated image preview, and `name`/`size` for file cards. Provide `onRemove` or `removeControl` (for example an `AttachmentPrimitive.Remove` button) to retain application-owned attachment lifecycle and removal behavior. The component intentionally does not upload, store or mutate files.
 
 **Responsibility boundaries:** Uzi provides presentation and forwards SDK
 events, but never decides whether an application tool is authorized. Backend
