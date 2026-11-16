@@ -457,8 +457,8 @@ describe('AIChatDock', () => {
     render(<AIChatDock title="Betty" defaultOpen onNewChat={onNewChat}><div>Conversation</div></AIChatDock>);
     const newChat = screen.getByRole('button', { name: 'New chat' });
     const expand = screen.getByRole('button', { name: 'Expand Betty' });
-    expect(expand.className).toContain('uzi-expandButton');
-    expect(newChat.className).not.toContain('uzi-expandButton');
+    expect(expand.className).toContain('expandButton');
+    expect(newChat.className).not.toContain('expandButton');
     fireEvent.click(newChat);
     expect(onNewChat).toHaveBeenCalledOnce();
   });
