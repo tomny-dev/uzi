@@ -1,0 +1,27 @@
+{
+  "name": "@tomny-dev/cloudflare-example",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "db:local": "pnpm dlx wrangler@4 d1 migrations apply DB --local",
+    "db:remote": "pnpm dlx wrangler@4 d1 migrations apply DB --remote",
+    "deploy": "pnpm dlx wrangler@4 deploy"
+  },
+  "dependencies": {
+    "@tomny-dev/cloudflare": "workspace:*",
+    "@tomny-dev/uzi": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "typescript": "^5.4.3",
+    "vite": "^8.0.0"
+  }
+}
