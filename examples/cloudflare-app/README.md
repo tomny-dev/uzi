@@ -9,7 +9,7 @@ From the Uzi repository root, install with `pnpm install --frozen-lockfile`, the
 1. Build `pnpm --filter @tomny-dev/cloudflare build` and `pnpm build` (main Uzi library).
 2. Replace the Worker name and D1 database ID/name placeholders in `wrangler.jsonc` after provisioning a dedicated D1 database. **Never use an existing production database for the example.** For local-only work, use a valid isolated D1 configuration; the ID is required by the config.
 3. Run `pnpm --dir examples/cloudflare-app db:local` to apply the sample migration to local D1.
-4. Run `pnpm --dir examples/cloudflare-app dev` to build the frontend. Run `pnpm --dir examples/cloudflare-app build`, then `pnpm --dir examples/cloudflare-app exec pnpm dlx wrangler@4 dev` to serve the static assets and API together.
+4. Run `pnpm --dir examples/cloudflare-app dev` to build the frontend. Run `pnpm --dir examples/cloudflare-app build`, then `cd examples/cloudflare-app && pnpm dlx wrangler@4 dev` to serve the static assets and API together.
 5. Run `pnpm --dir examples/cloudflare-app typecheck` to verify TypeScript.
 
 The Vite development server alone does **not** provide the Worker API; use `wrangler dev` for end-to-end local testing.
@@ -21,3 +21,46 @@ Provision separate staging/production D1 databases and Worker names. Copy the ex
 The deployment workflow applies remote D1 migrations **before** deploying the Worker. Migration changes are not rolled back by a Worker rollback: use backward-compatible migrations and backups. It does not create databases, manage secrets, or generate identifiers.
 
 No external deployment is performed by this example or by the public Uzi repository CI.
+
+## Reusable workflow callers
+
+A downstream app can add workflow callers pointing at a **reviewed immutable commit SHA** of Uzi (replace `<PINNED_UZI_SHA>`):
+
+```yaml
+# .github/workflows/quality.yml
+name: Cloudflare quality
+on: [pull_request]
+permissions:
+  contents: read
+jobs:
+  quality:
+    uses: tomny-dev/uzi/.github/workflows/cloudflare-quality.yml@<PINNED_UZI_SHA>
+    with:
+      app_directory: .
+```
+
+```yaml
+# .github/workflows/deploy.yml
+name: Deploy
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  deploy:
+    uses: tomny-dev/uzi/.github/workflows/cloudflare-deploy.yml@<PINNED_UZI_SHA>
+    with:
+      app_directory: .
+      database_binding: DB
+      environment_name: production
+      deploy_ref: refs/heads/main
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+```
+
+Configure protected GitHub environments with required reviewers, restricted deployment branches, and least-privileged Cloudflare credentials. Pull requests never receive deployment secrets. A deployment must not start until quality has passed under branch protection. Reusable workflows run on **GitHub-hosted** `ubuntu-latest`, even when called from a private repository; they never run on personal Coolify infrastructure.
+
+Before using the deployment workflow, provision and bind **the correct database for each environment**. This first workflow targets the configured D1 binding in `wrangler.jsonc`; it does not automatically select distinct Wrangler environments. Use dedicated staging and production configurations with explicit isolation rather than assuming they are separated.
+
