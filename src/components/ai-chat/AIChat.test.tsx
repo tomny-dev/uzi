@@ -452,6 +452,17 @@ describe('AIChat shared opt-in capabilities', () => {
 import { AIChatDock } from './AIChatDock';
 
 describe('AIChatDock', () => {
+  it('separates New chat from the mobile-hidden Expand control', () => {
+    const onNewChat = vi.fn();
+    render(<AIChatDock title="Betty" defaultOpen onNewChat={onNewChat}><div>Conversation</div></AIChatDock>);
+    const newChat = screen.getByRole('button', { name: 'New chat' });
+    const expand = screen.getByRole('button', { name: 'Expand Betty' });
+    expect(expand.className).toContain('uzi-expandButton');
+    expect(newChat.className).not.toContain('uzi-expandButton');
+    fireEvent.click(newChat);
+    expect(onNewChat).toHaveBeenCalledOnce();
+  });
+
   it('places a new-chat action in the dock header without creating a second toolbar', () => {
     const onNewChat = vi.fn();
     render(
