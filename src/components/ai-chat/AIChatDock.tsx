@@ -17,6 +17,9 @@ export interface AIChatDockProps {
   /** ID of the external launch button to restore keyboard focus after close. */
   readonly externalLauncherId?: string;
   readonly children: ReactNode;
+  /** Consumer-owned conversation reset; shown in the dock header beside expand/close. */
+  readonly onNewChat?: () => void;
+  readonly newChatDisabled?: boolean;
   /** Controlled visibility; when omitted, the dock manages its own state. */
   readonly open?: boolean;
   readonly defaultOpen?: boolean;
@@ -43,6 +46,8 @@ export function AIChatDock({
   panelId: controlledPanelId,
   externalLauncherId,
   children,
+  onNewChat,
+  newChatDisabled = false,
   open,
   defaultOpen = false,
   onOpenChange,
@@ -176,6 +181,18 @@ export function AIChatDock({
             </div>
           </div>
           <div className={styles.actions}>
+            {onNewChat && (
+              <button type="button" className={styles.iconButton}
+                aria-label="New chat" title="New chat"
+                disabled={newChatDisabled}
+                onClick={onNewChat}>
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-6" />
+                  <path d="m15 5 4 4M13 11l7-7a2.12 2.12 0 0 1 3 3l-7 7-4 1 1-4Z" transform="translate(-2 -2)" />
+                </svg>
+              </button>
+            )}
             <button type="button" className={styles.iconButton}
               aria-label={isExpanded ? `Collapse ${title}` : `Expand ${title}`}
               title={isExpanded ? 'Collapse' : 'Expand'}
