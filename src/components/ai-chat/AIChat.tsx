@@ -34,6 +34,10 @@ export interface AIChatProps {
   readonly components?: AIChatComponents;
   /** Actions displayed beside the native New chat control in one shared toolbar. */
   readonly toolbarActions?: ReactNode;
+  /** When false, the enclosing AIChatDock owns the New chat control. */
+  readonly showNewChatInToolbar?: boolean;
+  /** Increment or replace this stable token to request the native New chat flow externally. */
+  readonly newChatRequestKey?: string | number;
   /** Opt-in files, restricted to images/text accepted by the application API. */
   readonly attachments?: AIChatAttachmentOptions;
   /** Optional persistence; implementations must scope storage by user AND resource. */
@@ -370,6 +374,8 @@ export function AIChat({
   inputMaxLength = 2000,
   components,
   toolbarActions,
+  showNewChatInToolbar = true,
+  newChatRequestKey,
   attachments,
   history,
   sendAutomaticallyWhen,
@@ -419,6 +425,8 @@ export function AIChat({
             inputMaxLength={inputMaxLength}
             components={components}
             toolbarActions={toolbarActions}
+            showNewChatInToolbar={showNewChatInToolbar}
+            newChatRequestKey={newChatRequestKey}
             attachmentOptions={attachments}
             history={history}
             onNewChat={() => setSession((previous) => previous + 1)}
@@ -436,6 +444,8 @@ interface ChatViewportProps {
   readonly inputMaxLength: number;
   readonly components?: AIChatComponents;
   readonly toolbarActions?: ReactNode;
+  readonly showNewChatInToolbar?: boolean;
+  readonly newChatRequestKey?: string | number;
   readonly attachmentOptions?: AIChatAttachmentOptions;
   readonly history?: AIChatHistoryAdapter;
   readonly onNewChat: () => void;
@@ -448,6 +458,8 @@ function ChatViewport({
   inputMaxLength,
   components,
   toolbarActions,
+  showNewChatInToolbar,
+  newChatRequestKey,
   attachmentOptions,
   history,
   onNewChat,
@@ -580,6 +592,15 @@ function ChatViewport({
     })();
   };
 
+  // An enclosing dock can reuse the native reset path without duplicating
+  // history deletion, aborts, or SDK session management in each consumer.
+  const lastNewChatRequestKey = useRef(newChatRequestKey);
+  useEffect(() => {
+    if (lastNewChatRequestKey.current === newChatRequestKey) return;
+    lastNewChatRequestKey.current = newChatRequestKey;
+    handleNewChat();
+  }, [newChatRequestKey]);
+
   const handleRetry = () => {
     if (!chat || isBusy) return;
     chat.clearError();
@@ -602,6 +623,7 @@ function ChatViewport({
       onStop={() => { void chat?.stop(); }}
       onRetry={handleRetry}
       onNewChat={handleNewChat}
+      showNewChatInToolbar={showNewChatInToolbar}
       toolbarActions={toolbarActions}
       messageLimit={messageLimit}
       attachments={selectedFiles.map((file, index) => ({ name: file.name, size: file.size, ...(attachmentPreviews[index] ? { previewUrl: attachmentPreviews[index] } : {}) }))}
