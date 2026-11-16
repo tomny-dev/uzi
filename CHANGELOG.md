@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.19.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.18.1...uzi-v0.19.0) (2026-11-16)
+
+
+### Features
+
+* **chat:** add inline assistant activity and rich attachment previews ([#128](https://github.com/tomny-dev/uzi/issues/128)) ([5d3ebb5](https://github.com/tomny-dev/uzi/commit/5d3ebb500679ca09a589e6817604f57e7608b363))
+* **cloudflare:** add runnable Uzi D1 example and reusable workflows ([#123](https://github.com/tomny-dev/uzi/issues/123)) ([6fbacd2](https://github.com/tomny-dev/uzi/commit/6fbacd2eeeadb34d64156d9b124afeb341a5aed3))
+
 ## [0.18.1](https://github.com/tomny-dev/uzi/compare/uzi-v0.18.0...uzi-v0.18.1) (2026-11-16)
 
 
