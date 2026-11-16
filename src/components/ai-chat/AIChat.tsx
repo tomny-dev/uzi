@@ -87,6 +87,8 @@ export interface AIChatViewProps {
   readonly onStop?: () => void;
   readonly onRetry?: () => void;
   readonly onNewChat?: () => void;
+  /** False when AIChatDock owns the new-chat action in its header. */
+  readonly showNewChatInToolbar?: boolean;
   /** No limit by default: specialized apps decide their own session policy. */
   readonly messageLimit?: number;
   readonly inputPlaceholder?: string;
@@ -636,6 +638,7 @@ export function AIChatView({
   onStop,
   onRetry,
   onNewChat,
+  showNewChatInToolbar = true,
   messageLimit,
   inputPlaceholder = 'Ask a question...',
   inputAriaLabel = 'Message',
@@ -699,10 +702,10 @@ export function AIChatView({
   return (
     <div className={[styles.thread, className].filter(Boolean).join(' ')} style={style}>
       {header}
-      {(messages.length > 0 || toolbarActions) && (onNewChat || toolbarActions) && (
+      {(toolbarActions || (showNewChatInToolbar && onNewChat && messages.length > 0)) && (
         <div className={styles.chatToolbar} role="toolbar" aria-label="Conversation actions">
           <div className={styles.chatToolbarExtras}>{toolbarActions}</div>
-          {onNewChat && messages.length > 0 && (
+          {showNewChatInToolbar && onNewChat && messages.length > 0 && (
             <button
               type="button"
               className={styles.newChatButton}
