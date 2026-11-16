@@ -4,7 +4,7 @@ const address = process.env.DEMO_URL ?? "";
 const workerName = process.env.DEMO_WORKER_NAME ?? "";
 const url = new URL(address);
 if (url.protocol !== "https:" || url.username || url.password || url.port ||
-    !/^[a-z0-9.-]+\\.workers\\.dev$/.test(url.hostname) ||
+    !/^[a-z0-9.-]+$/.test(url.hostname) || !url.hostname.endsWith(".workers.dev") ||
     !url.hostname.startsWith(workerName + ".") ||
     url.pathname !== "/" || url.search || url.hash) {
   throw new Error("DEMO_URL must be the HTTPS workers.dev root of the configured demo Worker");
