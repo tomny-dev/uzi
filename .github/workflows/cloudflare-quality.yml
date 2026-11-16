@@ -6,6 +6,10 @@ on:
       app_directory:
         type: string
         required: true
+      pnpm_version:
+        description: pnpm version matching the caller's packageManager and lockfile
+        type: string
+        required: true
 
 permissions:
   contents: read
@@ -16,6 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ inputs.pnpm_version }}
       - uses: actions/setup-node@v4
         with:
           node-version: "24.x"
