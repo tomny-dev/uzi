@@ -35,8 +35,11 @@ concurrency:
 
 jobs:
   deploy:
-    # A downstream app calls this only from an approved branch. Never deploy from a PR.
-    if: github.event_name != 'pull_request' && github.ref == inputs.deploy_ref
+    # Only trusted branch pushes or explicit manual dispatches may deploy.
+    # PR-target and workflow-run events also have base-branch refs; exclude them.
+    if: >-
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      github.ref == inputs.deploy_ref
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment_name }}
     steps:
