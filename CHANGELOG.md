@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.18.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.17.0...uzi-v0.18.0) (2026-11-16)
+
+
+### Features
+
+* **ai-chat:** place New chat in the shared dock header ([#124](https://github.com/tomny-dev/uzi/issues/124)) ([6ed8f1a](https://github.com/tomny-dev/uzi/commit/6ed8f1a29aa1bc058cdf88c21e2166db3e1966be))
+* **cloudflare:** establish Uzi Worker integration foundation ([#120](https://github.com/tomny-dev/uzi/issues/120)) ([b52ed2b](https://github.com/tomny-dev/uzi/commit/b52ed2bf32cb6c2c76884f9106d158ddcfae517d))
+
 ## [0.17.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.16.0...uzi-v0.17.0) (2026-11-14)
 
 
