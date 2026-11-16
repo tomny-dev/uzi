@@ -436,6 +436,31 @@ describe('AIChat shared opt-in capabilities', () => {
 import { AIChatDock } from './AIChatDock';
 
 describe('AIChatDock', () => {
+  it('places a new-chat action in the dock header without creating a second toolbar', () => {
+    const onNewChat = vi.fn();
+    render(
+      <AIChatDock title="Betty" defaultOpen onNewChat={onNewChat}>
+        <AIChatView messages={[{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'Hi' }] }]}
+          onNewChat={onNewChat} showNewChatInToolbar={false} />
+      </AIChatDock>,
+    );
+    expect(screen.getAllByRole('button', { name: 'New chat' })).toHaveLength(1);
+    expect(screen.queryByRole('toolbar', { name: 'Conversation actions' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'New chat' }));
+    expect(onNewChat).toHaveBeenCalledTimes(1);
+  });
+
+  it('disables dock new-chat while a chat approval or request is busy', () => {
+    const onNewChat = vi.fn();
+    render(<AIChatDock title="Betty" defaultOpen onNewChat={onNewChat} newChatDisabled>
+      <div>Chat</div>
+    </AIChatDock>);
+    const action = screen.getByRole('button', { name: 'New chat' }) as HTMLButtonElement;
+    expect(action.disabled).toBe(true);
+    fireEvent.click(action);
+    expect(onNewChat).not.toHaveBeenCalled();
+  });
+
   it('opens the shared floating panel and preserves children while closed', () => {
     const message = <div data-testid="persistent-chat">Chat stays mounted</div>;
     render(<AIChatDock title="Ask Tultr">{message}</AIChatDock>);
