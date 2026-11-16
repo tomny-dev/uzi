@@ -504,6 +504,17 @@ describe('AIChat shared opt-in capabilities', () => {
     expect(remove).toHaveBeenCalledOnce();
   });
 
+  it('rejects unsafe links passed directly to the exported attachment component', () => {
+    const { rerender } = render(
+      <AIChatAttachmentPreview name="unsafe.pdf" href="javascript:alert(1)" />,
+    );
+    expect(screen.queryByRole('link')).toBeNull();
+    expect(screen.getByText('unsafe.pdf')).toBeTruthy();
+    rerender(<AIChatAttachmentPreview name="safe.pdf" href="https://example.com/safe.pdf" />);
+    expect(screen.getByRole('link', { name: 'safe.pdf' }).getAttribute('href'))
+      .toBe('https://example.com/safe.pdf');
+  });
+
   it('rejects untrusted image preview protocols from controlled consumers', () => {
     render(<AIChatAttachmentPreview name="unsafe.png" imageUrl="javascript:alert(1)" />);
     expect(screen.queryByRole('img')).toBeNull();
