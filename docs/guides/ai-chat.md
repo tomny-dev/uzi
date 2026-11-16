@@ -232,6 +232,13 @@ import { AIChat, AIChatDock } from "@tomny-dev/uzi";
 
 For apps with a consumer-owned conversation reset, pass `onNewChat` to
 `AIChatDock` so the action appears in the **dock header**, beside expand and close.
+For the default `AIChat` inside the dock, keep its native history adapter and
+pass `showNewChatInToolbar={false}` plus `newChatRequestKey` (an app-owned
+counter). Wire the dock's `onNewChat` to increment that counter. When it
+changes, `AIChat` stops the active request, waits for pending history saves,
+clears history and creates a fresh SDK session, without app-specific reset
+logic or a second chat instance.
+
 When using controlled `AIChatView` inside the dock, keep `onNewChat` on the
 view for recovery controls, but pass `showNewChatInToolbar={false}` to suppress
 the redundant toolbar below the header. Disable the dock action using
