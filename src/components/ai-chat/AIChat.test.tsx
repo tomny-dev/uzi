@@ -41,7 +41,7 @@ vi.mock('@assistant-ui/react', () => ({
   },
 }));
 
-import { AIChat, AIChatView } from './AIChat';
+import { AIChat, AIChatView, AIChatAttachmentPreview } from './AIChat';
 
 beforeEach(() => {
   stubs.messages = [];
@@ -493,6 +493,21 @@ describe('AIChat shared opt-in capabilities', () => {
     expect(screen.getByText('2.0 KB')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Remove stats.csv' }));
     expect(remove).toHaveBeenCalledWith(0);
+  });
+
+  it('exposes the same preview surface to custom composers with SDK-owned remove actions', () => {
+    const remove = vi.fn();
+    render(<AIChatAttachmentPreview name="screenshot.png" staged imageUrl="blob:local-thumbnail"
+      removeControl={<button type="button" onClick={remove}>Remove screenshot</button>} />);
+    expect(screen.getByRole('img', { name: 'screenshot.png' }).getAttribute('src')).toBe('blob:local-thumbnail');
+    fireEvent.click(screen.getByRole('button', { name: 'Remove screenshot' }));
+    expect(remove).toHaveBeenCalledOnce();
+  });
+
+  it('rejects untrusted image preview protocols from controlled consumers', () => {
+    render(<AIChatAttachmentPreview name="unsafe.png" imageUrl="javascript:alert(1)" />);
+    expect(screen.queryByRole('img')).toBeNull();
+    expect(screen.getByText('unsafe.png')).toBeTruthy();
   });
 
   it('does not render upload controls unless file attachments are opted into', () => {
