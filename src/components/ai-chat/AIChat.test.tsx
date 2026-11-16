@@ -164,6 +164,22 @@ describe('AIChat', () => {
     expect(stubs.stop).toHaveBeenCalledTimes(1);
   });
 
+  it('uses the native history-clear flow when an enclosing dock requests a new chat', async () => {
+    stubs.messages = [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'Old question' }] }];
+    const history = { load: vi.fn(() => []), save: vi.fn(), clear: vi.fn() };
+    const { rerender } = render(
+      <AIChat api="/api/chat" history={history} newChatRequestKey={0} showNewChatInToolbar={false} />,
+    );
+    await waitFor(() => expect(history.load).toHaveBeenCalledTimes(1));
+    expect(screen.queryByRole('toolbar', { name: 'Conversation actions' })).toBeNull();
+    rerender(<AIChat api="/api/chat" history={history} newChatRequestKey={1} showNewChatInToolbar={false} />);
+    await waitFor(() => expect(history.clear).toHaveBeenCalledTimes(1));
+    expect(stubs.stop).toHaveBeenCalledTimes(1);
+    expect(stubs.sendMessage).not.toHaveBeenCalled();
+    rerender(<AIChat api="/api/chat" history={history} newChatRequestKey={1} showNewChatInToolbar={false} />);
+    expect(history.clear).toHaveBeenCalledTimes(1);
+  });
+
   it('allows starting a new session before reaching the question limit', () => {
     stubs.messages = [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'hello' }] }];
     render(<AIChat api="/api/chat" />);
