@@ -4,3 +4,5 @@ package-artifacts/
 package-lock.json
 *.tsbuildinfo
 storybook-static/
+.wrangler/
+.dev.vars*
