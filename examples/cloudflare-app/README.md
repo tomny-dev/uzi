@@ -37,6 +37,7 @@ jobs:
     uses: tomny-dev/uzi/.github/workflows/cloudflare-quality.yml@<PINNED_UZI_SHA>
     with:
       app_directory: .
+      pnpm_version: '10.0.0' # Match this repository's packageManager version
 ```
 
 ```yaml
@@ -54,11 +55,14 @@ jobs:
       app_directory: .
       database_binding: DB
       environment_name: production
+      pnpm_version: '10.0.0' # Match this repository's packageManager version
       deploy_ref: refs/heads/main
     secrets:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 ```
+
+Both reusable workflows require `pnpm_version` because `pnpm/action-setup` otherwise depends on an optional caller `packageManager` field. Set it to the pnpm version supported by the downstream lockfile (for example, `10.0.0` for a pnpm 10 app); the workflow does not impose Uzi's own pnpm version on consumers.
 
 Configure protected GitHub environments with required reviewers, restricted deployment branches, and least-privileged Cloudflare credentials. Pull requests never receive deployment secrets. A deployment must not start until quality has passed under branch protection. Reusable workflows run on **GitHub-hosted** `ubuntu-latest`, even when called from a private repository; they never run on personal Coolify infrastructure.
 
