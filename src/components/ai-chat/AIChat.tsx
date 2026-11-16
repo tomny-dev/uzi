@@ -228,7 +228,8 @@ function ChatAttachment({ name, size, imageUrl, href, staged, onRemove }: ChatAt
   }, [previewOpen]);
 
   return (
-    <div className={[styles.attachmentCard, staged ? styles.stagedAttachment : styles.sentAttachment].join(' ')}>
+    <div className={[styles.attachmentCard, staged ? styles.stagedAttachment : styles.sentAttachment,
+      staged && !imageUrl ? styles.stagedFileAttachment : ''].filter(Boolean).join(' ')}>
       {imageUrl ? (
         <button ref={previewButtonRef} type="button" className={styles.imageAttachmentButton}
           onClick={() => setPreviewOpen(true)} aria-label={`Preview ${name}`} title={`Preview ${name}`}>
