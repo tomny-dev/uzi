@@ -809,7 +809,8 @@ export function AIChatView({
   const showActivity = isBusy && (!hasAnswer || Boolean(activeTool));
   const toolName = asString(activeTool?.toolName) ?? lastPartType.replace(/^tool-/, '');
   const toolState = asString(activeTool?.state);
-  const approved = isRecord(activeTool?.approval) && activeTool.approval.approved === true;
+  const approval = activeTool?.approval;
+  const approved = isRecord(approval) && approval.approved === true;
   const stateActivityLabel = toolState && (toolState !== 'approval-responded' || approved)
     ? toolActivityLabels?.[`${toolName}:${toolState}`] : undefined;
   const currentActivityLabel = toolState === 'approval-requested' ? 'Waiting for approval…'
