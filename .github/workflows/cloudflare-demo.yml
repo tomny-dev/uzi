@@ -45,6 +45,7 @@ jobs:
           pnpm --filter @tomny-dev/cloudflare build
           pnpm build
           pnpm --filter @tomny-dev/cloudflare-example typecheck
+          pnpm --filter @tomny-dev/cloudflare-example test
           pnpm --filter @tomny-dev/cloudflare-example build
       - name: Verify migrations with disposable local D1
         working-directory: examples/cloudflare-app
