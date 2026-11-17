@@ -158,7 +158,10 @@ jobs:
           if (!/^[a-z0-9][a-z0-9-]*$/.test(worker || "")) throw Error("Missing/invalid CLOUDFLARE_WORKER_NAME environment variable");
           if (!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(databaseId || "")) throw Error("Missing/invalid CLOUDFLARE_D1_DATABASE_ID environment variable");
           const url = new URL(smokeUrl || "http://invalid.invalid/");
-          if (url.protocol !== "https:" || url.username || url.password || !url.hostname) throw Error("CLOUDFLARE_SMOKE_URL must use HTTPS");
+          if (url.protocol !== "https:" || url.username || url.password || !url.hostname || url.hash) throw Error("CLOUDFLARE_SMOKE_URL must be an HTTPS endpoint without credentials or fragments");
+          if (url.hostname.endsWith(".workers.dev") && !url.hostname.startsWith(worker + ".")) {
+            throw Error("CLOUDFLARE_SMOKE_URL must target the configured Worker on workers.dev");
+          }
           const parsed = ts.parseConfigFileTextToJson(filename, readFileSync(filename, "utf8"));
           if (parsed.error) throw Error(ts.flattenDiagnosticMessageText(parsed.error.messageText, "\n"));
           const config = parsed.config;
