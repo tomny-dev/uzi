@@ -809,9 +809,12 @@ export function AIChatView({
   const showActivity = isBusy && (!hasAnswer || Boolean(activeTool));
   const toolName = asString(activeTool?.toolName) ?? lastPartType.replace(/^tool-/, '');
   const toolState = asString(activeTool?.state);
-  const stateActivityLabel = toolState ? toolActivityLabels?.[`${toolName}:${toolState}`] : undefined;
+  const approved = isRecord(activeTool?.approval) && activeTool.approval.approved === true;
+  const stateActivityLabel = toolState && (toolState !== 'approval-responded' || approved)
+    ? toolActivityLabels?.[`${toolName}:${toolState}`] : undefined;
   const currentActivityLabel = toolState === 'approval-requested' ? 'Waiting for approval…'
-    : activeTool ? (stateActivityLabel ?? toolActivityLabels?.[toolName] ?? 'Using a tool…') : activityLabel;
+    : toolState === 'approval-responded' && !approved ? 'Processing approval response…'
+      : activeTool ? (stateActivityLabel ?? toolActivityLabels?.[toolName] ?? 'Using a tool…') : activityLabel;
   const limit = messageLimit != null && Number.isFinite(messageLimit)
     ? Math.max(1, Math.floor(messageLimit)) : null;
   const historyFull = limit !== null && messages.filter((message) => message.role === 'user').length >= limit;
