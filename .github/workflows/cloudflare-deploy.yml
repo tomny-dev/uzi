@@ -96,8 +96,8 @@ jobs:
         run: |
           set -euo pipefail
           [[ "$DATABASE_BINDING" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || exit 1
-          [[ "$WRANGLER_CONFIG" =~ ^[A-Za-z0-9._-]+$.jsonc?$ ]] || exit 1
-          [[ "$WRANGLER_VERSION" =~ ^[0-9]+$.[0-9]+$.[0-9]+$ ]] || exit 1
+          [[ "$WRANGLER_CONFIG" =~ ^[A-Za-z0-9._-]+\.jsonc?$ ]] || exit 1
+          [[ "$WRANGLER_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 1
           test -f "$APP_DIRECTORY/$WRANGLER_CONFIG"
           pnpm dlx "wrangler@$WRANGLER_VERSION" d1 migrations apply "$DATABASE_BINDING" --local --config "$APP_DIRECTORY/$WRANGLER_CONFIG" --persist-to "$RUNNER_TEMP/cloudflare-deploy-d1"
 
