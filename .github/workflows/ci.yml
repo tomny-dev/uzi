@@ -17,7 +17,7 @@ concurrency:
 jobs:
   build:
     name: Node 24.x
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
@@ -80,6 +80,19 @@ jobs:
 
       - name: Build Cloudflare example
         run: pnpm --filter @tomny-dev/cloudflare-example build
+
+      - name: Test Cloudflare example Worker routes
+        run: pnpm --filter @tomny-dev/cloudflare-example test
+
+      - name: Verify Cloudflare example migrations with disposable local D1
+        env:
+          DEMO_WORKER_NAME: uzi-demo-ci
+          DEMO_D1_DATABASE_NAME: uzi-demo-ci
+          DEMO_D1_DATABASE_ID: 00000000-0000-4000-8000-000000000000
+        run: |
+          set -euo pipefail
+          node scripts/prepare-cloudflare-demo.mjs
+          pnpm dlx wrangler@4.163.0 d1 migrations apply DB --local --config examples/cloudflare-app/wrangler.jsonc --persist-to "$RUNNER_TEMP/uzi-example-d1"
 
       - name: Check Cloudflare demo scripts
         run: |
