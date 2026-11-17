@@ -9,7 +9,7 @@
  * @param props.size - Size preset.
  * @param props.icon - Optional leading icon.
  */
-import type { HTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from "react";
 import { cx } from "../../utils/cx";
 import styles from "./pill.module.css";
 
@@ -18,9 +18,7 @@ export type PillSize = "sm" | "md";
 
 type PillElement = "span" | "div" | "button";
 
-export type PillProps = HTMLAttributes<HTMLElement> & {
-  /** Optional rendered element; defaults to `span`. */
-  as?: PillElement;
+type PillBaseProps = {
   /** Visual tone; adjusts color and border. */
   tone?: PillTone;
   /** Size preset. */
@@ -28,6 +26,12 @@ export type PillProps = HTMLAttributes<HTMLElement> & {
   /** Leading icon node (not focusable). */
   icon?: ReactNode;
 };
+
+/** Static labels are spans/divs; interactive pills use native button props. */
+export type PillProps = PillBaseProps & (
+  | ({ as?: "span" | "div" } & HTMLAttributes<HTMLElement>)
+  | ({ as: "button" } & ButtonHTMLAttributes<HTMLButtonElement>)
+);
 
 export function Pill({
   as,
@@ -39,16 +43,23 @@ export function Pill({
   ...rest
 }: PillProps) {
   const Component: PillElement = as ?? "span";
-  const classes = cx(styles.pill, styles[`tone-${tone}`], styles[`size-${size}`], className);
-
-  return (
-    <Component className={classes} {...rest}>
+  const classes = cx(styles.pill, styles[`tone-${tone}`], styles[`size-${size}`], as === "button" && styles.interactive, className);
+  const content = (
+    <>
       {icon ? (
-        <span className={styles.icon} aria-hidden="true">
-          {icon}
-        </span>
+        <span className={styles.icon} aria-hidden="true">{icon}</span>
       ) : null}
       <span className={styles.content}>{children}</span>
+    </>
+  );
+
+  if (as === "button") {
+    return <button type="button" className={classes} {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}>{content}</button>;
+  }
+
+  return (
+    <Component className={classes} {...(rest as HTMLAttributes<HTMLElement>)}>
+      {content}
     </Component>
   );
 }
