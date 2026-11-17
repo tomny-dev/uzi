@@ -25,7 +25,7 @@ The deployment workflow runs **typecheck, test, build and optional lint/format:c
 In each GitHub protected environment (for example `production` or `staging`), configure:
 
 - Variables: `CLOUDFLARE_WORKER_NAME`, `CLOUDFLARE_D1_DATABASE_ID`, `CLOUDFLARE_SMOKE_URL` (a public HTTPS health endpoint that returns 2xx).
-- Secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` (explicitly pass named secrets from the caller; use environment protections and least privilege).
+- Secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` stored in the **selected protected environment**, scoped to the intended Cloudflare account. The called deploy job reads these directly; environment secrets cannot be forwarded through a reusable-workflow caller.
 - Restrict branches, require reviewers where available, and use a **different Worker and database** for each environment.
 
 The app must provide `typecheck`, `test`, and `build` scripts, plus a `wrangler.jsonc` or alternate `wrangler_config` file whose **top-level Worker name and D1 binding** match that environment's variables. Use distinct configuration files for distinct environments; the workflow does not infer or select a `--env` block automatically. An absent/mismatched resource variable causes a failure **before remote writes**. The default `wrangler_version` is pinned to `4.163.0`; downstream consumers can explicitly override it and should move to lockfile-managed Wrangler when practical.
@@ -86,14 +86,13 @@ jobs:
       environment_name: production
       pnpm_version: '10.0.0' # Match the downstream caller's packageManager version
       deploy_ref: refs/heads/main
-    secrets:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 ```
+
+The reusable deploy workflow accepts **environment-only** Cloudflare credentials; its `workflow_call` secret declarations are optional so the caller does not have to pass repository-level secrets. The protected deploy job checks that both credentials exist before remote writes. Keep production Cloudflare secrets out of repository/org secrets and restrict the selected GitHub environment to protected deployment refs.
 
 Both reusable workflows require `pnpm_version` because `pnpm/action-setup` otherwise depends on an optional caller `packageManager` field. Set it to the pnpm version supported by the downstream lockfile (for example, `10.0.0` for a pnpm 10 app); the workflow does not impose Uzi's own pnpm version on consumers.
 
-Configure protected GitHub environments with required reviewers, restricted deployment branches, least-privileged Cloudflare credentials, and the three required environment variables above. Pull requests never receive deployment secrets. The reusable deploy workflow now runs its own verification job and will not start remote writes unless that job passes. Reusable workflows run on **GitHub-hosted** `ubuntu-latest`, even when called from a private repository; they never run on personal Coolify infrastructure.
+Configure protected GitHub environments with required reviewers, restricted deployment branches, least-privileged Cloudflare credentials, and the three required environment variables above. Pull requests never receive deployment secrets. The reusable deploy workflow now runs its own verification job and will not start remote writes unless that job passes. Reusable workflows run on **GitHub-hosted** `ubuntu-24.04`, even when called from a private repository; they never run on personal Coolify infrastructure.
 
 Before using the deployment workflow, provision and bind **the correct database for each environment**. The workflow targets the configured D1 binding in the explicitly selected config file and verifies the expected database ID and Worker name against protected environment variables. It does not automatically select distinct Wrangler environments; give staging and production separate top-level configs and resource IDs.
 
