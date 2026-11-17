@@ -96,3 +96,13 @@ export const ElementTypes: Story = {
     </div>
   ),
 };
+
+export const Interactive: Story = {
+  render: () => (
+    <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+      <Pill as="button" tone="info" onClick={() => {}}>Filter by NCAAF</Pill>
+      <Pill as="button" tone="info" disabled>Unavailable</Pill>
+      <Pill tone="success">Read-only status</Pill>
+    </div>
+  ),
+};

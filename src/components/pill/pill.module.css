@@ -61,3 +61,28 @@
   align-items: center;
   gap: 4px;
 }
+
+.interactive {
+  font-family: inherit;
+  appearance: none;
+  cursor: pointer;
+  transition: filter 120ms ease, transform 120ms ease;
+}
+
+.interactive:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+
+.interactive:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.interactive:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.interactive:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
