@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "db:local": "pnpm dlx wrangler@4 d1 migrations apply DB --local",
     "db:remote": "pnpm dlx wrangler@4 d1 migrations apply DB --remote",
-    "deploy": "pnpm dlx wrangler@4 deploy"
+    "deploy": "pnpm dlx wrangler@4 deploy",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs"
   },
   "dependencies": {
     "@tomny-dev/cloudflare": "workspace:*",
