@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.20.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.19.0...uzi-v0.20.0) (2026-11-17)
+
+
+### Features
+
+* **pill:** standardize accessible interactive pill buttons ([#131](https://github.com/tomny-dev/uzi/issues/131)) ([b58c1a2](https://github.com/tomny-dev/uzi/commit/b58c1a2b5fcc5c793017107dfcb1ca8da621ffba))
+
+
+### Bug Fixes
+
+* **ai-chat:** improve mobile screenshot previews and response feedback ([#130](https://github.com/tomny-dev/uzi/issues/130)) ([56e4ac8](https://github.com/tomny-dev/uzi/commit/56e4ac84479fb8da356e099a245dcab0a0a14198))
+
 ## [0.19.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.18.1...uzi-v0.19.0) (2026-11-16)
 
 
