@@ -237,7 +237,8 @@ export function AIChatAttachmentPreview({ name, size, imageUrl, href, staged, on
 
   return (
     <div className={[styles.attachmentCard, staged ? styles.stagedAttachment : styles.sentAttachment,
-      staged && !safePreviewUrl ? styles.stagedFileAttachment : ''].filter(Boolean).join(' ')}>
+      staged && !safePreviewUrl ? styles.stagedFileAttachment : '',
+      safePreviewUrl && !staged ? styles.sentImageAttachment : ''].filter(Boolean).join(' ')}>
       {safePreviewUrl ? (
         <button ref={previewButtonRef} type="button" className={styles.imageAttachmentButton}
           onClick={() => setPreviewOpen(true)} aria-label={`Preview ${name}`} title={`Preview ${name}`}>
@@ -257,7 +258,6 @@ export function AIChatAttachmentPreview({ name, size, imageUrl, href, staged, on
           </span>
         </div>
       )}
-      {safePreviewUrl && !staged && <span className={styles.sentAttachmentName} title={name}>{name}</span>}
       {removeControl && <span className={styles.removeAttachmentSlot}>{removeControl}</span>}
       {!removeControl && onRemove && (
         <button type="button" className={styles.removeAttachment} onClick={onRemove}
@@ -808,8 +808,14 @@ export function AIChatView({
   const hasAnswer = assistantParts.some((part) => part.type === 'text' && Boolean(asString(part.text)?.trim()));
   const showActivity = isBusy && (!hasAnswer || Boolean(activeTool));
   const toolName = asString(activeTool?.toolName) ?? lastPartType.replace(/^tool-/, '');
-  const currentActivityLabel = activeTool?.state === 'approval-requested' ? 'Waiting for approval…'
-    : activeTool ? (toolActivityLabels?.[toolName] ?? 'Using a tool…') : activityLabel;
+  const toolState = asString(activeTool?.state);
+  const approval = activeTool?.approval;
+  const approved = isRecord(approval) && approval.approved === true;
+  const stateActivityLabel = toolState && (toolState !== 'approval-responded' || approved)
+    ? toolActivityLabels?.[`${toolName}:${toolState}`] : undefined;
+  const currentActivityLabel = toolState === 'approval-requested' ? 'Waiting for approval…'
+    : toolState === 'approval-responded' && !approved ? 'Processing approval response…'
+      : activeTool ? (stateActivityLabel ?? toolActivityLabels?.[toolName] ?? 'Using a tool…') : activityLabel;
   const limit = messageLimit != null && Number.isFinite(messageLimit)
     ? Math.max(1, Math.floor(messageLimit)) : null;
   const historyFull = limit !== null && messages.filter((message) => message.role === 'user').length >= limit;
@@ -885,26 +891,26 @@ export function AIChatView({
               <span>{currentActivityLabel}</span>
             </div>
           )}
+          {error && (
+            onRetry && onNewChat ? (
+              <ErrorRenderer error={error} onRetry={onRetry} onClear={onNewChat} />
+            ) : (
+              <div className={styles.error} role="alert">
+                <p>{error.message}</p>
+                {(onRetry || onNewChat) && (
+                  <div className={styles.errorActions}>
+                    {onRetry && <button type="button" onClick={onRetry}>Retry response</button>}
+                    {onNewChat && <button type="button" onClick={onNewChat}>Start new chat</button>}
+                  </div>
+                )}
+              </div>
+            )
+          )}
         </div>
       </div>
       <div className={styles.footer}>
         {approvalError && <p role="alert" className={styles.attachmentError}>{approvalError}</p>}
         {attachmentError && <p role="alert" className={styles.attachmentError}>{attachmentError}</p>}
-        {error && (
-          onRetry && onNewChat ? (
-            <ErrorRenderer error={error} onRetry={onRetry} onClear={onNewChat} />
-          ) : (
-            <div className={styles.error} role="alert">
-              <p>{error.message}</p>
-              {(onRetry || onNewChat) && (
-                <div className={styles.errorActions}>
-                  {onRetry && <button type="button" onClick={onRetry}>Retry response</button>}
-                  {onNewChat && <button type="button" onClick={onNewChat}>Start new chat</button>}
-                </div>
-              )}
-            </div>
-          )
-        )}
         {historyFull && !error && !isBusy && onNewChat && (
           <div className={styles.historyLimit}>
             <span>This chat has reached its {limit}-question limit.</span>

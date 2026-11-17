@@ -371,6 +371,42 @@ describe('AIChatView (external runtime)', () => {
     expect(screen.queryByRole('status')).toBeNull();
   });
 
+  it('uses tool state-specific progress only when supplied by the application', () => {
+    const message = (state: string, approved = true) => [{
+      id: 'assistant-1', role: 'assistant' as const,
+      parts: [{ type: 'tool-log_bet', state, approval: { approved } }],
+    }];
+    const props = {
+      status: 'streaming',
+      toolActivityLabels: {
+        log_bet: 'Preparing bet for review…',
+        'log_bet:approval-responded': 'Saving approved bet…',
+      },
+    };
+    const { rerender } = render(<AIChatView {...props} messages={message('input-available')} />);
+    expect(screen.getByRole('status').textContent).toContain('Preparing bet for review…');
+    rerender(<AIChatView {...props} messages={message('approval-responded')} />);
+    expect(screen.getByRole('status').textContent).toContain('Saving approved bet…');
+    rerender(<AIChatView {...props} messages={message('approval-responded', false)} />);
+    expect(screen.getByRole('status').textContent).toContain('Processing approval response…');
+    expect(screen.getByRole('status').textContent).not.toContain('Saving');
+    rerender(<AIChatView {...props} messages={message('approval-requested')} />);
+    expect(screen.getByRole('status').textContent).toContain('Waiting for approval…');
+    rerender(<AIChatView {...props} status="ready" messages={message('output-available')} />);
+    expect(screen.queryByRole('status')).toBeNull();
+  });
+
+  it('keeps failed responses beside the transcript with an actionable retry', () => {
+    const retry = vi.fn();
+    render(<AIChatView messages={[{
+      id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'Help me' }],
+    }]} error={new Error('Request failed')} onRetry={retry} onNewChat={vi.fn()} />);
+    const alert = screen.getByRole('alert');
+    expect(screen.getByRole('log').contains(alert)).toBe(true);
+    fireEvent.click(screen.getByRole('button', { name: 'Retry response' }));
+    expect(retry).toHaveBeenCalledOnce();
+  });
+
   it('supports a custom composer and no default user-turn cap', () => {
     const messages = Array.from({ length: 12 }, (_, index) => ({
       id: `user-${index}`, role: 'user' as const,
@@ -468,6 +504,7 @@ describe('AIChat shared opt-in capabilities', () => {
     }]} />);
     expect(screen.getByRole('img', { name: 'ticket.png' }).getAttribute('src')).toBe(imageUrl);
     expect(screen.getByRole('button', { name: 'Preview ticket.png' })).toBeTruthy();
+    expect(screen.queryByText('ticket.png')).toBeNull();
     expect(screen.getByRole('link', { name: 'notes.pdf' }).getAttribute('href')).toBe('https://example.com/notes.pdf');
     expect(screen.getByText('2.0 KB')).toBeTruthy();
   });
