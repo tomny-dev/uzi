@@ -372,9 +372,9 @@ describe('AIChatView (external runtime)', () => {
   });
 
   it('uses tool state-specific progress only when supplied by the application', () => {
-    const message = (state: string) => [{
+    const message = (state: string, approved = true) => [{
       id: 'assistant-1', role: 'assistant' as const,
-      parts: [{ type: 'tool-log_bet', state, approval: { approved: true } }],
+      parts: [{ type: 'tool-log_bet', state, approval: { approved } }],
     }];
     const props = {
       status: 'streaming',
@@ -387,6 +387,9 @@ describe('AIChatView (external runtime)', () => {
     expect(screen.getByRole('status').textContent).toContain('Preparing bet for review…');
     rerender(<AIChatView {...props} messages={message('approval-responded')} />);
     expect(screen.getByRole('status').textContent).toContain('Saving approved bet…');
+    rerender(<AIChatView {...props} messages={message('approval-responded', false)} />);
+    expect(screen.getByRole('status').textContent).toContain('Processing approval response…');
+    expect(screen.getByRole('status').textContent).not.toContain('Saving');
     rerender(<AIChatView {...props} messages={message('approval-requested')} />);
     expect(screen.getByRole('status').textContent).toContain('Waiting for approval…');
     rerender(<AIChatView {...props} messages={message('output-available')} />);
