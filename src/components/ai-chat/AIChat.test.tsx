@@ -392,7 +392,7 @@ describe('AIChatView (external runtime)', () => {
     expect(screen.getByRole('status').textContent).not.toContain('Saving');
     rerender(<AIChatView {...props} messages={message('approval-requested')} />);
     expect(screen.getByRole('status').textContent).toContain('Waiting for approval…');
-    rerender(<AIChatView {...props} messages={message('output-available')} />);
+    rerender(<AIChatView {...props} status="ready" messages={message('output-available')} />);
     expect(screen.queryByRole('status')).toBeNull();
   });
 
