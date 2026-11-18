@@ -18,7 +18,7 @@ export type FilterBarProps = React.HTMLAttributes<HTMLDivElement> & {
 };
 
 export function FilterBar({ leading, search, actions, activeFilters, className, children, ...rest }: FilterBarProps) {
-  return <div className={cx(styles.bar, className)} {...rest}>
+  return <div className={cx(styles.bar, !leading && styles.noLeading, !search && styles.noSearch, !actions && styles.noActions, className)} {...rest}>
     {leading && <div className={styles.leading}>{leading}</div>}
     {search && <div className={styles.search}>{search}</div>}
     {actions && <div className={styles.actions}>{actions}</div>}
