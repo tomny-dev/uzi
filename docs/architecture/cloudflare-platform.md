@@ -28,11 +28,11 @@ Cloudflare is the **default for new full-stack apps**, not a requirement of `@to
 
 ## Module boundaries and rollout
 
-1. **Foundation (this PR):** `@tomny-dev/cloudflare` workspace, `requireD1`, `apiError`, tests and documentation. Keep `private: true` until a dedicated publication path is designed and exercised.
-2. **First consumer (in progress):** add one minimal Worker + D1 + Uzi UI example, using application-owned SQL migrations and request-level auth. Verify local/preview/production data isolation.
-3. **Reusable workflows:** extract verified quality, D1 migration and deployment procedures into reusable `workflow_call` workflows with pinned references; use GitHub-hosted runners (`ubuntu-latest`) for public Uzi CI, especially untrusted pull requests. Never expose private self-hosted Coolify runners to public Uzi workflows; private downstream repositories may independently use their own approved runners. Keep one deploy owner, honor least-privilege permissions and avoid `actions/upload-artifact`.
+1. **Foundation (merged #120):** `@tomny-dev/cloudflare` workspace, `requireD1`, `apiError`, tests and documentation. Keep `private: true` until a dedicated publication path is designed and exercised.
+2. **First example (merged #123):** the React/Vite + Worker + D1 example and app-owned migration live in this monorepo. Real remote demo deployment and independently installed consumer validation remain pending.
+3. **Reusable workflows (merged #123; hardening in progress):** reusable `workflow_call` quality and deployment workflows are available. Deploy verification must include required app scripts, a fresh local migration run, protected-environment resource identity checks and a smoke test; use GitHub-hosted runners (`ubuntu-24.04`) for public Uzi CI, especially untrusted pull requests. Never expose private self-hosted Coolify runners to public Uzi workflows; private downstream repositories may independently use their own approved runners. Keep one deploy owner, honor least-privilege permissions and avoid `actions/upload-artifact`.
 4. **Publication:** implement trusted publishing for the Cloudflare workspace and a semver/update policy. Package upgrades require downstream CI and deploy; reusable workflow references have a separate versioning lifecycle.
-5. **Optional integrations:** R2, Queues, cron, Cloudflare Workflows and AI only when validated by a concrete application need.
+5. **Optional integrations (deferred):** R2, Queues, cron, Cloudflare Workflows and AI only when validated by a concrete application need.
 
 ## Non-goals
 
@@ -48,3 +48,11 @@ Cloudflare is the **default for new full-stack apps**, not a requirement of `@to
 - `pnpm --filter @tomny-dev/cloudflare build`
 - Full repository typecheck, tests and UI/client-boundary build
 - Consumer validation before enabling a publish workflow
+
+## Delivery safety and rollout checkpoints (2026-11-17)
+
+- Reusable deployment requires a protected GitHub environment whose `CLOUDFLARE_WORKER_NAME`, `CLOUDFLARE_D1_DATABASE_ID`, and `CLOUDFLARE_SMOKE_URL` variables match the app's selected Wrangler configuration. Staging/production should have distinct top-level configs and physical resources. Never infer that changing GitHub environment automatically changes Wrangler's D1 bindings.
+- The protected deploy job runs **only after app tests/build and a disposable local D1 migration check**, rejects missing/mismatched configuration before remote writes, applies remote migrations, deploys the Worker, and runs an HTTPS health check. Changes to already-applied remote DB migrations require an explicit recovery plan.
+- Cloudflare demo deployment stays manual-only from `main`; ordinary public PR CI must not receive Cloudflare credentials or access to private Coolify runners.
+- The example remains in-repository and `@tomny-dev/cloudflare` stays unpublished until a verified runtime deployment and real standalone consumer establish its public contract. No claim of production readiness is made by TypeScript or package build checks alone.
+- Wrangler is pinned to a reviewed exact version in the reusable workflows while this package is a private workspace; migrate to a project-locked Wrangler devDependency for a standalone starter without breaking frozen-lockfile CI.

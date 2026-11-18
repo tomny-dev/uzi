@@ -7,16 +7,33 @@ on:
         type: string
         required: true
       pnpm_version:
-        description: pnpm version matching the caller's packageManager and lockfile
+        description: Match the caller's packageManager and lockfile
         type: string
         required: true
+      verify_d1_migrations:
+        type: boolean
+        required: false
+        default: false
+      database_binding:
+        type: string
+        required: false
+        default: DB
+      wrangler_config:
+        type: string
+        required: false
+        default: wrangler.jsonc
+      wrangler_version:
+        description: Exact, reviewed Wrangler version used only for local migration checks
+        type: string
+        required: false
+        default: 4.163.0
 
 permissions:
   contents: read
 
 jobs:
   quality:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -26,7 +43,7 @@ jobs:
         with:
           node-version: "24.x"
           cache: pnpm
-      - name: Install dependencies
+      - name: Install locked dependencies
         run: pnpm install --frozen-lockfile
       - name: Validate application
         env:
@@ -34,5 +51,36 @@ jobs:
         run: |
           set -euo pipefail
           test -f "$APP_DIRECTORY/package.json"
+          node --input-type=module -e '
+            import { readFileSync } from "node:fs";
+            const { scripts = {} } = JSON.parse(readFileSync(process.env.APP_DIRECTORY + "/package.json", "utf8"));
+            for (const name of ["typecheck", "test", "build"]) {
+              if (!scripts[name]) throw new Error("Missing required application script: " + name);
+            }
+          '
+          for script in lint format:check; do
+            if SCRIPT="$script" node --input-type=module -e '
+              import { readFileSync } from "node:fs";
+              const scripts = JSON.parse(readFileSync(process.env.APP_DIRECTORY + "/package.json", "utf8")).scripts ?? {};
+              process.exit(scripts[process.env.SCRIPT] ? 0 : 1);
+            '; then
+              pnpm --dir "$APP_DIRECTORY" run "$script"
+            fi
+          done
           pnpm --dir "$APP_DIRECTORY" run typecheck
+          pnpm --dir "$APP_DIRECTORY" run test
           pnpm --dir "$APP_DIRECTORY" run build
+      - name: Verify D1 migrations against fresh local database
+        if: inputs.verify_d1_migrations
+        env:
+          APP_DIRECTORY: ${{ inputs.app_directory }}
+          DATABASE_BINDING: ${{ inputs.database_binding }}
+          WRANGLER_CONFIG: ${{ inputs.wrangler_config }}
+          WRANGLER_VERSION: ${{ inputs.wrangler_version }}
+        run: |
+          set -euo pipefail
+          [[ "$DATABASE_BINDING" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || exit 1
+          [[ "$WRANGLER_CONFIG" =~ ^[A-Za-z0-9._-]+\.jsonc?$ ]] || exit 1
+          [[ "$WRANGLER_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 1
+          test -f "$APP_DIRECTORY/$WRANGLER_CONFIG"
+          pnpm dlx "wrangler@$WRANGLER_VERSION" d1 migrations apply "$DATABASE_BINDING" --local --config "$APP_DIRECTORY/$WRANGLER_CONFIG" --persist-to "$RUNNER_TEMP/cloudflare-quality-d1"
