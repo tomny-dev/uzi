@@ -53,56 +53,14 @@ jobs:
     if: >-
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
       github.ref == inputs.deploy_ref
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: ${{ inputs.pnpm_version }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "24.x"
-          cache: pnpm
-      - name: Install locked dependencies
-        run: pnpm install --frozen-lockfile
-      - name: Check scripts and run application quality gate
-        env:
-          APP_DIRECTORY: ${{ inputs.app_directory }}
-        run: |
-          set -euo pipefail
-          test -f "$APP_DIRECTORY/package.json"
-          node --input-type=module -e '
-            import { readFileSync } from "node:fs";
-            const { scripts = {} } = JSON.parse(readFileSync(process.env.APP_DIRECTORY + "/package.json", "utf8"));
-            for (const name of ["typecheck", "test", "build"]) {
-              if (!scripts[name]) throw new Error("Missing required application script: " + name);
-            }
-          '
-          for script in lint format:check; do
-            if SCRIPT="$script" node --input-type=module -e '
-              import { readFileSync } from "node:fs";
-              const scripts = JSON.parse(readFileSync(process.env.APP_DIRECTORY + "/package.json", "utf8")).scripts ?? {};
-              process.exit(scripts[process.env.SCRIPT] ? 0 : 1);
-            '; then
-              pnpm --dir "$APP_DIRECTORY" run "$script"
-            fi
-          done
-          pnpm --dir "$APP_DIRECTORY" run typecheck
-          pnpm --dir "$APP_DIRECTORY" run test
-          pnpm --dir "$APP_DIRECTORY" run build
-      - name: Apply migrations to fresh local D1 first
-        env:
-          APP_DIRECTORY: ${{ inputs.app_directory }}
-          DATABASE_BINDING: ${{ inputs.database_binding }}
-          WRANGLER_CONFIG: ${{ inputs.wrangler_config }}
-          WRANGLER_VERSION: ${{ inputs.wrangler_version }}
-        run: |
-          set -euo pipefail
-          [[ "$DATABASE_BINDING" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || exit 1
-          [[ "$WRANGLER_CONFIG" =~ ^[A-Za-z0-9._-]+\.jsonc?$ ]] || exit 1
-          [[ "$WRANGLER_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 1
-          test -f "$APP_DIRECTORY/$WRANGLER_CONFIG"
-          pnpm dlx "wrangler@$WRANGLER_VERSION" d1 migrations apply "$DATABASE_BINDING" --local --config "$APP_DIRECTORY/$WRANGLER_CONFIG" --persist-to "$RUNNER_TEMP/cloudflare-deploy-d1"
+    uses: $/.github/workflows/cloudflare-quality.yml
+    with:
+      app_directory: ${{ inputs.app_directory }}
+      pnpm_version: ${{ inputs.pnpm_version }}
+      verify_d1_migrations: true
+      database_binding: ${{ inputs.database_binding }}
+      wrangler_config: ${{ inputs.wrangler_config }}
+      wrangler_version: ${{ inputs.wrangler_version }}
 
   deploy:
     needs: verify
@@ -145,33 +103,17 @@ jobs:
           SMOKE_URL: ${{ vars.CLOUDFLARE_SMOKE_URL }}
         run: |
           set -euo pipefail
+          # The caller checkout has no Uzi scripts. Fetch exactly the reviewed
+          # helper blob, without another checkout or a mutable branch reference.
+          guard_blob=760456362ab17a7fb3f7d3889e4b85e5e18512b7
+          guard_script=$(mktemp "$RUNNER_TEMP/cloudflare-deploy-guard.XXXXXX.mjs")
+          trap 'rm -f "$guard_script"' EXIT
+          curl --fail --show-error --silent --retry 3 --connect-timeout 10 --max-time 60 \
+            --proto '=https' --header 'Accept: application/vnd.github.raw+json' \
+            "https://api.github.com/repos/tomny-dev/uzi/git/blobs/$guard_blob" > "$guard_script"
+          test "$(git hash-object --no-filters "$guard_script")" = "$guard_blob"
           cd "$APP_DIRECTORY"
-          node --input-type=module <<'NODE'
-          import { readFileSync } from "node:fs";
-          import ts from "typescript";
-          const {
-            WRANGLER_CONFIG: filename, DATABASE_BINDING: binding,
-            EXPECTED_WORKER_NAME: worker, EXPECTED_DATABASE_ID: databaseId, SMOKE_URL: smokeUrl,
-          } = process.env;
-          if (!/^[A-Za-z0-9._-]+\.jsonc?$/.test(filename || "")) throw Error("Invalid Wrangler config filename");
-          if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(binding || "")) throw Error("Invalid D1 binding");
-          if (!/^[a-z0-9][a-z0-9-]*$/.test(worker || "")) throw Error("Missing/invalid CLOUDFLARE_WORKER_NAME environment variable");
-          if (!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(databaseId || "")) throw Error("Missing/invalid CLOUDFLARE_D1_DATABASE_ID environment variable");
-          const url = new URL(smokeUrl || "http://invalid.invalid/");
-          if (url.protocol !== "https:" || url.username || url.password || !url.hostname || url.hash) throw Error("CLOUDFLARE_SMOKE_URL must be an HTTPS endpoint without credentials or fragments");
-          if (url.hostname.endsWith(".workers.dev") && !url.hostname.startsWith(worker + ".")) {
-            throw Error("CLOUDFLARE_SMOKE_URL must target the configured Worker on workers.dev");
-          }
-          const parsed = ts.parseConfigFileTextToJson(filename, readFileSync(filename, "utf8"));
-          if (parsed.error) throw Error(ts.flattenDiagnosticMessageText(parsed.error.messageText, "\n"));
-          const config = parsed.config;
-          if (config.name !== worker) throw Error("Worker name does not match protected environment");
-          const databases = (config.d1_databases ?? []).filter(db => db.binding === binding);
-          if (databases.length !== 1 || databases[0].database_id !== databaseId) {
-            throw Error("D1 binding/database_id does not match protected environment");
-          }
-          console.log("Worker and D1 match protected environment; remote migration authorized");
-          NODE
+          node "$guard_script"
       - name: Migrate remote D1, then deploy Worker
         env:
           APP_DIRECTORY: ${{ inputs.app_directory }}
