@@ -55,3 +55,17 @@
   .actions { justify-content: flex-start; flex-wrap: wrap; }
   .panel { left: 0; right: auto; width: min(28rem, calc(100vw - 2rem)); }
 }
+
+/* A toolbar may omit any slot; unused grid columns must not reserve space. */
+@media (min-width: 64.001rem) {
+  .bar.noLeading { grid-template-columns: minmax(0, 1fr) max-content; }
+  .bar.noSearch { grid-template-columns: minmax(0, 1fr) max-content; }
+  .bar.noLeading.noActions,
+  .bar.noSearch.noActions { grid-template-columns: minmax(0, 1fr); }
+}
+@media (min-width: 40.001rem) and (max-width: 64rem) {
+  .bar.noLeading .search { grid-column: 1; grid-row: 1; }
+  .bar.noLeading .actions { grid-column: 2; grid-row: 1; }
+  .bar.noSearch .leading { grid-column: 1; grid-row: 1; }
+  .bar.noSearch .actions { grid-column: 2; grid-row: 1; }
+}
