@@ -13,9 +13,12 @@
   min-width: 0;
 }
 .leading { flex-wrap: wrap; }
-.search > * { min-width: 0; }
+.search > * { min-width: 0; flex: 1 1 auto; }
+/* Let search inputs and autocomplete wrappers consume the available column. */
+.search > :is(input, div) { width: 100%; }
+.leading > *, .actions > * { min-width: 0; }
 .search > input { width: 100%; }
-.actions { justify-content: flex-end; flex-wrap: nowrap; }
+.actions { justify-content: flex-end; flex-wrap: wrap; }
 .activeFilters { grid-column: 1 / -1; min-width: 0; }
 .chips { display: flex; flex-wrap: wrap; align-items: center; gap: .375rem; }
 .chip {
