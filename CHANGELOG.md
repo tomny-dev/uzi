@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.20.1](https://github.com/tomny-dev/uzi/compare/uzi-v0.20.0...uzi-v0.20.1) (2026-11-18)
+
+
+### Bug Fixes
+
+* **cloudflare:** gate D1 deployments and validate Worker starter ([#129](https://github.com/tomny-dev/uzi/issues/129)) ([ba22da7](https://github.com/tomny-dev/uzi/commit/ba22da772d045b500da4a5428c547eaa3f463d97))
+* **ui:** make FilterBar responsive with optional slots ([#134](https://github.com/tomny-dev/uzi/issues/134)) ([4a301b5](https://github.com/tomny-dev/uzi/commit/4a301b5309ca5505f21f52ef87dd0ef70463f65e))
+
 ## [0.20.0](https://github.com/tomny-dev/uzi/compare/uzi-v0.19.0...uzi-v0.20.0) (2026-11-17)
 
 
