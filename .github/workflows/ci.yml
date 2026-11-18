@@ -43,7 +43,9 @@ jobs:
           node --input-type=module -e "await import('@hono/node-server')"
 
       - name: Validate Cloudflare protected deployment resource guard
-        run: node scripts/test-cloudflare-deploy-gate.mjs
+        run: |
+          node scripts/test-cloudflare-deploy-gate.mjs
+          node scripts/test-cloudflare-workflows.mjs
 
       - name: Type check
         run: pnpm lint

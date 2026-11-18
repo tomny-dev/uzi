@@ -1,28 +1,26 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const workflow = readFileSync(".github/workflows/cloudflare-deploy.yml", "utf8");
-const opener = "node --input-type=module <<'NODE'\n";
-const start = workflow.indexOf(opener);
-if (start < 0) throw Error("Deployment resource check is missing");
-
-const scriptStart = start + opener.length;
-const scriptEnd = workflow.indexOf("\n          NODE", scriptStart);
-if (scriptEnd < 0) throw Error("Deployment resource check is unterminated");
-
-const validator = workflow
-  .slice(scriptStart, scriptEnd)
-  .split("\n")
-  .map((line) => line.replace(/^ {10}/, ""))
-  .join("\n");
-
-const fixtureDir = mkdtempSync(join(process.cwd(), ".cloudflare-gate-test-"));
+const fixtureRoot = mkdtempSync(join(tmpdir(), "cloudflare-gate-test-"));
+const fixtureDir = join(fixtureRoot, "caller-app");
+const helperDir = join(fixtureRoot, "uzi-helper");
+const validator = join(helperDir, "cloudflare-deploy-guard.mjs");
 const filename = "wrangler.fixture.jsonc";
 const databaseId = "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee";
 
 try {
+  mkdirSync(join(fixtureDir, "node_modules"), { recursive: true });
+  mkdirSync(helperDir);
+  writeFileSync(join(fixtureDir, "package.json"), "{}");
+  // Only the caller has dependencies; the isolated helper checkout has none.
+  const require = createRequire(import.meta.url);
+  symlinkSync(join(require.resolve("typescript/package.json"), ".."), join(fixtureDir, "node_modules/typescript"), "dir");
+  copyFileSync(fileURLToPath(new URL("./cloudflare-deploy-guard.mjs", import.meta.url)), validator);
   writeFileSync(
     join(fixtureDir, filename),
     `{
@@ -45,9 +43,8 @@ try {
   };
 
   function validate(overrides = {}) {
-    return spawnSync(process.execPath, ["--input-type=module"], {
+    return spawnSync(process.execPath, [validator], {
       cwd: fixtureDir,
-      input: validator,
       env: { ...process.env, ...defaults, ...overrides },
       encoding: "utf8",
     });
@@ -55,6 +52,7 @@ try {
 
   const valid = validate();
   assert.equal(valid.status, 0, valid.stderr || valid.stdout);
+  assert.equal(validate({ SMOKE_URL: "https://app.example.com/api/health" }).status, 0);
 
   for (const [label, changes] of [
     ["wrong Worker", { EXPECTED_WORKER_NAME: "other-worker" }],
@@ -62,11 +60,21 @@ try {
     ["missing HTTPS", { SMOKE_URL: "http://uzi-demo-ci.example.workers.dev/api/health" }],
     ["unrelated Worker", { SMOKE_URL: "https://other-worker.example.workers.dev/api/health" }],
     ["missing DB", { DATABASE_BINDING: "OTHER_DB" }],
+    ["invalid filename", { WRANGLER_CONFIG: "../wrangler.jsonc" }],
+    ["invalid binding", { DATABASE_BINDING: "DB; echo bad" }],
+    ["missing Worker", { EXPECTED_WORKER_NAME: "" }],
+    ["invalid database ID", { EXPECTED_DATABASE_ID: "not-a-uuid" }],
+    ["URL credentials", { SMOKE_URL: "https://user:password@app.example.com/health" }],
+    ["URL fragment", { SMOKE_URL: "https://app.example.com/health#fragment" }],
   ]) {
     const result = validate(changes);
     assert.notEqual(result.status, 0, `${label}: should reject before remote D1 writes`);
   }
-  console.log("Protected Cloudflare deployment resource guard passed 6 cases");
+  writeFileSync(join(fixtureDir, filename), `{"name":"uzi-demo-ci","d1_databases":[{"binding":"DB","database_id":"${databaseId}"},{"binding":"DB","database_id":"${databaseId}"}]}`);
+  assert.notEqual(validate().status, 0, "duplicate binding should reject");
+  writeFileSync(join(fixtureDir, filename), "{ invalid JSONC");
+  assert.notEqual(validate().status, 0, "malformed JSONC should reject");
+  console.log("Protected Cloudflare deployment resource guard passed 15 cases");
 } finally {
-  rmSync(fixtureDir, { recursive: true, force: true });
+  rmSync(fixtureRoot, { recursive: true, force: true });
 }
