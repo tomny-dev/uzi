@@ -13,9 +13,12 @@
   min-width: 0;
 }
 .leading { flex-wrap: wrap; }
-.search > * { min-width: 0; }
+.search > * { min-width: 0; flex: 1 1 auto; }
+/* Let search inputs and autocomplete wrappers consume the available column. */
+.search > :is(input, div) { width: 100%; }
+.leading > *, .actions > * { min-width: 0; }
 .search > input { width: 100%; }
-.actions { justify-content: flex-end; flex-wrap: nowrap; }
+.actions { justify-content: flex-end; flex-wrap: wrap; }
 .activeFilters { grid-column: 1 / -1; min-width: 0; }
 .chips { display: flex; flex-wrap: wrap; align-items: center; gap: .375rem; }
 .chip {
@@ -51,4 +54,18 @@
   .leading, .search, .actions { grid-column: 1; grid-row: auto; }
   .actions { justify-content: flex-start; flex-wrap: wrap; }
   .panel { left: 0; right: auto; width: min(28rem, calc(100vw - 2rem)); }
+}
+
+/* A toolbar may omit any slot; unused grid columns must not reserve space. */
+@media (min-width: 64.001rem) {
+  .bar.noLeading { grid-template-columns: minmax(0, 1fr) max-content; }
+  .bar.noSearch { grid-template-columns: minmax(0, 1fr) max-content; }
+  .bar.noLeading.noActions,
+  .bar.noSearch.noActions { grid-template-columns: minmax(0, 1fr); }
+}
+@media (min-width: 40.001rem) and (max-width: 64rem) {
+  .bar.noLeading .search { grid-column: 1; grid-row: 1; }
+  .bar.noLeading .actions { grid-column: 2; grid-row: 1; }
+  .bar.noSearch .leading { grid-column: 1; grid-row: 1; }
+  .bar.noSearch .actions { grid-column: 2; grid-row: 1; }
 }
