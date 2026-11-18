@@ -53,7 +53,7 @@ jobs:
     if: >-
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
       github.ref == inputs.deploy_ref
-    uses: ./.github/workflows/cloudflare-quality.yml
+    uses: $/.github/workflows/cloudflare-quality.yml
     with:
       app_directory: ${{ inputs.app_directory }}
       pnpm_version: ${{ inputs.pnpm_version }}
