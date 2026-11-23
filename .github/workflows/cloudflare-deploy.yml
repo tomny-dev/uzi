@@ -53,7 +53,7 @@ jobs:
     if: >-
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
       github.ref == inputs.deploy_ref
-    uses: tomny-dev/uzi/.github/workflows/cloudflare-quality.yml@98984353928ad8a6b83d25a3f31eb504babd03e8
+    uses: $/.github/workflows/cloudflare-quality.yml
     with:
       app_directory: ${{ inputs.app_directory }}
       pnpm_version: ${{ inputs.pnpm_version }}
