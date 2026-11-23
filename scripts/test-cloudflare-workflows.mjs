@@ -12,7 +12,7 @@ const workflow = name => parse(readFileSync(new URL(`../.github/workflows/cloudf
 const quality = workflow("quality");
 const deploy = workflow("deploy");
 const verify = deploy.jobs.verify;
-assert.equal(verify.uses, "tomny-dev/uzi/.github/workflows/cloudflare-quality.yml@98984353928ad8a6b83d25a3f31eb504babd03e8");
+assert.equal(verify.uses, "$/.github/workflows/cloudflare-quality.yml");
 assert.equal(verify.steps, undefined, "deployment must delegate quality policy");
 assert.equal(verify.secrets, undefined, "verification must not inherit deployment secrets");
 assert.equal(verify.environment, undefined);
