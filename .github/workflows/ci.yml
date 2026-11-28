@@ -75,8 +75,8 @@ jobs:
       - name: Build Cloudflare integration
         run: pnpm --filter @tomny-dev/cloudflare build
 
-      - name: Smoke-test Cloudflare package with Node ESM
-        run: pnpm --filter @tomny-dev/cloudflare exec node --input-type=module -e "const p = await import('./dist/index.js'); if (typeof p.requireD1 !== 'function' || typeof p.apiError !== 'function') process.exit(1)"
+      - name: Verify packed Cloudflare package in isolated consumer
+        run: node scripts/test-cloudflare-package.mjs
 
       - name: Typecheck Cloudflare example
         run: pnpm --filter @tomny-dev/cloudflare-example typecheck

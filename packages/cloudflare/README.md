@@ -41,6 +41,9 @@ export default {
 pnpm --filter @tomny-dev/cloudflare lint
 pnpm --filter @tomny-dev/cloudflare test
 pnpm --filter @tomny-dev/cloudflare build
+node scripts/test-cloudflare-package.mjs
 ```
+
+The last command packs the built private workspace and installs it offline into a temporary consumer outside the monorepo. It checks the package's public TypeScript declarations and Fetch/D1 helper imports without workspace links. It does not publish the package, start a Worker, or verify a live D1 binding.
 
 See [the platform architecture](../../docs/architecture/cloudflare-platform.md) for the incremental rollout plan.
